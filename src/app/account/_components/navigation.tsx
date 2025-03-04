@@ -1,40 +1,114 @@
+"use client";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { IoIosSearch } from "react-icons/io";
 import { BsList } from "react-icons/bs";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { RiLogoutBoxRFill } from "react-icons/ri";
+import { responseData } from "@/lib/types";
+import { usePathname, useRouter } from "next/navigation";
 export function Navigation() {
+  const [response, setUserInfo] = useState<responseData>();
+  const [loading, setLoading] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+  useEffect(() => {
+    const getInfo = async () => {
+      setLoading(true);
+      const res = await axios.get(`/api/account`, {
+        withCredentials: true,
+      });
+      setUserInfo(res.data);
+      setLoading(false);
+    };
+    getInfo();
+  }, [pathname]);
+  const logout = async () => {
+    setLoading(true);
+    setUserInfo(undefined);
+    const res = await axios.get(`/api/account/logout`);
+    setUserInfo(res.data);
+    setLoading(false);
+  };
   return (
-    <div className="flex justify-around items-center">
-      <div className="flex items-center">
-        <div className=" rounded-full overflow-hidden">
-          <Image
-            src={`/vercel.svg`}
-            width={30}
-            height={30}
-            alt="logo"
-            className="bg-[#DE3151]"
-          />
+    <div className="flex justify-around items-center py-4">
+      <div className="flex items-center gap-7">
+        <Link href={`/`}>
+          <div className="flex items-center text-[#14A800] font-extrabold text-xl">
+            ProLink
+          </div>
+        </Link>
+        <div className=" hidden xl:flex gap-6 text-xs font-medium">
+          <Link href={`/account`}>
+            <div>Мэргэжилтэнгүүд хайх</div>
+          </Link>
+          <Link href={`/account`}>
+            <div>Ажил хайх</div>
+          </Link>
+          <Link href={`/account`}>
+            <div>Find talent</div>
+          </Link>
         </div>
-        <div>Logo</div>
       </div>
-      <div className="flex items-center">
+      {/* <div className="xl:flex items-center hidden"></div> */}
+
+      <div className="hidden xl:flex items-center gap-1.5">
         <div className="flex w-48 border items-center rounded-full px-2">
-          <Input className="border-none shadow-none" placeholder="Хайх" />
-          <div className="bg-[#FF385C] rounded-full p-1">
+          <div className="bg-[#14A800] rounded-full p-1">
             <IoIosSearch className="text-2xl" />
           </div>
+          <Input className="border-none shadow-none" placeholder="Хайх" />
         </div>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <div>Зар оруулах</div>
 
-        <div className="flex items-center bg-[#DE3151] h-8 rounded-full justify-around gap-2 p-3">
-          <div>
-            <BsList className="text-xl" />
-          </div>
-          <div className="rounded-full overflow-hidden bg-black">
-            <Image src={`/vercel.svg`} alt="pfp" width={30} height={30} />
-          </div>
+        <div className="flex items-center h-8 rounded-full justify-around gap-2 p-3">
+          {loading ? (
+            <div>Түр хүлээнэ үү...</div>
+          ) : (
+            <div>
+              {response?.code === "SUCCESS" ? (
+                <div className="flex items-center gap-4">
+                  <div className="rounded-full overflow-hidden">
+                    <Image
+                      src={`${response.data?.informations?.pfp}`}
+                      width={30}
+                      height={30}
+                      alt="pfp"
+                    />
+                  </div>
+                  {response.data?.informations?.companyName ? (
+                    <div>{response.data.informations.companyName}</div>
+                  ) : (
+                    <div className=" whitespace-nowrap">
+                      {response.data?.informations?.lastName}{" "}
+                      {response.data?.informations?.firstName}
+                    </div>
+                  )}
+                  <button
+                    onClick={logout}
+                    className="  p-0 bg-background hover:bg-secondary cursor-pointer"
+                  >
+                    <RiLogoutBoxRFill className=" text-[#14A800] text-3xl " />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <Link href={`/account`}>
+                    <Button className=" cursor-pointer p-2 rounded-2xl px-5 text-foreground bg-background border-none hover:text-background">
+                      Log in
+                    </Button>
+                  </Link>
+                  <Link href={`/account`}>
+                    <Button className=" cursor-pointer bg-[#14A800] p-2 rounded-2xl px-5 text-background">
+                      Sign up
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

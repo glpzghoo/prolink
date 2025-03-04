@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Montserrat } from "next/font/google";
 import "../globals.css";
 import { Navigation } from "./_components/navigation";
+import Footer from "./_components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,12 +24,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <div className={`${inter.className}`}>
-      <div>
-        <Navigation />
-      </div>
-      {children}
-    </div>
-  );
+  return <div className={`${inter.className}`}>{children}</div>;
 }
