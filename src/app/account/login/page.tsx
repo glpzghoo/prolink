@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import GoogleSession from "../_components/google";
 import { ImSpinner2 } from "react-icons/im";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -25,6 +25,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [resetPassLoading, setResetPass] = useState(false);
   const [response, setResponse] = useState<responseData>();
+  const LoginButtonEvent = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const EmailString = localStorage.getItem("email");
     const NameString = localStorage.getItem("firstName");
@@ -38,9 +39,14 @@ export default function Login() {
     }
   }, []);
 
-  // useEffect(() => {
-
-  // }, [response]);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setResponse(undefined);
+    }, 5000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [response]);
   useEffect(() => {
     const result = passwordSchema.safeParse(password);
     if (result.success) {
@@ -60,18 +66,16 @@ export default function Login() {
         password,
       });
       setResponse(res.data);
-      console.log(res.data);
       setLoading(false);
       if (res.data.code === "OTP_MATCHED") {
         setTimeout(() => {
-          setResponse(undefined);
           router.refresh();
         }, 2000);
       }
       return;
     }
     const res = await axios.post(`/api/account/login`, { email, password });
-    console.log(res);
+    setResponse(res.data);
     if (res.data.success) {
       router.push(`/`);
     }
@@ -90,7 +94,11 @@ export default function Login() {
       setResetPass(false);
     }
   };
-  console.log(!isValid, loading);
+  const LoginEvent = () => {
+    if (LoginButtonEvent.current) {
+      LoginButtonEvent.current.click();
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -109,6 +117,11 @@ export default function Login() {
                 onChange={(e) => {
                   setPassword(e.target.value);
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    LoginEvent();
+                  }
+                }}
                 name="password"
                 placeholder="Нууц үг"
               />
@@ -116,6 +129,11 @@ export default function Login() {
             {response?.code === "CODE_SUCCESSFULLY_SENT" && (
               <div>
                 <Input
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      LoginEvent();
+                    }
+                  }}
                   type="number"
                   onChange={(e) => {
                     setOTP(Number(e.target.value));
@@ -125,9 +143,16 @@ export default function Login() {
                 />
               </div>
             )}
+            {response?.code === "OTP_DIDN'T_MATCHED" && (
+              <div className=" text-red-400">Нэг удаагийн код таарсангүй!</div>
+            )}
+            {response?.code === "INCORRECT_PASSWORD" && (
+              <div className=" text-red-400">Нууц үг таарсангүй!</div>
+            )}
 
             <div>
               <Button
+                ref={LoginButtonEvent}
                 onClick={login}
                 disabled={!isValid || loading}
                 type="submit"

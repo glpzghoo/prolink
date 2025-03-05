@@ -128,22 +128,10 @@ export default function Login() {
     const { password, ...withoutPass } = form;
     localStorage.setItem("form", JSON.stringify(withoutPass));
   };
-  // const currentYear = new Date().getFullYear();
-  // const birthdateYear = form.birthday.getFullYear();
-  // const currentMonth = new Date().getMonth();
-  // const birthdateMonth = form.birthday.getMonth();
-  // const currentDay = new Date().getDate();
-  // const birthdateDay = form.birthday.getDate();
-  // console.log("currentYear", currentYear);
-  // console.log("birthdateYear", birthdateYear);
-  // console.log("currentMonth", currentMonth);
-  // console.log("birthdateMonth", birthdateMonth);
-  // console.log("currentDay", currentDay);
   const sendData = async () => {
     setLoading(true);
     try {
       const res = await axios.post(`/api/account/register`, form);
-      console.log(res.data);
       setLoading(false);
       localStorage.removeItem("form");
       localStorage.removeItem("email");
@@ -207,7 +195,6 @@ export default function Login() {
       console.error(err, "server error");
     }
   };
-  console.log(progress);
   return (
     <div className="min-h-screen -mt-15">
       <div className="min-h-screen flex items-center justify-center">

@@ -44,7 +44,6 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   const { otp, id, email, password } = await req.json();
-  console.log(otp, id, email, password);
   if (!process.env.SALT) {
     return NextResponse.json({
       success: false,

@@ -7,9 +7,6 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 export async function GET() {
-  console.log(`api secret`, process.env.CLOUDINARY_API_SECRET);
-  console.log(`api key`, process.env.CLOUDINARY_API_KEY);
-  console.log(`cloudinary name`, process.env.CLOUDINARY_CLOUD_NAME);
   try {
     const timestamp = Math.round(new Date().getTime() / 1000);
     const signature = cloudinary.v2.utils.api_sign_request(

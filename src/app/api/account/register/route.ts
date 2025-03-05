@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  console.log(body);
   if (!process.env.SALT) {
     return NextResponse.json({
       success: false,
@@ -39,12 +38,10 @@ export async function POST(req: NextRequest) {
     }
 
     const { password } = body;
-    console.log(password);
     const encryptedPass = await bcrypt.hash(password, Number(process.env.SALT));
     const newUser = await prisma.user.create({
       data: { ...body, password: encryptedPass },
     });
-    console.log(newUser);
     return NextResponse.json({
       success: true,
       message: "Амжилттай бүртгэгдлээ!",

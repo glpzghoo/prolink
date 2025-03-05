@@ -13,7 +13,6 @@ export async function POST(req: NextRequest) {
     });
   }
   try {
-    console.log(email, password);
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return NextResponse.json({
