@@ -47,13 +47,13 @@ export async function POST(req: NextRequest) {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-      maxAge: 1000 * 60 * 60,
+      maxAge: 60 * 60,
     });
     response.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-      maxAge: 1000 * 60 * 60 * 4,
+      maxAge: 60 * 60 * 4,
     });
     return response;
   } catch (err) {
