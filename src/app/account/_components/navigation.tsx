@@ -18,9 +18,7 @@ export function Navigation() {
   useEffect(() => {
     const getInfo = async () => {
       setLoading(true);
-      const res = await axios.get(`/api/account`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(`/api/account`);
       setUserInfo(res.data);
       setLoading(false);
     };

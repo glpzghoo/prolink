@@ -45,8 +45,8 @@ export async function GET(req: NextRequest) {
         data: {},
       });
     }
-    const cookies = parse(req.headers.get("cookie") || "");
-    const accessToken = cookies.accessToken;
+    // const cookies = parse(req.headers.get("cookie") || "");
+    const accessToken = req.cookies.get("accessToken")?.value;
     if (!accessToken) {
       return NextResponse.json({
         success: false,

@@ -40,9 +40,12 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setResponse(undefined);
-    }, 5000);
+    let timeout: NodeJS.Timeout;
+    if (response?.code !== "CODE_SUCCESSFULLY_SENT") {
+      timeout = setTimeout(() => {
+        setResponse(undefined);
+      }, 5000);
+    }
     return () => {
       clearTimeout(timeout);
     };
