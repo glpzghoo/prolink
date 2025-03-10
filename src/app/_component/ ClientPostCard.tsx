@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CiStar } from "react-icons/ci";
 
 export function ClientCard() {
@@ -35,9 +36,11 @@ export function ClientCard() {
             Python
           </button>
         </div>
-        <button className="bg-[#108a00] p-3 text-white rounded-lg items-center">
-          Дэлгэрэнгүй
-        </button>
+        <Link href={"http://localhost:3000/client"}>
+          <button className="bg-[#108a00] p-3 text-white rounded-lg items-center">
+            Дэлгэрэнгүй
+          </button>
+        </Link>
       </div>
     </div>
   );
