@@ -1,6 +1,6 @@
 import { CiStar } from "react-icons/ci";
 
-export default function ClientCard() {
+export function ClientCard() {
   return (
     <div className="min-w-[308px] max-h-[500px] mx-auto border border-[#e9e9e9] rounded-xl ">
       <p className="text-end text-[#4c4b4b] p-6 text-sm ">$50/цагт</p>
