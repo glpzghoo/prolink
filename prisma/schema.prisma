@@ -8,13 +8,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// prisma/schema.prisma
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
 }
-
 model user {
-  id String @id @map("_id") @default(nanoid())
+  id String @id @default(nanoid())
   email String @unique
   firstName String
   lastName String
@@ -24,12 +24,17 @@ model user {
   phoneNumber String @unique
   password String
   pfp String
+  about String?
+  skill skill[] 
+  
 }
 model otp {
-  id String @id @map("_id") @default(nanoid())
+  id String @id @default(nanoid())
   otp Int @unique
   email String
 }
 model skill {
-  id String @id @default(nanoid()) @map("_id")
+  id String @id @default(nanoid())  
+  name String @unique
+  user user[] 
 }
