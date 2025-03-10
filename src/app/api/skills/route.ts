@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
         data: null,
       });
     }
-    const newSkill = await prisma.skill.create({
+    const newSkill = await prisma.skill.createMany({
       data: { name },
     });
     if (newSkill) {
