@@ -30,3 +30,6 @@ model otp {
   otp Int @unique
   email String
 }
+model skill {
+  id String @id @default(nanoid()) @map("_id")
+}
