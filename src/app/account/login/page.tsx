@@ -60,29 +60,41 @@ export default function Login() {
   }, [password]);
   const login = async () => {
     setLoading(true);
-    if (response?.code === "CODE_SUCCESSFULLY_SENT") {
-      const otpId = localStorage.getItem("otpId");
-      const res = await axios.patch(`/api/account/password-reset`, {
-        otp,
-        id: otpId,
+    try {
+      if (response?.code === "CODE_SUCCESSFULLY_SENT") {
+        const otpId = localStorage.getItem("otpId");
+        const res = await axios.patch(`/api/account/password-reset`, {
+          otp,
+          id: otpId,
+          email,
+          password,
+        });
+        setResponse(res.data);
+        setLoading(false);
+        if (res.data.code === "OTP_MATCHED") {
+          setTimeout(() => {
+            router.refresh();
+          }, 2000);
+        }
+        return;
+      }
+      const res = await axios.post(`/api/account/login`, {
         email,
-        password,
+        password1: password,
       });
       setResponse(res.data);
-      setLoading(false);
-      if (res.data.code === "OTP_MATCHED") {
-        setTimeout(() => {
-          router.refresh();
-        }, 2000);
+      if (res.data.success) {
+        if (!res.data.data.user.about || !res.data.data.user.skill) {
+          router.push(`/account/${res.data.data.user.id}`);
+        } else {
+          router.push(`/`);
+        }
       }
-      return;
+      setLoading(false);
+    } catch (err) {
+      console.error(err, "Сервэрийн асуудал");
+      setLoading(false);
     }
-    const res = await axios.post(`/api/account/login`, { email, password });
-    setResponse(res.data);
-    if (res.data.success) {
-      router.push(`/`);
-    }
-    setLoading(false);
   };
   const resetPassword = async () => {
     setResetPass(true);

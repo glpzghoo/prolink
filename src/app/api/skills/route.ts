@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
+import { NextResponse_NoCookie, NextResponse_NoEnv } from "@/lib/responses";
 import { NextRequest, NextResponse } from "next/server";
-
+import jwt from "jsonwebtoken";
 export async function POST(req: NextRequest) {
   try {
     const { name } = await req.json();
@@ -12,7 +13,16 @@ export async function POST(req: NextRequest) {
         data: null,
       });
     }
-    const newSkill = await prisma.skill.createMany({
+    const catExist = await prisma.skill.findUnique({ where: { name } });
+    if (catExist) {
+      return NextResponse.json({
+        success: false,
+        code: "SKILL_EXISTS",
+        message: "Skill аль хэдийн датабаз дээр байна!",
+        data: { catExist },
+      });
+    }
+    const newSkill = await prisma.skill.create({
       data: { name },
     });
     if (newSkill) {
@@ -35,8 +45,8 @@ export async function POST(req: NextRequest) {
 }
 export async function GET() {
   try {
-    const skills = await prisma.skill.findMany();
-    if (!skills) {
+    const allSkills = await prisma.skill.findMany();
+    if (!allSkills) {
       return NextResponse.json({
         success: false,
         code: "REQUEST_FAILED",
@@ -48,7 +58,7 @@ export async function GET() {
       success: true,
       code: "REQUEST_SUCCESS",
       message: "Хүсэлт амжилттай боллоо!",
-      data: { skills },
+      data: { skills: allSkills },
     });
   } catch (err) {
     console.error(err, "");
