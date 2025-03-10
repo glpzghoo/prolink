@@ -3,7 +3,13 @@ import ClientCard from "./_component/ ClientPostCard";
 
 export default function Home() {
   return (
-    <div className="">
+    <div className=" flex">
+      <ClientCard />
+      <ClientCard />
+      <ClientCard />
+      <ClientCard />
+      <ClientCard />
+      <ClientCard />
       <ClientCard />
     </div>
   );
