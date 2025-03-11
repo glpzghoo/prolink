@@ -40,7 +40,7 @@ export function Navigation() {
           </div>
         </Link>
         <div className=" hidden xl:flex gap-6 text-xs font-medium">
-          <Link href={`/account`}>
+          <Link href={`/freelancer`}>
             <div>Мэргэжилтэнгүүд хайх</div>
           </Link>
           <Link href={`/account`}>

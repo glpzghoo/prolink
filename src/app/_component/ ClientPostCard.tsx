@@ -3,7 +3,7 @@ import { CiStar } from "react-icons/ci";
 
 export function ClientCard() {
   return (
-    <div className="min-w-[308px] max-h-[500px] mx-auto border border-[#e9e9e9] rounded-xl ">
+    <div className="min-w-[308px] max-w-md max-h-[500px] mx-auto border border-[#e9e9e9] rounded-xl ">
       <p className="text-end text-[#4c4b4b] p-6 text-sm ">$50/цагт</p>
       <div className="flex pb-6 flex-col items-center gap-5">
         <img src="images.jpeg" className="max-w-[128px] rounded-full" />
