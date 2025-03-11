@@ -58,3 +58,15 @@ export async function POST(req: NextRequest) {
     });
   }
 }
+export async function PATCH(req: NextRequest) {
+  try {
+    const { about, skills } = await req.json();
+  } catch (err) {
+    console.error(err, "Сервер дээр асуудал гарлаа");
+    return NextResponse.json({
+      success: false,
+      code: "SOMETHING_WENt_WRONG",
+      message: "Сервер эсвэл логик дээр асуудал гарлаа",
+    });
+  }
+}
