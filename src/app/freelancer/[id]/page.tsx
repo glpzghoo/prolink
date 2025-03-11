@@ -2,6 +2,7 @@
 import Loading from "@/app/_component/loading";
 import { review, skill, user } from "@prisma/client";
 import axios from "axios";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 type CustomUser = user & {
@@ -12,18 +13,14 @@ type CustomUser = user & {
 export default function Client() {
   const [user, setUser] = useState<CustomUser>();
   const [loading, setLoading] = useState(true);
-
   const params = useParams();
   const { id } = params;
-  console.log(id);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res1 = await axios.get(`/api/account/userInfo?id=${id}`);
+        const res1 = await axios.get(`/api/account/user?id=${id}`);
         const res2 = await axios.post(`/api/account/profileViews?id=${id}`);
-        console.log(res2.data.data);
         setUser(res1.data.data.user);
-        console.log({ res1, res2 });
         setLoading(false);
       } catch (err) {
         console.error(err, "Сервертэй холбогдож чадсангүй!");
@@ -33,16 +30,18 @@ export default function Client() {
     fetchData();
   }, []);
   const avgRating = (): number => {
-    const total = user?.reviewer.reduce((prev, acc) => {
-      return prev + acc.rating;
-    }, 0);
-    if (typeof total === "number" && user?.reviewer) {
-      return total / user?.reviewer.length;
-    } else {
-      return 0;
-    }
+    if (!user?.reviewer || user.reviewee.length === 0) return 0;
+
+    const total = user.reviewee.reduce((prev, acc) => prev + acc.rating, 0);
+    return total / user.reviewee.length;
   };
-  console.log(avgRating());
+  const copyURL = () => {
+    navigator.clipboard
+      .writeText(window.location.href)
+      .then(() => console.log("URL copied!"))
+      .catch((err) => console.error("Failed to copy: ", err));
+  };
+
   return (
     <>
       {/* Үндсэн Background */}
@@ -56,11 +55,16 @@ export default function Client() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
                 {/* Профайл зураг */}
-                <img
-                  src="images.jpeg"
-                  alt="Profile"
-                  className="rounded-full w-14 h-14 object-cover"
-                />
+                {user.pfp ? (
+                  <Image src={`${user.pfp}`} width={56} height={56} alt="pfp" />
+                ) : (
+                  <img
+                    src="images.jpeg"
+                    alt="Profile"
+                    className="rounded-full w-14 h-14 object-cover"
+                  />
+                )}
+
                 <div>
                   {/* Нэр, Байршил */}
                   <div className="flex items-center space-x-2">
@@ -79,7 +83,10 @@ export default function Client() {
               </div>
 
               {/* Хуваалцах товч */}
-              <button className="text-gray-600 hover:text-gray-800 text-sm border border-gray-300 rounded px-3 py-2">
+              <button
+                onClick={copyURL}
+                className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
+              >
                 Хуваалцах
               </button>
             </div>
@@ -99,7 +106,7 @@ export default function Client() {
                 <div>-</div>
                 <div>{user.reviewee.length} удаа үнэлгээ авсан байна.</div>
                 <div>-</div>
-                <div>Дундаж үнэлгээ: </div>
+                <div>Дундаж үнэлгээ: {avgRating()}/100</div>
               </div>
             </div>
             {/* /Профайл харах, статистик */}
@@ -108,11 +115,11 @@ export default function Client() {
             <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-between">
               <div className="mb-2 md:mb-0">
                 <p className="font-semibold text-green-800">
-                  Andriy S.-тэй хамтран ажиллахад бэлэн үү?
+                  {user.firstName} -тэй хамтран ажиллахад бэлэн үү?
                 </p>
               </div>
               <div className="flex items-center space-x-3">
-                <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm">
+                <button className="bg-green-600 cursor-pointer text-white px-4 py-2 rounded hover:bg-green-700 text-sm">
                   Ажилд урь
                 </button>
               </div>
@@ -122,18 +129,15 @@ export default function Client() {
             {/* Профайл ерөнхий мэдээлэл */}
             <div className="mt-6 pb-4 border-b">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Back-End хөгжүүлэгч</h2>
-                <p className="text-gray-600 text-sm">40.00$/цаг</p>
+                <h2 className="text-lg font-semibold">{user.skill[0].name}</h2>
+                <p className="text-gray-600 text-sm">
+                  {user.salary}/{user.salaryType === "ONETIME" ? `цаг` : `сар`}
+                </p>
               </div>
-              <p className="text-gray-700 mt-2">
-                Орчин үеийн технологи ашиглан шинэлэг, үр дүнтэй шийдлүүдийг
-                бүтээдэг туршлагатай back-end хөгжүүлэгч. Микросервис, SQL болон
-                NoSQL мэдээллийн сан, үүлэн технологи, тасралтгүй интеграцчлалын
-                чиглэлээр ажиллаж байсан туршлагатай.
-              </p>
+              <p className="text-gray-700 mt-2">{user.about}</p>
 
               {/* Ашигладаг технологиуд */}
-              <div className="mt-4">
+              {/* <div className="mt-4">
                 <h3 className="font-semibold text-md">
                   Ашигладаг технологиуд:
                 </h3>
@@ -143,7 +147,7 @@ export default function Client() {
                   <li>MySQL, MongoDB, AWS DynamoDB</li>
                   <li>Amazon Web Services</li>
                 </ul>
-              </div>
+              </div> */}
             </div>
             {/* /Профайл ерөнхий мэдээлэл */}
 
@@ -152,43 +156,40 @@ export default function Client() {
               <h3 className="font-semibold text-md">Үнэлгээ</h3>
               <div className="mt-2">
                 {/* Үнэлгээний зурвасын жишээ (placeholder) */}
-                <img
-                  src="https://via.placeholder.com/158x24"
-                  alt="Үнэлгээний зурвас"
-                />
+                {user.reviewer.length > 0 ? (
+                  <Image
+                    width={40}
+                    height={40}
+                    src="https://res.cloudinary.com/de1g2bwml/image/upload/v1741700987/31747695_s4k6_pdjv_220810_gfnpo2.jpg"
+                    alt="Үнэлгээний зурвас"
+                  />
+                ) : (
+                  <div>Үнэлгээ одоогоор алга байна!</div>
+                )}
               </div>
             </div>
 
             {/* Ажлын түүх */}
-            <div className="mt-4 pb-4 border-b">
+            {/* <div className="mt-4 pb-4 border-b">
               <h3 className="font-semibold text-md mb-1">Ажлын түүх</h3>
               <p className="text-gray-700 text-sm">
                 Дууссан ажлууд (9) | Явагдаж буй ажлууд (1)
               </p>
-            </div>
+            </div> */}
 
             {/* Ур чадвар */}
             <div className="mt-4 pb-4 border-b">
               <h3 className="font-semibold text-md mb-2">Ур чадвар</h3>
               <div className="flex flex-wrap gap-2">
-                <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm">
-                  Java
-                </span>
-                <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm">
-                  Kotlin
-                </span>
-                <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm">
-                  Spring
-                </span>
-                <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm">
-                  Node.js
-                </span>
-                <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm">
-                  TypeScript
-                </span>
-                <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm">
-                  MongoDB
-                </span>
+                {user.skill &&
+                  user.skill.map((skill) => (
+                    <span
+                      key={skill.id}
+                      className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm"
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
               </div>
             </div>
 

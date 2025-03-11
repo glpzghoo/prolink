@@ -42,6 +42,7 @@ model skill {
 model review {
   id         String @id @default(nanoid())
   rating     Int
+  message String @default("This guy is a dumbass!")
   reviewerId String
   revieweeId String
   reviewee   user   @relation("reviewee_", fields: [revieweeId], references: [id])

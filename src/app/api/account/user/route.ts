@@ -21,8 +21,9 @@ export async function GET(req: NextRequest) {
         null
       );
     }
+    const { password, ...otherInfo } = user;
     return CustomNextResponse(true, "REQUEST_SUCCESS", "Хүсэлт амжилттай", {
-      user,
+      user: otherInfo,
     });
   } catch (err) {
     console.log(err, "Сервер эсвэл логик дээр асуудал гарлаа");
