@@ -26,6 +26,8 @@ model user {
   pfp String
   about String?
   skill skill[] 
+  reviewer review[] @relation("reviewer_")
+  reviewee review[] @relation("reviewee_")
   
 }
 model otp {
@@ -37,4 +39,11 @@ model skill {
   id String @id @default(nanoid())  
   name String @unique
   user user[] 
+}
+model review {
+  id String @id @default(nanoid())
+  reviewer user @relation("reviewer_",fields: [reviewerId], references: [id])
+  reviewerId String
+  reviewee user @relation("reviewee_",fields: [revieweeId], references: [id])
+  revieweeId String
 }
