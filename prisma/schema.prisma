@@ -23,6 +23,8 @@ model user {
   companyName String
   phoneNumber String @unique
   password String
+  salary Int @default(10000)
+  salaryType String @default("ONETIME")
   pfp String
   about String?
   skill skill[] 
