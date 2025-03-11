@@ -4,11 +4,15 @@ import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
+  console.log(id, "from backend");
   if (!id) {
     return CustomNextResponse(false, "ID_NOT_PROVIDED", "Буруу ID", null);
   }
   try {
-    const user = await prisma.user.findUnique({ where: { id } });
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: { skill: true, reviewee: true, reviewer: true },
+    });
     if (!user) {
       return CustomNextResponse(
         false,

@@ -1,51 +1,49 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
-// prisma/schema.prisma
 datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
+
 model user {
-  id String @id @default(nanoid())
-  email String @unique
-  firstName String
-  lastName String
-  birthday DateTime
-  role String
-  companyName String
-  phoneNumber String @unique
-  password String
-  salary Int @default(10000)
-  salaryType String @default("ONETIME")
-  pfp String
-  about String?
-  skill skill[] 
-  reviewer review[] @relation("reviewer_")
-  reviewee review[] @relation("reviewee_")
-  
+  id           String   @id @unique @default(nanoid())
+  email        String   @unique
+  firstName    String
+  lastName     String
+  birthday     DateTime
+  role         String
+  companyName  String
+  phoneNumber  String   @unique
+  password     String
+  salary       Int      @default(10000)
+  salaryType   String   @default("ONETIME")
+  pfp          String
+  about        String?
+  profileViews Int      @default(0)
+  reviewee     review[] @relation("reviewee_")
+  reviewer     review[] @relation("reviewer_")
+  skill        skill[]  @relation("skillTouser")
 }
+
 model otp {
-  id String @id @default(nanoid())
-  otp Int @unique
+  id    String @id @default(nanoid())
+  otp   Int    @unique
   email String
 }
+
 model skill {
-  id String @id @default(nanoid())  
+  id   String @id @default(nanoid())
   name String @unique
-  user user[] 
+  user user[] @relation("skillTouser")
 }
+
 model review {
-  id String @id @default(nanoid())
-  reviewer user @relation("reviewer_",fields: [reviewerId], references: [id])
+  id         String @id @default(nanoid())
+  rating     Int
   reviewerId String
-  reviewee user @relation("reviewee_",fields: [revieweeId], references: [id])
   revieweeId String
+  reviewee   user   @relation("reviewee_", fields: [revieweeId], references: [id])
+  reviewer   user   @relation("reviewer_", fields: [reviewerId], references: [id])
 }
