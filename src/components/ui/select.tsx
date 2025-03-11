@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-"use client";
-
-import * as React from "react";
-import * as SelectPrimitive from "@radix-ui/react-select";
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-
-import { cn } from "@/lib/utils";
-=======
 "use client"
 
 import * as React from "react"
@@ -14,36 +5,23 @@ import * as SelectPrimitive from "@radix-ui/react-select"
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
->>>>>>> 6-explore-page
 
 function Select({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Root>) {
-<<<<<<< HEAD
-  return <SelectPrimitive.Root data-slot="select" {...props} />;
-=======
   return <SelectPrimitive.Root data-slot="select" {...props} />
->>>>>>> 6-explore-page
 }
 
 function SelectGroup({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Group>) {
-<<<<<<< HEAD
-  return <SelectPrimitive.Group data-slot="select-group" {...props} />;
-=======
   return <SelectPrimitive.Group data-slot="select-group" {...props} />
->>>>>>> 6-explore-page
 }
 
 function SelectValue({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Value>) {
-<<<<<<< HEAD
-  return <SelectPrimitive.Value data-slot="select-value" {...props} />;
-=======
   return <SelectPrimitive.Value data-slot="select-value" {...props} />
->>>>>>> 6-explore-page
 }
 
 function SelectTrigger({
@@ -65,11 +43,7 @@ function SelectTrigger({
         <ChevronDownIcon className="size-4 opacity-50" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
-<<<<<<< HEAD
-  );
-=======
   )
->>>>>>> 6-explore-page
 }
 
 function SelectContent({
@@ -104,11 +78,7 @@ function SelectContent({
         <SelectScrollDownButton />
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
-<<<<<<< HEAD
-  );
-=======
   )
->>>>>>> 6-explore-page
 }
 
 function SelectLabel({
@@ -121,11 +91,7 @@ function SelectLabel({
       className={cn("px-2 py-1.5 text-sm font-medium", className)}
       {...props}
     />
-<<<<<<< HEAD
-  );
-=======
   )
->>>>>>> 6-explore-page
 }
 
 function SelectItem({
@@ -137,11 +103,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-<<<<<<< HEAD
-        "focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
-=======
         "focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
->>>>>>> 6-explore-page
         className
       )}
       {...props}
@@ -153,11 +115,7 @@ function SelectItem({
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
-<<<<<<< HEAD
-  );
-=======
   )
->>>>>>> 6-explore-page
 }
 
 function SelectSeparator({
@@ -170,11 +128,7 @@ function SelectSeparator({
       className={cn("bg-border pointer-events-none -mx-1 my-1 h-px", className)}
       {...props}
     />
-<<<<<<< HEAD
-  );
-=======
   )
->>>>>>> 6-explore-page
 }
 
 function SelectScrollUpButton({
@@ -192,11 +146,7 @@ function SelectScrollUpButton({
     >
       <ChevronUpIcon className="size-4" />
     </SelectPrimitive.ScrollUpButton>
-<<<<<<< HEAD
-  );
-=======
   )
->>>>>>> 6-explore-page
 }
 
 function SelectScrollDownButton({
@@ -214,11 +164,7 @@ function SelectScrollDownButton({
     >
       <ChevronDownIcon className="size-4" />
     </SelectPrimitive.ScrollDownButton>
-<<<<<<< HEAD
-  );
-=======
   )
->>>>>>> 6-explore-page
 }
 
 export {
@@ -232,8 +178,4 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-<<<<<<< HEAD
-};
-=======
 }
->>>>>>> 6-explore-page
