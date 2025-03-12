@@ -422,6 +422,7 @@ export default function Login() {
                     <select
                       onChange={onChange}
                       name="salaryType"
+                      defaultValue={form.salaryType}
                       className=" border w-20"
                     >
                       <option value={`HOUR`}>Цаг</option>
