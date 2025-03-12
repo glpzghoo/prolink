@@ -8,7 +8,16 @@ export async function GET(req: NextRequest) {
     return CustomNextResponse(false, "ID_NOT_PROVIDED", "Буруу ID", null);
   }
   try {
-    const user = await prisma.user.findUnique({ where: { id } });
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: {
+        skill: {
+          include: { user: true },
+        },
+        reviewee: { include: { reviewee: true } },
+        reviewer: true,
+      },
+    });
     if (!user) {
       return CustomNextResponse(
         false,
@@ -17,8 +26,9 @@ export async function GET(req: NextRequest) {
         null
       );
     }
+    const { password, ...otherInfo } = user;
     return CustomNextResponse(true, "REQUEST_SUCCESS", "Хүсэлт амжилттай", {
-      user,
+      user: otherInfo,
     });
   } catch (err) {
     console.log(err, "Сервер эсвэл логик дээр асуудал гарлаа");
