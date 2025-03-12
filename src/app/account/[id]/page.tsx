@@ -35,7 +35,7 @@ export default function App() {
     const fetchData = async () => {
       try {
         const res1 = await axios.get(`/api/skills`);
-        const res2 = await axios.get(`/api/account/userInfo?id=${id}`);
+        const res2 = await axios.get(`/api/account/user?id=${id}`);
         setSkills(res1.data.data.skills);
         setUserInfo(res2.data);
 
@@ -162,7 +162,7 @@ export default function App() {
                   )}
                 </Button>
                 {response && (
-                  <>
+                  <div className="flex justify-around">
                     <div
                       className={`${
                         response.success ? ` text-green-400` : `text-red-400`
@@ -170,8 +170,8 @@ export default function App() {
                     >
                       <div>{response.message}</div>
                     </div>
-                    <Link href={`/`}>Энд</Link> дарна уу!
-                  </>
+                    <Link href={`/`}>Энд дарна уу!</Link>
+                  </div>
                 )}
               </div>
             </div>
