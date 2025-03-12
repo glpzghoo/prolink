@@ -16,6 +16,9 @@ export async function GET(req: NextRequest) {
         },
         reviewee: { include: { reviewee: true } },
         reviewer: true,
+        featuredSkills: {
+          include: { skill: true },
+        },
       },
     });
     if (!user) {
