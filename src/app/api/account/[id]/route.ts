@@ -29,7 +29,10 @@ export async function POST(req: NextRequest) {
       id: string;
     };
 
-    const user = await prisma.user.findUnique({ where: { id: verify.id } });
+    const user = await prisma.user.findUnique({
+      where: { id: verify.id },
+      omit: { password: true },
+    });
     if (!user) {
       return CustomNextResponse(
         false,
@@ -47,6 +50,7 @@ export async function POST(req: NextRequest) {
           },
         },
         include: { skill: true },
+        omit: { password: true },
       });
       if (updateUser) {
         return CustomNextResponse(true, "SUCCESS", "Хүсэлт амжилттай!", {
@@ -61,6 +65,7 @@ export async function POST(req: NextRequest) {
           about,
         },
         include: { skill: true },
+        omit: { password: true },
       });
       if (updateUser) {
         return CustomNextResponse(true, "SUCCESS", "Хүсэлт амжилттай!", {
@@ -77,6 +82,7 @@ export async function POST(req: NextRequest) {
         },
       },
       include: { skill: true },
+      omit: { password: true },
     });
     if (updateUser) {
       return CustomNextResponse(true, "SUCCESS", "Хүсэлт амжилттай! ", {

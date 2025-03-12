@@ -12,14 +12,17 @@ export async function GET(req: NextRequest) {
       where: { id },
       include: {
         skill: {
-          include: { user: true },
+          include: {
+            user: {
+              omit: { password: true },
+            },
+          },
         },
         reviewee: { include: { reviewee: true } },
         reviewer: true,
-        featuredSkills: {
-          include: { skill: true },
-        },
+        featuredSkills: true,
       },
+      omit: { password: true },
     });
     if (!user) {
       return CustomNextResponse(
@@ -29,9 +32,8 @@ export async function GET(req: NextRequest) {
         null
       );
     }
-    const { password, ...otherInfo } = user;
     return CustomNextResponse(true, "REQUEST_SUCCESS", "Хүсэлт амжилттай", {
-      user: otherInfo,
+      user,
     });
   } catch (err) {
     console.log(err, "Сервер эсвэл логик дээр асуудал гарлаа");

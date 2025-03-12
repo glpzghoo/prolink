@@ -83,7 +83,12 @@ export async function GET(req: NextRequest) {
       where: { id: verify.id },
       include: {
         featuredSkills: {
-          include: { user: true, skill: true },
+          include: {
+            user: {
+              omit: { password: true },
+            },
+            skill: true,
+          },
         },
       },
     });
