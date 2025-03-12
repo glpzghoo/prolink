@@ -42,6 +42,7 @@ export default function App() {
         setLoading(false);
       } catch (err) {
         console.error("Хүсэлт илгээгээгүй");
+        setLoading(false);
       }
     };
     fetchData();

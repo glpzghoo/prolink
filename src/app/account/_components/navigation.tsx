@@ -67,23 +67,28 @@ export function Navigation() {
           ) : (
             <div>
               {response?.code === "SUCCESS" ? (
-                <div className="flex items-center gap-4">
-                  <div className="rounded-full overflow-hidden">
-                    <Image
-                      src={`${response.data?.informations?.pfp}`}
-                      width={30}
-                      height={30}
-                      alt="pfp"
-                    />
-                  </div>
-                  {response.data?.informations?.companyName ? (
-                    <div>{response.data.informations.companyName}</div>
-                  ) : (
-                    <div className=" whitespace-nowrap">
-                      {response.data?.informations?.lastName}{" "}
-                      {response.data?.informations?.firstName}
+                <div className="flex items-center gap-4 whitespace-nowrap">
+                  <Link
+                    className="flex items-center gap-4 whitespace-nowrap"
+                    href={`/freelancer/${response.data?.informations?.id}`}
+                  >
+                    <div className="rounded-full overflow-hidden">
+                      <Image
+                        src={`${response.data?.informations?.pfp}`}
+                        width={30}
+                        height={30}
+                        alt="pfp"
+                      />
                     </div>
-                  )}
+                    {response.data?.informations?.companyName ? (
+                      <div>{response.data.informations.companyName}</div>
+                    ) : (
+                      <div className=" whitespace-nowrap">
+                        {response.data?.informations?.lastName}{" "}
+                        {response.data?.informations?.firstName}
+                      </div>
+                    )}
+                  </Link>
                   <button
                     onClick={logout}
                     className="  p-0 bg-background hover:bg-secondary cursor-pointer"

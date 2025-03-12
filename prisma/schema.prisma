@@ -25,6 +25,7 @@ model user {
   reviewee     review[] @relation("reviewee_")
   reviewer     review[] @relation("reviewer_")
   skill        skill[]  @relation("skillTouser")
+  featuredSkills featuredSkills[]
 }
 
 model otp {
@@ -37,8 +38,17 @@ model skill {
   id   String @id @default(nanoid())
   name String @unique
   user user[] @relation("skillTouser")
+  featuredSkills featuredSkills[]
+
 }
 
+model featuredSkills {
+  id String @id @default(nanoid())
+  user user @relation(fields: [userId], references: [id])
+  userId String
+  skill skill @relation(fields: [skillId], references: [id])
+  skillId String
+}
 model review {
   id         String @id @default(nanoid())
   rating     Int

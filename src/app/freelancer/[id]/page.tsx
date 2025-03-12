@@ -8,6 +8,7 @@ import Rating from "@mui/material/Rating";
 import { review, skill, user } from "@prisma/client";
 import axios from "axios";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import { ImSpinner10 } from "react-icons/im";
@@ -41,6 +42,7 @@ export default function Client() {
     return <div>NOPE</div>;
   }
   const [ratingForm, setRatingForm] = useState({ rating: 0 });
+  const [owner, setOwner] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -57,6 +59,16 @@ export default function Client() {
     };
     fetchData();
   }, [change]);
+  useEffect(() => {
+    const getInfo = async () => {
+      const res = await axios.get(`/api/account`);
+
+      if (res.data.data?.informations?.id === id) {
+        setOwner(true);
+      }
+    };
+    getInfo();
+  }, []);
   useEffect(() => {
     const result = ratingSchema.safeParse(ratingForm);
     if (result.success) {
@@ -139,12 +151,22 @@ export default function Client() {
               </div>
 
               {/* Хуваалцах товч */}
-              <button
-                onClick={copyURL}
-                className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
-              >
-                Хуваалцах
-              </button>
+              <div className="flex gap-1">
+                {owner && (
+                  <Link href={`/account/settings`}>
+                    <button className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2">
+                      Мэдээлэл өөрчлөх
+                    </button>
+                  </Link>
+                )}
+
+                <button
+                  onClick={copyURL}
+                  className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
+                >
+                  Хуваалцах
+                </button>
+              </div>
             </div>
             {/* /Дээд хэсэг */}
 
@@ -346,7 +368,7 @@ export default function Client() {
             <div className="w-full">
               <div className=" flex gap-14 whitespace-nowrap overflow-scroll">
                 {user.skill.map((skill) => (
-                  <div>
+                  <div key={skill.id}>
                     <h4 className="font-semibold mb-2">{skill.name}</h4>
                     <ul className="space-y-1">
                       {skill.user.map((skil) => (
