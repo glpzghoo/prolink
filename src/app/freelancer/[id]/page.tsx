@@ -228,8 +228,7 @@ export default function Client() {
                     Миний тухай
                   </h2>
                   <p className="text-gray-600 text-sm">
-                    {user.salary}/
-                    {user.salaryType === "ONETIME" ? `цаг` : `сар`}
+                    {user.salary}/{user.salaryType === "HOUR" ? `цаг` : `сар`}
                   </p>
                 </div>
                 <p className="text-gray-700 mt-2">{user.about}</p>
