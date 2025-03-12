@@ -1,21 +1,27 @@
 "use client";
 import Loading from "@/app/_component/loading";
+import MailDetail from "@/app/account/_components/maildetailbutton";
 import { Textarea } from "@/components/ui/textarea";
 import { responseData } from "@/lib/types";
-import { Box, Button, Rating, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import Rating from "@mui/material/Rating";
 import { review, skill, user } from "@prisma/client";
 import axios from "axios";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
+import { ImSpinner10 } from "react-icons/im";
 import z from "zod";
 type CustomUser = user & {
-  skill: skill[];
+  skill: CustomSkill[];
   reviewee: CustomReviewee[];
   reviewer: review[];
 };
 type CustomReviewee = review & {
   reviewee: CustomUser;
+};
+type CustomSkill = skill & {
+  user: CustomUser[];
 };
 const ratingSchema = z.object({
   message: z.string().min(5),
@@ -24,13 +30,15 @@ const ratingSchema = z.object({
 export default function Client() {
   const [user, setUser] = useState<CustomUser>();
   const [loading, setLoading] = useState(true);
+  const [loadingAddingReview, setloadingAddingReview] = useState(false);
+  const [change, setChange] = useState(false);
   const [isValidRatingForm, setisValidRatingForm] = useState(true);
   const [ratingResponse, setratingResponse] = useState<responseData>();
 
   const params = useParams();
   const { id } = params as { id: string };
   if (!id) {
-    return <div>user not found</div>;
+    return <div>NOPE</div>;
   }
   const [ratingForm, setRatingForm] = useState({ rating: 0 });
   useEffect(() => {
@@ -38,7 +46,9 @@ export default function Client() {
       try {
         const res1 = await axios.get(`/api/account/user?id=${id}`);
         const res2 = await axios.post(`/api/account/profileViews?id=${id}`);
-        setUser(res1.data.data.user);
+        if (res1.data.success) {
+          setUser(res1.data.data.user);
+        }
         setLoading(false);
       } catch (err) {
         console.error(err, "Сервертэй холбогдож чадсангүй!");
@@ -46,7 +56,7 @@ export default function Client() {
       }
     };
     fetchData();
-  }, []);
+  }, [change]);
   useEffect(() => {
     const result = ratingSchema.safeParse(ratingForm);
     if (result.success) {
@@ -59,7 +69,8 @@ export default function Client() {
     if (!user?.reviewer || user.reviewee.length === 0) return 0;
 
     const total = user.reviewee.reduce((prev, acc) => prev + acc.rating, 0);
-    return total / user.reviewee.length;
+    const fixed = total / user.reviewee.length / 20;
+    return Number(fixed.toFixed(1));
   };
   const copyURL = () => {
     navigator.clipboard
@@ -70,16 +81,23 @@ export default function Client() {
   console.log(isValidRatingForm);
   const sendRating = async () => {
     try {
+      setloadingAddingReview(true);
       const res = await axios.post(`/api/review`, {
         ...ratingForm,
         revieweeId: id,
       });
       setratingResponse(res.data);
+      if (res.data.success) {
+        setChange(!change);
+      }
+      setloadingAddingReview(false);
+
       console.log(res.data);
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     }
   };
+  console.log(change);
   return (
     <>
       {/* Үндсэн Background */}
@@ -138,13 +156,21 @@ export default function Client() {
               {/* Статистик */}
               <div className="mt-2 md:mt-0 flex items-center space-x-4 text-sm text-gray-500">
                 <div>
-                  Энэ хүний profile -ыг нийт {user.profileViews} хүн харсан
-                  байна!
+                  Энэ хүний profile -ыг нийт{" "}
+                  <span className=" font-bold">{user.profileViews}</span> хүн
+                  харсан байна!
                 </div>
                 <div>-</div>
-                <div>{user.reviewee.length} удаа үнэлгээ авсан байна.</div>
+                <div>
+                  <span className=" font-bold">{user.reviewee.length} </span>
+                  удаа үнэлгээ авсан байна.
+                </div>
                 <div>-</div>
-                <div>Дундаж үнэлгээ: {avgRating()}/100</div>
+                <div>
+                  Дундаж үнэлгээ:
+                  <span className=" font-bold"> {avgRating()} </span>
+                  /5
+                </div>
               </div>
             </div>
             {/* /Профайл харах, статистик */}
@@ -157,9 +183,7 @@ export default function Client() {
                 </p>
               </div>
               <div className="flex items-center space-x-3">
-                <button className="bg-green-600 cursor-pointer text-white px-4 py-2 rounded hover:bg-green-700 text-sm">
-                  Ажилд урь
-                </button>
+                <MailDetail id={id} />
               </div>
             </div>
             {/* /Ажилд авах уриалга */}
@@ -192,7 +216,7 @@ export default function Client() {
             {/* Үнэлгээ (жишээ) */}
             <div className="mt-4 border-b pb-4">
               <h3 className="font-semibold text-md">Үнэлгээ</h3>
-              <div className="mt-2 flex gap-3">
+              <div className="mt-2 flex gap-3 whitespace-nowrap overflow-scroll">
                 {/* Үнэлгээний зурвасын жишээ (placeholder) */}
                 {user.reviewee.length > 0 ? (
                   user.reviewee.map((reviewe) => (
@@ -213,7 +237,7 @@ export default function Client() {
                             precision={0.5}
                             readOnly
                           />
-                          <div>{reviewe.rating / 10} / 10</div>
+                          <div>{reviewe.rating / 20} / 5</div>
                         </div>
                       </div>
                       <div>{reviewe.message}</div>
@@ -271,11 +295,22 @@ export default function Client() {
               <div className="flex items-center gap-2">
                 <Button
                   onClick={sendRating}
-                  disabled={!isValidRatingForm}
-                  className="text-[#129600]"
+                  disabled={!isValidRatingForm || loadingAddingReview}
+                  className={` ${
+                    loadingAddingReview ? ` text-accent` : `text-[#129600]`
+                  }`}
                   type="submit"
                 >
-                  Илгээх
+                  {loadingAddingReview ? (
+                    <div className="flex items-center gap-2">
+                      <div>
+                        <ImSpinner10 className=" animate-spin" />
+                      </div>
+                      <div>Үнэлгээг оруулж байна!</div>
+                    </div>
+                  ) : (
+                    `Илгээх`
+                  )}
                 </Button>
                 {ratingResponse && (
                   <div>
@@ -306,77 +341,31 @@ export default function Client() {
             </div>
 
             {/* Доод линкүүдийн хэсэг */}
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-700">
-              {/* 1-р багана: Бусад чадварлаг хүмүүсийг хайх */}
-              <div>
-                <h4 className="font-semibold mb-2">
-                  Бусад чадварлаг хүмүүсийг хайх
-                </h4>
-                <ul className="space-y-1">
-                  <li>
-                    <a href="#" className="hover:underline">
-                      Өгүүлэл & Блог бичигчид
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:underline">
-                      Гар утасны апп хөгжүүлэгчид
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:underline">
-                      Android апп хөгжүүлэх үйлчилгээ
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:underline">
-                      Android систем хөгжүүлэгчид
-                    </a>
-                  </li>
-                </ul>
-              </div>
 
-              {/* 2-р багана: Төстэй фрилансеруудыг үзэх */}
-              <div>
-                <h4 className="font-semibold mb-2">
-                  Төстэй фрилансеруудыг үзэх
-                </h4>
-                <ul className="space-y-1">
-                  <li>
-                    <a href="#" className="hover:underline">
-                      Amazon KDP хөгжүүлэгчид
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:underline">
-                      Ном & eBook-ийн нүүрний дизайн үйлчилгээ
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:underline">
-                      Лого зохиох үйлчилгээ
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-              {/* 3-р багана: Холбогдох төслүүдийг үзэж худалдан авах */}
-              <div>
-                <h4 className="font-semibold mb-2">
-                  Холбогдох төслүүдийг үзэж худалдан авах
-                </h4>
-                <ul className="space-y-1">
-                  <li>
-                    <a href="#" className="hover:underline">
-                      Android & iOS апп хөгжүүлэх үйлчилгээ
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:underline">
-                      Бизнес болон брэндийн бусад дизайн үйлчилгээ
-                    </a>
-                  </li>
-                </ul>
+            {/* 1-р багана: Бусад чадварлаг хүмүүсийг хайх */}
+            <div className="w-full">
+              <div className=" flex gap-14 whitespace-nowrap overflow-scroll">
+                {user.skill.map((skill) => (
+                  <div>
+                    <h4 className="font-semibold mb-2">{skill.name}</h4>
+                    <ul className="space-y-1">
+                      {skill.user.map((skil) => (
+                        <li className="" key={skil.id}>
+                          <a href="#" className="hover:underline">
+                            {skil.companyName ? (
+                              skil.companyName
+                            ) : (
+                              <div>
+                                {skil.lastName} {` `}
+                                {skil.firstName}
+                              </div>
+                            )}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
             {/* /Доод линкүүдийн хэсэг */}

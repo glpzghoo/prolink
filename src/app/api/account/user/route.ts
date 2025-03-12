@@ -4,7 +4,6 @@ import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
-  console.log(id, "from backend");
   if (!id) {
     return CustomNextResponse(false, "ID_NOT_PROVIDED", "Буруу ID", null);
   }
@@ -12,7 +11,9 @@ export async function GET(req: NextRequest) {
     const user = await prisma.user.findUnique({
       where: { id },
       include: {
-        skill: true,
+        skill: {
+          include: { user: true },
+        },
         reviewee: { include: { reviewee: true } },
         reviewer: true,
       },
