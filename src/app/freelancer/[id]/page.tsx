@@ -1,20 +1,38 @@
 "use client";
 import Loading from "@/app/_component/loading";
+import { Textarea } from "@/components/ui/textarea";
+import { responseData } from "@/lib/types";
+import { Box, Button, Rating, Typography } from "@mui/material";
 import { review, skill, user } from "@prisma/client";
 import axios from "axios";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import z from "zod";
 type CustomUser = user & {
   skill: skill[];
-  reviewee: review[];
+  reviewee: CustomReviewee[];
   reviewer: review[];
 };
+type CustomReviewee = review & {
+  reviewee: CustomUser;
+};
+const ratingSchema = z.object({
+  message: z.string().min(5),
+  rating: z.number().min(1),
+});
 export default function Client() {
   const [user, setUser] = useState<CustomUser>();
   const [loading, setLoading] = useState(true);
+  const [isValidRatingForm, setisValidRatingForm] = useState(true);
+  const [ratingResponse, setratingResponse] = useState<responseData>();
+
   const params = useParams();
-  const { id } = params;
+  const { id } = params as { id: string };
+  if (!id) {
+    return <div>user not found</div>;
+  }
+  const [ratingForm, setRatingForm] = useState({ rating: 0 });
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -29,6 +47,14 @@ export default function Client() {
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    const result = ratingSchema.safeParse(ratingForm);
+    if (result.success) {
+      setisValidRatingForm(true);
+    } else {
+      setisValidRatingForm(false);
+    }
+  }, [ratingForm]);
   const avgRating = (): number => {
     if (!user?.reviewer || user.reviewee.length === 0) return 0;
 
@@ -41,7 +67,19 @@ export default function Client() {
       .then(() => console.log("URL copied!"))
       .catch((err) => console.error("Failed to copy: ", err));
   };
-
+  console.log(isValidRatingForm);
+  const sendRating = async () => {
+    try {
+      const res = await axios.post(`/api/review`, {
+        ...ratingForm,
+        revieweeId: id,
+      });
+      setratingResponse(res.data);
+      console.log(res.data);
+    } catch (err) {
+      console.error(err, "Сервертэй холбогдож чадсангүй!");
+    }
+  };
   return (
     <>
       {/* Үндсэн Background */}
@@ -154,16 +192,40 @@ export default function Client() {
             {/* Үнэлгээ (жишээ) */}
             <div className="mt-4 border-b pb-4">
               <h3 className="font-semibold text-md">Үнэлгээ</h3>
-              <div className="mt-2">
+              <div className="mt-2 flex gap-3">
                 {/* Үнэлгээний зурвасын жишээ (placeholder) */}
-                {user.reviewer.length > 0 ? (
-                  <Image
-                    width={40}
-                    height={40}
-                    src="https://res.cloudinary.com/de1g2bwml/image/upload/v1741700987/31747695_s4k6_pdjv_220810_gfnpo2.jpg"
-                    alt="Үнэлгээний зурвас"
-                  />
+                {user.reviewee.length > 0 ? (
+                  user.reviewee.map((reviewe) => (
+                    <div
+                      key={reviewe.id}
+                      className="border flex flex-col gap-10 p-6"
+                    >
+                      <div className="flex flex-col justify-center">
+                        <h1 className=" font-semibold text-xl text-[#129600]">
+                          {reviewe.reviewee.companyName
+                            ? reviewe.reviewee.companyName
+                            : reviewe.reviewee.firstName}
+                        </h1>
+                        <div className="flex gap-2">
+                          <Rating
+                            name="half-rating-read"
+                            value={reviewe.rating / 20}
+                            precision={0.5}
+                            readOnly
+                          />
+                          <div>{reviewe.rating / 10} / 10</div>
+                        </div>
+                      </div>
+                      <div>{reviewe.message}</div>
+                    </div>
+                  ))
                 ) : (
+                  // <Image
+                  //   width={40}
+                  //   height={40}
+                  //   src="https://res.cloudinary.com/de1g2bwml/image/upload/v1741700987/31747695_s4k6_pdjv_220810_gfnpo2.jpg"
+                  //   alt="Үнэлгээний зурвас"
+                  // />
                   <div>Үнэлгээ одоогоор алга байна!</div>
                 )}
               </div>
@@ -176,6 +238,56 @@ export default function Client() {
                 Дууссан ажлууд (9) | Явагдаж буй ажлууд (1)
               </p>
             </div> */}
+            <div>
+              <div>Үнэлгээ өгөх</div>
+              <div>
+                <Rating
+                  name="simple-controlled"
+                  value={ratingForm?.rating ? ratingForm?.rating / 20 : 0}
+                  onChange={(event, newValue) => {
+                    if (newValue) {
+                      setRatingForm((prev) => {
+                        return {
+                          ...prev,
+                          rating: newValue * 20,
+                        };
+                      });
+                    }
+                  }}
+                />
+              </div>
+              <div>
+                <Textarea
+                  onChange={(e) => {
+                    setRatingForm((prev) => {
+                      return {
+                        ...prev,
+                        message: e.target.value,
+                      };
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={sendRating}
+                  disabled={!isValidRatingForm}
+                  className="text-[#129600]"
+                  type="submit"
+                >
+                  Илгээх
+                </Button>
+                {ratingResponse && (
+                  <div>
+                    {ratingResponse?.success ? (
+                      <div>{ratingResponse.message}</div>
+                    ) : (
+                      <div>{ratingResponse.message}</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* Ур чадвар */}
             <div className="mt-4 pb-4 border-b">

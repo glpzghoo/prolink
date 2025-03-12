@@ -11,7 +11,11 @@ export async function GET(req: NextRequest) {
   try {
     const user = await prisma.user.findUnique({
       where: { id },
-      include: { skill: true, reviewee: true, reviewer: true },
+      include: {
+        skill: true,
+        reviewee: { include: { reviewee: true } },
+        reviewer: true,
+      },
     });
     if (!user) {
       return CustomNextResponse(
