@@ -53,12 +53,10 @@ export default function Client() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res1 = await axios.get(`/api/account/user?id=${id}`);
+        const res1 = await axios.get(`/api/freelancers/id?id=${id}`);
         const res2 = await axios.post(`/api/account/profileViews?id=${id}`);
         if (res1.data.success) {
-          if (res1.data.data.user.companyName) {
-            setUser(res1.data.data.user);
-          }
+          setUser(res1.data.data.user);
         }
         setLoading(false);
       } catch (err) {

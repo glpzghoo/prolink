@@ -12,11 +12,17 @@ export function ClientCard({ user }: { user: CustomUser }) {
   return (
     <div className=" max-w-[280px] max-h-[450px] md:mt-8 mx-auto border border-[#e9e9e9] rounded-xl ">
       <p className="text-end text-[#4c4b4b] p-6 font-bold text-sm ">
-        {user.salary} /{user.salaryType === "ONETIME" ? "цагийн " : "сарийн"}
+        {!user.companyName &&
+          `${user.salary} /${
+            user.salaryType === "HOUR" ? "цагийн " : "сарийн"
+          }`}
       </p>
       <div className="flex pb-6 flex-col items-center ">
         <img src={`${user.pfp}`} className="w-24 h-24 rounded-full" />
-        <p className="font-bold text-2xl"> {user.lastName}</p>
+        <p className="font-bold text-2xl">
+          {" "}
+          {user.companyName ? user.companyName : user.lastName}
+        </p>
         <div className="flex items-center gap-1 text-[#676767] text-sm">
           <svg
             width="18"
@@ -51,7 +57,11 @@ export function ClientCard({ user }: { user: CustomUser }) {
             ))
             .slice(0, 4)}
         </div>
-        <Link href={`/freelancer/${user.id}`}>
+        <Link
+          href={
+            user.companyName ? `/client/${user.id}` : `/freelancer/${user.id}`
+          }
+        >
           <button className="bg-[#108a00] p-3 text-white rounded-lg items-center">
             Дэлгэрэнгүй
           </button>
