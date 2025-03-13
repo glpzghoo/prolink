@@ -85,9 +85,13 @@ export default function Login() {
       setResponse(res.data);
       if (res.data.success) {
         if (!res.data.data.user.about || !res.data.data.user.skill) {
-          router.push(`/account/${res.data.data.user.id}`);
+          router.push(`/account/setting/${res.data.data.user.id}`);
         } else {
-          router.push(`/`);
+          if (!res.data.data.user.companyName) {
+            router.push(`/freelancer/${res.data.data.user.id}`);
+          } else {
+            router.push(`/client/${res.data.data.user.id}`);
+          }
         }
       }
       setLoading(false);

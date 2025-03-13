@@ -12,7 +12,6 @@ export default function MailDetail({ id }: Props) {
   const sendDetails = async () => {
     setLoading(true);
     const res = await axios.post("/api/sendMail", { id });
-    console.log(res.data);
     setLoading(false);
   };
   return (
