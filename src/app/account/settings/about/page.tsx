@@ -71,7 +71,6 @@ export default function App() {
       console.error("Хүсэлт илгээгээгүй");
     }
   };
-  console.log(userInfo?.data);
   return userInfo ? (
     <div>
       {userInfo.success ? (

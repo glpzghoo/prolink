@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
       user,
     });
   } catch (err) {
-    console.log(err, "Сервер эсвэл логик дээр асуудал гарлаа");
+    console.error(err, "Сервер эсвэл логик дээр асуудал гарлаа");
     return NextResponse_CatchError(err);
   }
 }
