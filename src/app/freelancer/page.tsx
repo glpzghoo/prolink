@@ -18,7 +18,6 @@ export default function Freelance() {
     };
     fetchData();
   }, []);
-  console.log(users);
   return (
     <div className="max-w-4xl mx-auto flex md:block sm:block ">
       {users.map((user) => (

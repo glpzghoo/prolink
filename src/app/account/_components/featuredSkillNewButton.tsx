@@ -44,6 +44,7 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
   const [loading, setLoading] = useState(true);
   const [FormValid, setFormValid] = useState(false);
   const [response, setResponse] = useState<responseData>();
+  const [response2, setResponse2] = useState<responseData>();
   const [skills, setSkills] = useState<skill[]>();
   useEffect(() => {
     const result = formSchema.safeParse(form);
@@ -57,7 +58,13 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
     const fetchData = async () => {
       try {
         const res1 = await axios.get(`/api/skills`);
-        setSkills(res1.data.data.skills);
+        const res2 = await axios.get(`/api/account`);
+        // console.log(res2.data.data.informations.skill);
+        if (res2.data.success) {
+          setSkills(res2.data.data.informations.skill);
+        } else {
+          setResponse2(res2.data);
+        }
         setLoading(false);
       } catch (err) {
         console.error("Хүсэлт илгээгээгүй");
@@ -113,7 +120,6 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
           id="skill"
           className="border p-2 w-1/4"
         >
-          {" "}
           {skills.map((skill) => (
             <option value={skill.id} key={skill.id}>
               {skill.name}
@@ -180,7 +186,7 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
           <div
             className={` ${
               response.success ? ` text-green-400` : ` text-red-400`
-            }`}
+            } `}
           >
             {response.message}
           </div>

@@ -167,7 +167,7 @@ export default function Client() {
               {/* Хуваалцах товч */}
               <div className="flex gap-1">
                 {owner && (
-                  <Link href={`/account/settings`}>
+                  <Link href={`/account/settings/about`}>
                     <button className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2">
                       Мэдээлэл өөрчлөх
                     </button>

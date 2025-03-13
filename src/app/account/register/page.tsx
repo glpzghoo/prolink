@@ -210,7 +210,6 @@ export default function Login() {
       console.error(err, "server error");
     }
   };
-  console.log(form);
   return (
     <div className="min-h-screen -mt-15">
       <div className="min-h-screen flex items-center justify-center">
@@ -224,8 +223,12 @@ export default function Login() {
                 <div>
                   <div>
                     <div className="flex flex-col justify-center items-center ">
-                      <div className="text-2xl font-semibold">
-                        Profile зураг оруулна уу!
+                      <div className="text-xl font-semibold">
+                        {!form.pfp && (
+                          <div className={` text-red-600`}>
+                            Profile зураг оруулна уу!
+                          </div>
+                        )}
                       </div>
                       <Input
                         ref={imageDiv}
@@ -250,7 +253,7 @@ export default function Login() {
                         )}
 
                         <Image
-                          src={form.pfp ? form.pfp : `/window.svg`}
+                          src={form.pfp ? form.pfp : `/images.jpeg`}
                           alt="pfp"
                           className=""
                           width={100}
@@ -376,6 +379,9 @@ export default function Login() {
                   >
                     Компаний нэр
                   </Label>
+                  <div className=" text-[#717171] text-xs">
+                    Хувь хүн бол компаний нэр оруулах шаардлагагүй
+                  </div>
                 </div>
                 <div className="relative w-full">
                   <Input
@@ -417,7 +423,7 @@ export default function Login() {
                       className="rounded-none peer w-full border border-gray-300 px-3 pt-5 pb-2 text-lg focus:border-[#108A00] focus:outline-none"
                       onChange={onChange}
                       name="salary"
-                      defaultValue={form.salary || ""}
+                      value={form.salary || ""}
                     />
                     <select
                       onChange={onChange}
@@ -434,7 +440,7 @@ export default function Login() {
                     className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
         peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
-          form.phoneNumber && "top-1 text-[10px] text-[#108A00]"
+          form.salary && "top-1 text-[10px] text-[#108A00]"
         }`)}
                   >
                     Таны цалингийн хүлээлт

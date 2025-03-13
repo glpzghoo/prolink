@@ -45,7 +45,6 @@ export async function GET(req: NextRequest) {
         data: {},
       });
     }
-    // const cookies = parse(req.headers.get("cookie") || "");
     const accessToken = req.cookies.get("accessToken")?.value;
     if (!accessToken) {
       return NextResponse.json({
@@ -71,6 +70,7 @@ export async function GET(req: NextRequest) {
       where: {
         email: verified.email,
       },
+      include: { skill: true },
       omit: { password: true },
     });
     if (user) {

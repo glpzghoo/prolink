@@ -46,14 +46,14 @@ export async function POST(req: NextRequest) {
         where: { id: verify.id },
         data: {
           skill: {
-            connect: skills,
+            set: skills,
           },
         },
         include: { skill: true },
         omit: { password: true },
       });
       if (updateUser) {
-        return CustomNextResponse(true, "SUCCESS", "Хүсэлт амжилттай!", {
+        return CustomNextResponse(true, "SKILL_SUCCESS", "Хүсэлт амжилттай!", {
           updateUser,
         });
       }
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
         omit: { password: true },
       });
       if (updateUser) {
-        return CustomNextResponse(true, "SUCCESS", "Хүсэлт амжилттай!", {
+        return CustomNextResponse(true, "ABOUT_SUCCESS", "Хүсэлт амжилттай!", {
           updateUser,
         });
       }

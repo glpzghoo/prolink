@@ -70,7 +70,11 @@ export function Navigation() {
                 <div className="flex items-center gap-4 whitespace-nowrap">
                   <Link
                     className="flex items-center gap-4 whitespace-nowrap"
-                    href={`/freelancer/${response.data?.informations?.id}`}
+                    href={
+                      response.data?.informations?.companyName
+                        ? `/client/${response.data?.informations?.id}`
+                        : `/freelancer/${response.data?.informations?.id}`
+                    }
                   >
                     <div className="rounded-full overflow-hidden">
                       <Image

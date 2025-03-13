@@ -18,12 +18,7 @@ type CustomSkill = skill & {
   user: user[];
 };
 export default function App() {
-  const params = useParams();
-  const id = params.id as string;
   const router = useRouter();
-  if (!id) {
-    return <div>What you looking for?</div>;
-  }
   const [form, setForm] = useState<form>({
     about: "",
     skills: [],
@@ -31,13 +26,15 @@ export default function App() {
   const [skills, setSkills] = useState<skill[]>([]);
   const [userInfo, setUserInfo] = useState<responseData>();
   const [loading, setLoading] = useState(false);
+  const [waiting, setWaiting] = useState(false);
   const [response, setResponse] = useState<responseData>();
+  const [response2, setResponse2] = useState<responseData>();
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       try {
         const res1 = await axios.get(`/api/skills`);
-        const res2 = await axios.get(`/api/account/user?id=${id}`);
+        const res2 = await axios.get(`/api/account/user`);
         setSkills(res1.data.data.skills);
         setUserInfo(res2.data);
         // console.log(res2.data.data.user.skill);
@@ -52,6 +49,8 @@ export default function App() {
               skills: filter,
             };
           });
+        } else {
+          setResponse2(res2.data);
         }
         setLoading(false);
       } catch (err) {
@@ -65,13 +64,14 @@ export default function App() {
     setLoading(true);
 
     try {
-      const res = await axios.post(`/api/account/${id}`, form);
+      const res = await axios.post(`/api/account/settings/about`, form);
       setResponse(res.data);
       setLoading(false);
     } catch (err) {
       console.error("Хүсэлт илгээгээгүй");
     }
   };
+  console.log(userInfo?.data);
   return userInfo ? (
     <div>
       {userInfo.success ? (
@@ -96,9 +96,16 @@ export default function App() {
             form?.about && "top-1 text-[10px] text-[#108A00]"
           }`)}
                       >
-                        Миний тухай
+                        {userInfo.data.user.companyName
+                          ? `Байгууллагын тухай`
+                          : `Миний тухай`}
                       </Label>
                       <Textarea
+                        defaultValue={
+                          userInfo.data.user.about
+                            ? userInfo.data.user.about
+                            : ""
+                        }
                         onChange={(e) => {
                           setForm((prev) => {
                             return {
@@ -112,7 +119,9 @@ export default function App() {
                         name="about"
                       />
                       <div className=" text-[#717171] text-xs">
-                        Ажил олгогчдод өөрийгөө танилцуулаарай!
+                        {userInfo.data.user.companyName
+                          ? `Байгууллагын тухай дэлгэрэнгүй мэдээллийг оруулна уу!`
+                          : `Ажил олгогчдод өөрийгөө танилцуулаарай!`}
                       </div>
                     </div>
                     <div className="flex whitespace-nowrap flex-wrap gap-1">
@@ -171,7 +180,7 @@ export default function App() {
                       <ImSpinner2 className="animate-spin" />
                     </>
                   ) : (
-                    "Зөвшөөрөөд үргэлжлүүлэх"
+                    "Үргэлжлүүлэх"
                   )}
                 </Button>
                 {response && (
@@ -200,7 +209,7 @@ export default function App() {
         </div>
       ) : (
         <div className="text-center min-h-screen content-center">
-          Хуудас олдсонгүй!
+          {response2?.message}
         </div>
       )}
     </div>

@@ -84,14 +84,10 @@ export default function Login() {
       });
       setResponse(res.data);
       if (res.data.success) {
-        if (!res.data.data.user.about || !res.data.data.user.skill) {
-          router.push(`/account/setting/${res.data.data.user.id}`);
+        if (!res.data.data.user.companyName) {
+          router.push(`/freelancer/${res.data.data.user.id}`);
         } else {
-          if (!res.data.data.user.companyName) {
-            router.push(`/freelancer/${res.data.data.user.id}`);
-          } else {
-            router.push(`/client/${res.data.data.user.id}`);
-          }
+          router.push(`/client/${res.data.data.user.id}`);
         }
       }
       setLoading(false);
