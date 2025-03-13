@@ -16,14 +16,12 @@ export default function Freelance() {
     const fetchData = async () => {
       try {
         const res = await axios.get(`/api/account/user/all`);
-        // console.log(res);
         if (res.data.success) {
           const filteredUsers = res.data.data.users.filter(
             (user: CustomUser) => {
               return !user.companyName;
             }
           );
-          // console.log({ filteredUsers, user: res.data.data.users });
           setUsers(filteredUsers);
         }
         setLoading(false);
@@ -51,7 +49,6 @@ export default function Freelance() {
     const result = total / length / 20;
     return Number(result.toFixed(1));
   };
-  console.log(users);
   return (
     <div>
       {!loading ? (

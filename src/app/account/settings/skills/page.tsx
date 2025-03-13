@@ -23,7 +23,6 @@ export default function Settings() {
         } else {
           setResponse(res.data);
         }
-        console.log(res);
         setLoading(false);
       } catch (err) {
         console.error(err, "Алдаа гарлаа");
@@ -32,7 +31,6 @@ export default function Settings() {
     };
     fetchData();
   }, [refresh]);
-  // console.log(response);
   return (
     <div className="w-full flex justify-center">
       {loading ? (

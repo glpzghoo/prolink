@@ -59,7 +59,6 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
       try {
         const res1 = await axios.get(`/api/skills`);
         const res2 = await axios.get(`/api/account`);
-        // console.log(res2.data.data.informations.skill);
         if (res2.data.success) {
           setSkills(res2.data.data.informations.skill);
         } else {
@@ -109,7 +108,6 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
       console.error(err, "Сервер дээр алдаа гарлаа!");
     }
   };
-  // console.log(form);
   return (
     <div className="border p-5 flex flex-col justify-center gap-4">
       {skills && (

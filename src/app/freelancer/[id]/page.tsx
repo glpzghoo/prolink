@@ -124,7 +124,6 @@ export default function Client() {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     }
   };
-  console.log(avgRating());
   return (
     <>
       {/* Үндсэн Background */}

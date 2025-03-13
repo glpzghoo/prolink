@@ -37,5 +37,4 @@ export async function GET(req: NextRequest) {
   } catch (err) {
     console.error(err, "Сервер дээр алдаа гарлаа!");
   }
-  console.log(id);
 }

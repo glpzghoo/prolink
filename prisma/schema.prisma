@@ -15,8 +15,6 @@ model user {
   birthday       DateTime
   role           String
   companyName    String
-  sentInvitation user[] @relation("UserInvitations")
-  recievedInvitation user[] @relation("UserInvitations")
   phoneNumber    String           @unique
   password       String
   salary         Int              @default(10000)
@@ -27,6 +25,8 @@ model user {
   featuredSkills featuredSkills[]
   reviewee       review[]         @relation("reviewee_")
   reviewer       review[]         @relation("reviewer_")
+  user_A         user[]           @relation("UserInvitations")
+  user_B         user[]           @relation("UserInvitations")
   skill          skill[]          @relation("skillTouser")
 }
 
@@ -40,9 +40,8 @@ model skill {
   id             String           @id @default(nanoid())
   name           String           @unique
   featuredSkills featuredSkills[]
+  job            job[]            @relation("jobToskill")
   user           user[]           @relation("skillTouser")
-  job job[]
-
 }
 
 model featuredSkills {
@@ -68,12 +67,12 @@ model review {
 }
 
 model job {
-  id String @id @default(nanoid())
-  title String // zariin garchig
-  description String // zariin delgerengui
-  experienced Boolean // tiim/ugui
-  salary Int // ajliin tsalin
-  salaryRate String // sar/odor/tsag
-  skill skill[] // shaardlagatai ur chadvaruud
-  postedAt DateTime @default(now()) // postloson hugatsaa
+  id          String   @id @default(nanoid())
+  title       String
+  description String
+  experienced Boolean
+  salary      Int
+  salaryRate  String
+  postedAt    DateTime @default(now())
+  skill       skill[]  @relation("jobToskill")
 }

@@ -37,7 +37,6 @@ export default function App() {
         const res2 = await axios.get(`/api/account/user`);
         setSkills(res1.data.data.skills);
         setUserInfo(res2.data);
-        // console.log(res2.data.data.user.skill);
         if (res2.data.success) {
           const filter = res2.data.data.user.skill.map((one: CustomSkill) => {
             const { user, ...filtered } = one;
