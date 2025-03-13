@@ -20,7 +20,9 @@ export async function GET(req: NextRequest) {
         },
         reviewee: { include: { reviewee: true } },
         reviewer: true,
-        featuredSkills: true,
+        featuredSkills: {
+          include: { user: { omit: { password: true } }, skill: true },
+        },
       },
       omit: { password: true },
     });
