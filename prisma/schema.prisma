@@ -8,24 +8,24 @@ datasource db {
 }
 
 model user {
-  id           String   @id @unique @default(nanoid())
-  email        String   @unique
-  firstName    String
-  lastName     String
-  birthday     DateTime
-  role         String
-  companyName  String
-  phoneNumber  String   @unique
-  password     String
-  salary       Int      @default(10000)
-  salaryType   String   @default("HOUR")
-  pfp          String
-  about        String?
-  profileViews Int      @default(0)
-  reviewee     review[] @relation("reviewee_")
-  reviewer     review[] @relation("reviewer_")
-  skill        skill[]  @relation("skillTouser")
+  id             String           @id @unique @default(nanoid())
+  email          String           @unique
+  firstName      String
+  lastName       String
+  birthday       DateTime
+  role           String
+  companyName    String
+  phoneNumber    String           @unique
+  password       String
+  salary         Int              @default(10000)
+  salaryType     String           @default("HOUR")
+  pfp            String
+  about          String?
+  profileViews   Int              @default(0)
   featuredSkills featuredSkills[]
+  reviewee       review[]         @relation("reviewee_")
+  reviewer       review[]         @relation("reviewer_")
+  skill          skill[]          @relation("skillTouser")
 }
 
 model otp {
@@ -35,24 +35,24 @@ model otp {
 }
 
 model skill {
-  id   String @id @default(nanoid())
-  name String @unique
-  user user[] @relation("skillTouser")
+  id             String           @id @default(nanoid())
+  name           String           @unique
   featuredSkills featuredSkills[]
-
+  user           user[]           @relation("skillTouser")
 }
 
 model featuredSkills {
-  id String @id @default(nanoid())
-  detail String
+  id        String    @id @default(nanoid())
+  userId    String
+  skillId   String
+  detail    String
+  endedAt   DateTime?
+  present   Boolean   @default(false)
   startedAt DateTime
-  endedAt DateTime?
-  present Boolean @default(false)
-  user user @relation(fields: [userId], references: [id])
-  userId String
-  skill skill @relation(fields: [skillId], references: [id])
-  skillId String
+  skill     skill     @relation(fields: [skillId], references: [id])
+  user      user      @relation(fields: [userId], references: [id])
 }
+
 model review {
   id         String @id @default(nanoid())
   rating     Int
