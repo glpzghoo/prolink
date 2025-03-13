@@ -41,13 +41,13 @@ export function Navigation() {
         </Link>
         <div className=" hidden xl:flex gap-6 text-xs font-medium">
           <Link href={`/freelancer`}>
-            <div>Мэргэжилтэнгүүд хайх</div>
+            <div>Мэргэжилтэнгүүд</div>
+          </Link>
+          <Link href={`/client`}>
+            <div>Ажлын зар</div>
           </Link>
           <Link href={`/account`}>
-            <div>Ажил хайх</div>
-          </Link>
-          <Link href={`/account`}>
-            <div>Find talent</div>
+            <div>Хайх</div>
           </Link>
         </div>
       </div>
@@ -67,23 +67,28 @@ export function Navigation() {
           ) : (
             <div>
               {response?.code === "SUCCESS" ? (
-                <div className="flex items-center gap-4">
-                  <div className="rounded-full overflow-hidden">
-                    <Image
-                      src={`${response.data?.informations?.pfp}`}
-                      width={30}
-                      height={30}
-                      alt="pfp"
-                    />
-                  </div>
-                  {response.data?.informations?.companyName ? (
-                    <div>{response.data.informations.companyName}</div>
-                  ) : (
-                    <div className=" whitespace-nowrap">
-                      {response.data?.informations?.lastName}{" "}
-                      {response.data?.informations?.firstName}
+                <div className="flex items-center gap-4 whitespace-nowrap">
+                  <Link
+                    className="flex items-center gap-4 whitespace-nowrap"
+                    href={`/freelancer/${response.data?.informations?.id}`}
+                  >
+                    <div className="rounded-full overflow-hidden">
+                      <Image
+                        src={`${response.data?.informations?.pfp}`}
+                        width={30}
+                        height={30}
+                        alt="pfp"
+                      />
                     </div>
-                  )}
+                    {response.data?.informations?.companyName ? (
+                      <div>{response.data.informations.companyName}</div>
+                    ) : (
+                      <div className=" whitespace-nowrap">
+                        {response.data?.informations?.lastName}{" "}
+                        {response.data?.informations?.firstName}
+                      </div>
+                    )}
+                  </Link>
                   <button
                     onClick={logout}
                     className="  p-0 bg-background hover:bg-secondary cursor-pointer"
@@ -92,18 +97,11 @@ export function Navigation() {
                   </button>
                 </div>
               ) : (
-                <>
-                  <Link href={`/account`}>
-                    <Button className=" cursor-pointer p-2 rounded-2xl px-5 text-foreground bg-background border-none hover:text-background">
-                      Log in
-                    </Button>
-                  </Link>
-                  <Link href={`/account`}>
-                    <Button className=" cursor-pointer bg-[#14A800] p-2 rounded-2xl px-5 text-background">
-                      Sign up
-                    </Button>
-                  </Link>
-                </>
+                <Link href={`/account`}>
+                  <Button className=" cursor-pointer bg-[#14A800] p-2 rounded-2xl px-5 text-background">
+                    Нэвтрэх эсвэл бүртгүүлэх
+                  </Button>
+                </Link>
               )}
             </div>
           )}

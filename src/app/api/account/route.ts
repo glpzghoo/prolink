@@ -71,13 +71,13 @@ export async function GET(req: NextRequest) {
       where: {
         email: verified.email,
       },
+      omit: { password: true },
     });
     if (user) {
-      const { password, ...informations } = user;
       return NextResponse.json({
         message: "Тавтай морил",
         code: "SUCCESS",
-        data: { informations },
+        data: { informations: user },
         success: true,
       });
     }

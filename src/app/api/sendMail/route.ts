@@ -31,8 +31,14 @@ export async function POST(req: NextRequest) {
     const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
       id: string;
     };
-    const user = await prisma.user.findUnique({ where: { id: verify.id } });
-    const profileOwner = await prisma.user.findUnique({ where: { id } });
+    const user = await prisma.user.findUnique({
+      where: { id: verify.id },
+      omit: { password: true },
+    });
+    const profileOwner = await prisma.user.findUnique({
+      where: { id },
+      omit: { password: true },
+    });
     if (!user) {
       return CustomNextResponse(
         false,
@@ -62,12 +68,11 @@ export async function POST(req: NextRequest) {
           : `http://localhost:3000/freelancer/${user.id}`
       }</p>`, // html body
     });
-    const { password, ...userIfo } = user;
     return CustomNextResponse(
       true,
       "REQUEST_SUCCESS",
       "Урилга амжилттай илгээлээ",
-      { user: userIfo }
+      { user }
     );
   } catch (err) {
     console.error(err, "");

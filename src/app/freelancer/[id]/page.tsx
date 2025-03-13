@@ -5,9 +5,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { responseData } from "@/lib/types";
 import { Box, Button, Typography } from "@mui/material";
 import Rating from "@mui/material/Rating";
-import { review, skill, user } from "@prisma/client";
+import { featuredSkills, review, skill, user } from "@prisma/client";
 import axios from "axios";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import { ImSpinner10 } from "react-icons/im";
@@ -16,12 +17,19 @@ type CustomUser = user & {
   skill: CustomSkill[];
   reviewee: CustomReviewee[];
   reviewer: review[];
+  featuredSkills: CustomFeaturedSkill[];
 };
 type CustomReviewee = review & {
   reviewee: CustomUser;
 };
 type CustomSkill = skill & {
   user: CustomUser[];
+};
+export type CustomFeaturedSkill = featuredSkills & {
+  skill: skill;
+  startedAt: string;
+  endedAt: string;
+  user: CustomUser;
 };
 const ratingSchema = z.object({
   message: z.string().min(5),
@@ -41,6 +49,7 @@ export default function Client() {
     return <div>NOPE</div>;
   }
   const [ratingForm, setRatingForm] = useState({ rating: 0 });
+  const [owner, setOwner] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -57,6 +66,16 @@ export default function Client() {
     };
     fetchData();
   }, [change]);
+  useEffect(() => {
+    const getInfo = async () => {
+      const res = await axios.get(`/api/account`);
+
+      if (res.data.data?.informations?.id === id) {
+        setOwner(true);
+      }
+    };
+    getInfo();
+  }, []);
   useEffect(() => {
     const result = ratingSchema.safeParse(ratingForm);
     if (result.success) {
@@ -128,9 +147,12 @@ export default function Client() {
                       {user.firstName}, {user.lastName}
                     </h1>
                     {/* Badge жишээ */}
-                    <span className="px-2 py-1 text-xs text-white bg-green-600 rounded-full">
-                      Шилдэг үнэлгээтэй
-                    </span>
+                    {((avgRating() > 4.5 && user.reviewee.length > 2) ||
+                      (avgRating() > 4.0 && user.reviewee.length > 10)) && (
+                      <span className="px-2 py-1 text-xs text-white bg-green-600 rounded-full">
+                        Шилдэг үнэлгээтэй
+                      </span>
+                    )}
                   </div>
                   <p className="text-gray-600 text-sm">
                     {user.skill.length} мэргэжилтэй
@@ -139,12 +161,22 @@ export default function Client() {
               </div>
 
               {/* Хуваалцах товч */}
-              <button
-                onClick={copyURL}
-                className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
-              >
-                Хуваалцах
-              </button>
+              <div className="flex gap-1">
+                {owner && (
+                  <Link href={`/account/settings`}>
+                    <button className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2">
+                      Мэдээлэл өөрчлөх
+                    </button>
+                  </Link>
+                )}
+
+                <button
+                  onClick={copyURL}
+                  className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
+                >
+                  Хуваалцах
+                </button>
+              </div>
             </div>
             {/* /Дээд хэсэг */}
 
@@ -156,9 +188,9 @@ export default function Client() {
               {/* Статистик */}
               <div className="mt-2 md:mt-0 flex items-center space-x-4 text-sm text-gray-500">
                 <div>
-                  Энэ хүний profile -ыг нийт{" "}
-                  <span className=" font-bold">{user.profileViews}</span> хүн
-                  харсан байна!
+                  Энэ profile нийт{" "}
+                  <span className=" font-bold">{user.profileViews} </span>
+                  үзэлттэй байна!
                 </div>
                 <div>-</div>
                 <div>
@@ -190,28 +222,48 @@ export default function Client() {
 
             {/* Профайл ерөнхий мэдээлэл */}
             <div className="mt-6 pb-4 border-b">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">{user.skill[0].name}</h2>
-                <p className="text-gray-600 text-sm">
-                  {user.salary}/{user.salaryType === "ONETIME" ? `цаг` : `сар`}
-                </p>
+              <div className="border-b border-t py-5">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-[#129600]">
+                    Миний тухай
+                  </h2>
+                  <p className="text-gray-600 text-sm">
+                    {user.salary}/{user.salaryType === "HOUR" ? `цаг` : `сар`}
+                  </p>
+                </div>
+                <p className="text-gray-700 mt-2">{user.about}</p>
               </div>
-              <p className="text-gray-700 mt-2">{user.about}</p>
-
-              {/* Ашигладаг технологиуд */}
-              {/* <div className="mt-4">
-                <h3 className="font-semibold text-md">
-                  Ашигладаг технологиуд:
-                </h3>
-                <ul className="list-disc list-inside text-gray-700 mt-1">
-                  <li>Java, Kotlin, Spring, Hibernate</li>
-                  <li>Maven, Git, Jenkins</li>
-                  <li>MySQL, MongoDB, AWS DynamoDB</li>
-                  <li>Amazon Web Services</li>
-                </ul>
-              </div> */}
+              <div className="mt-4">
+                {user.featuredSkills.length === 0 ? (
+                  <div>Онцолсон skill байхгүй байна.</div>
+                ) : (
+                  <>
+                    <div className="text-lg font-semibold text-[#129600]">
+                      Уг skill -уудыг тусгайлан онцолсон байна!
+                    </div>
+                    {user.featuredSkills.map((ski) => (
+                      <div key={ski.id}>
+                        <div className="flex justify-between">
+                          <h3 className="font-semibold text-md">
+                            {ski.skill.name}
+                          </h3>
+                          <div>
+                            {ski.startedAt.split("T")[0]} -{" "}
+                            {ski.present
+                              ? `Одоог хүртэл`
+                              : ski.endedAt.split("T")[0]}
+                          </div>
+                        </div>
+                        <div className="list-disc list-inside text-gray-700 mt-1">
+                          {ski.detail}
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
             </div>
-            {/* /Профайл ерөнхий мэдээлэл */}
+            {/* /Профайл ерөнхий мэдээлэл
 
             {/* Үнэлгээ (жишээ) */}
             <div className="mt-4 border-b pb-4">
@@ -346,21 +398,23 @@ export default function Client() {
             <div className="w-full">
               <div className=" flex gap-14 whitespace-nowrap overflow-scroll">
                 {user.skill.map((skill) => (
-                  <div>
+                  <div key={skill.id}>
                     <h4 className="font-semibold mb-2">{skill.name}</h4>
                     <ul className="space-y-1">
                       {skill.user.map((skil) => (
                         <li className="" key={skil.id}>
-                          <a href="#" className="hover:underline">
-                            {skil.companyName ? (
-                              skil.companyName
-                            ) : (
+                          {skil.companyName ? (
+                            <Link href={`/client/${skil.id}`}>
+                              {skil.companyName}
+                            </Link>
+                          ) : (
+                            <Link href={`/freelancer/${skil.id}`}>
                               <div>
                                 {skil.lastName} {` `}
                                 {skil.firstName}
                               </div>
-                            )}
-                          </a>
+                            </Link>
+                          )}
                         </li>
                       ))}
                     </ul>
