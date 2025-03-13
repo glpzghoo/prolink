@@ -54,9 +54,7 @@ export default function Category() {
               <p> ProLink платформ дээр бүртгэгдсэн.</p>
             </div>
           </div>
-          <div>
-            <ClientCard />
-          </div>
+          <div>{/* <ClientCard /> */}</div>
         </div>
       </div>
       <div>
