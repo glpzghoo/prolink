@@ -24,7 +24,6 @@ export const FeaturedSkillsetup = ({
     }
     return years > 0 ? `${years}.${months}` : `${months}`;
   };
-  console.log();
   return (
     <div className="border p-5">
       <div className="flex justify-between">

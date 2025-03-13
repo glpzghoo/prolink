@@ -52,7 +52,6 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
     } else {
       setFormValid(false);
     }
-    console.log(result);
   }, [form]);
   useEffect(() => {
     const fetchData = async () => {
@@ -95,7 +94,6 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
   const sendData = async () => {
     try {
       const res = await axios.post(`/api/skills/featured`, form);
-      console.log(res.data);
       setResponse(res.data);
       if (res.data.success) {
         setRefresh(!refresh);

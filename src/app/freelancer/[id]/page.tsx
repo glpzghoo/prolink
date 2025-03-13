@@ -94,10 +94,9 @@ export default function Client() {
   const copyURL = () => {
     navigator.clipboard
       .writeText(window.location.href)
-      .then(() => console.log("URL copied!"))
-      .catch((err) => console.error("Failed to copy: ", err));
+      .then(() => console.log("url copied!"))
+      .catch((err) => console.error("fail: ", err));
   };
-  console.log(isValidRatingForm);
   const sendRating = async () => {
     try {
       setloadingAddingReview(true);
@@ -110,13 +109,10 @@ export default function Client() {
         setChange(!change);
       }
       setloadingAddingReview(false);
-
-      console.log(res.data);
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     }
   };
-  console.log(change);
   return (
     <>
       {/* Үндсэн Background */}
