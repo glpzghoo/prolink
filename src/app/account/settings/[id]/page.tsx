@@ -14,7 +14,9 @@ type form = {
   about: string;
   skills: skill[];
 };
-
+type CustomSkill = skill & {
+  user: user[];
+};
 export default function App() {
   const params = useParams();
   const id = params.id as string;
@@ -38,7 +40,19 @@ export default function App() {
         const res2 = await axios.get(`/api/account/user?id=${id}`);
         setSkills(res1.data.data.skills);
         setUserInfo(res2.data);
-
+        // console.log(res2.data.data.user.skill);
+        if (res2.data.success) {
+          const filter = res2.data.data.user.skill.map((one: CustomSkill) => {
+            const { user, ...filtered } = one;
+            return filtered;
+          });
+          setForm((prev) => {
+            return {
+              ...prev,
+              skills: filter,
+            };
+          });
+        }
         setLoading(false);
       } catch (err) {
         console.error("Хүсэлт илгээгээгүй");
@@ -58,7 +72,6 @@ export default function App() {
       console.error("Хүсэлт илгээгээгүй");
     }
   };
-  console.log({ userInfo, response });
   return userInfo ? (
     <div>
       {userInfo.success ? (
@@ -170,7 +183,15 @@ export default function App() {
                     >
                       <div>{response.message}</div>
                     </div>
-                    <Link href={`/`}>Энд дарна уу!</Link>
+                    {userInfo.data.user.companyName ? (
+                      <Link href={`/client/${userInfo.data.user.id}`}>
+                        Энд дарна уу!
+                      </Link>
+                    ) : (
+                      <Link href={`/freelancer/${userInfo.data.user.id}`}>
+                        Энд дарна уу!
+                      </Link>
+                    )}
                   </div>
                 )}
               </div>
