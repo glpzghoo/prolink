@@ -1,4 +1,7 @@
 "use client";
+
+import { ClientCard } from "../_component/ ClientPostCard";
+
 export default function Category() {
   return (
     <div>
@@ -36,7 +39,7 @@ export default function Category() {
             Алсын зайны итгэлтэй хөгжүүлэлт болон IT мэргэжилтнүүд
           </p>
           <div className="flex gap-6">
-            <div className="">
+            <div className="border-r">
               <p className="font-bold text-2xl">4.91</p>
               <p>Технологийн авъяастнуудын дундаж үнэлгээ.</p>
             </div>
@@ -51,7 +54,9 @@ export default function Category() {
               <p> ProLink платформ дээр бүртгэгдсэн.</p>
             </div>
           </div>
-          <div></div>
+          <div>
+            <ClientCard />
+          </div>
         </div>
       </div>
       <div>
@@ -61,7 +66,7 @@ export default function Category() {
             Хөгжүүлэлт ба IT чиглэлийн хамгийн чухал төслүүд
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <ul className="space-y-4">
+            <ul className="space-y-4 p-8 text-2xl">
               <li className="text-gray-700"> Mobile App Development</li>
               <li className="text-gray-700"> Shopify Development</li>
               <li className="text-gray-700"> WordPress Development</li>
@@ -114,12 +119,13 @@ export default function Category() {
               илүү хэмнэлттэй, үр дүнтэй шийдэл санал болгодог."
             </p>
             <div className="mt-4 flex gap-2 items-center">
-              <span className="text-yellow-500 text-2xl">⭐ 5.0</span>
+              <span className="text-2xl">⭐⭐⭐⭐⭐ 5.0</span>
               <span className="text-gray-700 text-lg font-semibold">
                 Төсвийн хэмжээ: $14,520
               </span>
             </div>
             <div className="mt-4 flex gap-3">
+              <p className="font-bold text-lg">Ур чадвар:</p>
               <span className="bg-gray-200 px-3 py-1 rounded-full">Sketch</span>
               <span className="bg-gray-200 px-3 py-1 rounded-full">Swift</span>
               <span className="bg-gray-200 px-3 py-1 rounded-full">
