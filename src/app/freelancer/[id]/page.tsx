@@ -10,7 +10,7 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { ImSpinner10 } from "react-icons/im";
 import z from "zod";
 type CustomUser = user & {
@@ -36,13 +36,23 @@ const ratingSchema = z.object({
   rating: z.number().min(1),
 });
 export default function Client() {
+  const div = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<CustomUser>();
   const [loading, setLoading] = useState(true);
   const [loadingAddingReview, setloadingAddingReview] = useState(false);
   const [change, setChange] = useState(false);
   const [isValidRatingForm, setisValidRatingForm] = useState(true);
   const [ratingResponse, setratingResponse] = useState<responseData>();
-
+  const handleLeftScroll = () => {
+    if (div.current) {
+      div.current.scrollBy({ left: -400, behavior: "smooth" });
+    }
+  };
+  const handleRightScroll = () => {
+    if (div.current) {
+      div.current.scrollBy({ left: 400, behavior: "smooth" });
+    }
+  };
   const params = useParams();
   const { id } = params as { id: string };
   if (!id) {
@@ -53,7 +63,7 @@ export default function Client() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res1 = await axios.get(`/api/account/user?id=${id}`);
+        const res1 = await axios.get(`/api/freelancers/id?id=${id}`);
         const res2 = await axios.post(`/api/account/profileViews?id=${id}`);
         if (res1.data.success) {
           setUser(res1.data.data.user);
@@ -273,8 +283,17 @@ export default function Client() {
 
             {/* Үнэлгээ (жишээ) */}
               <div className="mt-4 border-b pb-4">
-                <h3 className="font-semibold text-md">Үнэлгээ</h3>
-                <div className="mt-2 flex gap-3 whitespace-nowrap overflow-scroll">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-md">Үнэлгээ</h3>
+                  <div className="flex gap-4">
+                    <Button onClick={handleLeftScroll}>{`<`}</Button>
+                    <Button onClick={handleRightScroll}>{`>`}</Button>
+                  </div>
+                </div>
+                <div
+                  ref={div}
+                  className="mt-2 flex gap-3 whitespace-nowrap overflow-hidden scrollbar-hide"
+                >
                   {/* Үнэлгээний зурвасын жишээ (placeholder) */}
                   {user.reviewee.length > 0 ? (
                     user.reviewee.map((reviewe) => (
