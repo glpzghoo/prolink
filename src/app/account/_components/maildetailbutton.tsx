@@ -30,7 +30,7 @@ export default function MailDetail({ id }: Props) {
           <div>Урилга илгээж байна</div>
         </div>
       ) : (
-        ` Ажилд урь`
+        ` Холбоо барих хүсэлт илгээх!`
       )}
     </button>
   );

@@ -62,3 +62,12 @@ model review {
   reviewee   user   @relation("reviewee_", fields: [revieweeId], references: [id])
   reviewer   user   @relation("reviewer_", fields: [reviewerId], references: [id])
 }
+
+model job {
+  id String @id @default(nanoid())
+  title String
+  description String
+  experience Int
+  salary Int
+  salaryRate Boolean
+}
