@@ -73,10 +73,10 @@ export default function App() {
   return userInfo ? (
     <div>
       {userInfo.success ? (
-        <div className="min-h-screen -mt-15">
+        <div className="min-h-screen">
           <div className="min-h-screen flex items-center justify-center">
             <div className="">
-              <div className="w-[468px] h-[522px] px-3 flex flex-col gap-6">
+              <div className="w-[468px] min-h-[522px] px-3 flex flex-col gap-6">
                 <div className="flex justify-center h-16 items-center border-b-2 font-bold">
                   Өөрийнхөө талаарх мэдээллийг засна уу!
                 </div>

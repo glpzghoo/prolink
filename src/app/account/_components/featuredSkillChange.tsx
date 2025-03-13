@@ -1,10 +1,18 @@
 import { CustomFeaturedSkill } from "@/app/freelancer/[id]/page";
+import { Button } from "@mui/material";
 import { featuredSkills } from "@prisma/client";
+import { Dispatch, SetStateAction } from "react";
 
 export const FeaturedSkillsetup = ({
   skill,
+  deleteSkill,
+  setLoading2,
+  loading2,
 }: {
   skill: CustomFeaturedSkill;
+  deleteSkill: (id: string) => void;
+  setLoading2: Dispatch<SetStateAction<boolean>>;
+  loading2: boolean;
 }) => {
   const startedAt = skill.startedAt;
   const endedAt = skill.endedAt ? skill.endedAt : null;
@@ -25,7 +33,18 @@ export const FeaturedSkillsetup = ({
     return years > 0 ? `${years}.${months}` : `${months}`;
   };
   return (
-    <div className="border p-5">
+    <div className="border p-5 relative">
+      <div className=" absolute bottom-0 right-0">
+        <Button
+          disabled={loading2}
+          onClick={() => {
+            deleteSkill(skill.id);
+          }}
+          sx={{ color: "green", padding: "5px, 5px", fontSize: "18px" }}
+        >
+          {loading2 ? <>Түр хүлээнэ үү...</> : <>Устгах</>}
+        </Button>
+      </div>
       <div className="flex justify-between">
         <div className=" font-semibold text-2xl">{skill.skill.name}</div>
         <div className=" whitespace-nowrap flex ">

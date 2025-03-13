@@ -99,3 +99,50 @@ export async function GET(req: NextRequest) {
     console.error(err, "Сервер дээр асуудал гарлаа!");
   }
 }
+export async function DELETE(req: NextRequest) {
+  try {
+    const id = req.nextUrl.searchParams.get("id");
+    if (!id) {
+      return CustomNextResponse(
+        false,
+        "NO_ID_PROVIDED",
+        "Хүсэлт амжилтгүй! Таних тэмдэг олдсонгүй!",
+        null
+      );
+    }
+    if (!process.env.ACCESS_TOKEN) {
+      return NextResponse_NoEnv("ACCESS_TOKEN");
+    }
+
+    const accessToken = req.cookies.get("accessToken")?.value;
+    if (!accessToken) {
+      return NextResponse_NoCookie();
+    }
+
+    const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
+      id: string;
+    };
+    const featuredSkill = await prisma.featuredSkills.findUnique({
+      where: { id },
+    });
+    if (featuredSkill?.userId === verify.id) {
+      const deleteskill = await prisma.featuredSkills.delete({ where: { id } });
+
+      return CustomNextResponse(
+        true,
+        "SKILL_SUCCESSFULLY_DELETED",
+        "Хүсэлт амжилттай",
+        { skill: deleteskill }
+      );
+    }
+    return CustomNextResponse(
+      false,
+      "NOT_AUTHORIZED",
+      "Таньд энэ үйлдлийг хийх эрх байхгүй байна!",
+      null
+    );
+  } catch (err) {
+    console.error(err, "Сервер дээр алдаа гарлаа");
+    return NextResponse_CatchError(err);
+  }
+}
