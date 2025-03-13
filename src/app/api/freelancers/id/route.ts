@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
           include: { user: { omit: { password: true } } },
         },
         reviewee: {
-          include: { reviewee: true },
+          include: { reviewee: true, reviewer: true },
         },
         featuredSkills: {
           include: { skill: true },

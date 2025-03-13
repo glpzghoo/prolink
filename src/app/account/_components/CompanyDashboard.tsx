@@ -21,9 +21,11 @@ type CustomUser = user & {
 };
 type CustomReviewee = review & {
   reviewee: CustomUser;
+  reviewer: CustomUser;
 };
 type CustomSkill = skill & {
   user: CustomUser[];
+  reviewer: CustomUser;
 };
 export type CustomFeaturedSkill = featuredSkills & {
   skill: skill;
@@ -85,7 +87,7 @@ export default function Client() {
     }
   }, [ratingForm]);
   const avgRating = (): number => {
-    if (!user?.reviewer || user.reviewee.length === 0) return 0;
+    if (!user?.reviewee || user.reviewee.length === 0) return 0;
 
     const total = user.reviewee.reduce((prev, acc) => prev + acc.rating, 0);
     const fixed = total / user.reviewee.length / 20;
@@ -281,9 +283,9 @@ export default function Client() {
                     >
                       <div className="flex flex-col justify-center">
                         <h1 className=" font-semibold text-xl text-[#129600]">
-                          {reviewe.reviewee.companyName
-                            ? reviewe.reviewee.companyName
-                            : reviewe.reviewee.firstName}
+                          {reviewe.reviewer.companyName
+                            ? reviewe.reviewer.companyName
+                            : reviewe.reviewer.firstName}
                         </h1>
                         <div className="flex gap-2">
                           <Rating
