@@ -75,7 +75,6 @@ model review {
 
 model job {
   id          String   @id @default(nanoid())
-  companyName String
   title       String
   description String
   status JobStatus @default(ACTIVE)
