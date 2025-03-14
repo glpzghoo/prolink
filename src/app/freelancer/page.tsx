@@ -57,7 +57,7 @@ export default function Freelance() {
             Сайн байна уу ? Манай веб хуудсандах хэрэглэгчдийн дундаж үнэлгээ:{" "}
             {allreviews(users)}/5
           </div>
-          <div className="max-w-[1280px] mx-auto flex  ">
+          <div className="max-w-[1280px] mx-auto flex flex-wrap ">
             {users
               .map((user) => <ClientCard key={user.id} user={user} />)
               .slice(0, 4)}
