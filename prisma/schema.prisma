@@ -15,6 +15,7 @@ model user {
   birthday       DateTime
   role           String
   companyName    String
+  companyLocation String @default("Улаанбаатар")
   phoneNumber    String           @unique
   password       String
   salary         Int              @default(10000)
@@ -25,9 +26,10 @@ model user {
   featuredSkills featuredSkills[]
   reviewee       review[]         @relation("reviewee_")
   reviewer       review[]         @relation("reviewer_")
-  user_A         user[]           @relation("UserInvitations")
-  user_B         user[]           @relation("UserInvitations")
   skill          skill[]          @relation("skillTouser")
+  jobpost job[]
+  freelancerJobApplication jobApplication[] @relation("freelancerJobApplication")
+  clientJobApplication jobApplication[] @relation("clientJobApplication")
 }
 
 model otp {
@@ -40,7 +42,7 @@ model skill {
   id             String           @id @default(nanoid())
   name           String           @unique
   featuredSkills featuredSkills[]
-  job            job[]            @relation("jobToskill")
+  job            job[]  
   user           user[]           @relation("skillTouser")
 }
 
@@ -68,11 +70,49 @@ model review {
 
 model job {
   id          String   @id @default(nanoid())
+  companyName String
   title       String
   description String
+  status JobStatus
   experienced Boolean
+  jobLocation String @default("Улаанбаатар")
+  jobPostView Int @default(0)
   salary      Int
-  salaryRate  String
+  salaryRate  SalaryType
   postedAt    DateTime @default(now())
-  skill       skill[]  @relation("jobToskill")
+  updatedAt DateTime @updatedAt
+  poster user @relation(references: [id], fields: [posterId])
+  posterId String
+  skill       skill[]
+  jobApplication jobApplication[]
+}
+
+
+model jobApplication {
+  id String @id @default(nanoid())
+  job job @relation(fields: [jobId], references: [id])
+  jobId String
+  accepted jobApplicationStatus @default(waiting)
+  freelancer user @relation("freelancerJobApplication",fields: [freelancerId], references: [id]) 
+  freelancerId String
+  client user @relation("clientJobApplication",fields: [clientId], references: [id]) 
+  clientId String
+  createdAt DateTime @default(now())
+}
+
+
+enum jobApplicationStatus {
+accepted
+denied
+waiting
+}
+enum SalaryType {
+  MONTH
+  HOUR
+  DAY
+}
+enum JobStatus {
+  ACTIVE
+  CLOSED
+  DRAFT
 }
