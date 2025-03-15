@@ -23,11 +23,17 @@ export default function Freelance() {
               return user.companyName;
             }
           );
-          setUsers(filteredUsers);
+
+          const sortedUsers = filteredUsers.sort(
+            (user1: CustomUser, user2: CustomUser) => {
+              return user2.profileViews - user1.profileViews;
+            }
+          );
+          setUsers(sortedUsers);
         }
-        setLoading(false);
       } catch (err) {
         console.error(err, "aldaa frontend");
+      } finally {
         setLoading(false);
       }
     };
@@ -57,10 +63,10 @@ export default function Freelance() {
           <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto ">
             Дундаж үнэлгээ: {allreviews(users)}/5
           </div>
-          <div className="max-w-[1280px] mx-auto flex  ">
-            {users
-              .map((user) => <ClientCard key={user.id} user={user} />)
-              .slice(0, 4)}
+          <div className="max-w-[1280px] mx-auto flex  flex-wrap ">
+            {users.map((user) => (
+              <ClientCard key={user.id} user={user} />
+            ))}
           </div>
         </>
       ) : (

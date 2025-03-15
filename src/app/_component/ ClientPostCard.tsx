@@ -8,15 +8,16 @@ export function ClientCard({ user }: { user: CustomUser }) {
     if (!user?.reviewee || user.reviewee.length === 0) return 0;
     const total = user.reviewee.reduce((prev, acc) => prev + acc.rating, 0);
     const avg = total / user.reviewee.length / 20;
+    console.log(avg);
     return avg.toFixed(1);
   };
   return (
     <Link
-      className=" max-w-[280px] max-h-[450px] md:mt-8 mx-auto border border-[#e9e9e9] rounded-xl "
+      className=" max-w-[280px] max-h-[450px] md:mt-8 mx-auto border border-[#e9e9e9] rounded-xl p-4  "
       href={user.companyName ? `/client/${user.id}` : `/freelancer/${user.id}`}
     >
       <div>
-        <div className="flex justify-between p-2 text-sm text-gray-400">
+        <div className="flex justify-between text-sm text-gray-400">
           <div className="flex items-center gap-1">
             <MdOutlineRemoveRedEye />
             {user.profileViews}
@@ -56,12 +57,12 @@ export function ClientCard({ user }: { user: CustomUser }) {
             {avrRating()}/5
             <p>({user.reviewee.length} үнэлгээ өгсөн)</p>
           </div>
-          <div className="grid grid-cols-2 gap-2 px-10 p-4 ">
+          <div className="grid grid-cols-2 gap-2 px-10 p-4  text-wrap  truncate">
             {user.skill
               .map((skills) => (
                 <Button
                   key={skills.id}
-                  className="text-[10px] p-1 text-[#676767] hover:text-background rounded-3xl cursor-pointer bg-[#e9e9e9] overflow-hidden max-w-[100px] whitespace-normal  "
+                  className="text-[10px] p-1 text-[#676767] hover:text-background rounded-3xl cursor-pointer bg-[#e9e9e9] overflow-hidden max-w-[100px]  "
                 >
                   {skills.name}
                 </Button>
