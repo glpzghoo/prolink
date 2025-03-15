@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
@@ -13,7 +12,7 @@ import { runInThisContext } from "node:vm";
 import { responseData } from "@/lib/types";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
-import { Select } from "@mui/material";
+import { Button, Select } from "@mui/material";
 const RegisterFormSchema = z.object({
   email: z.string().email(),
   firstName: z.string().min(4),

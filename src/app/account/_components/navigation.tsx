@@ -3,13 +3,13 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { IoIosSearch } from "react-icons/io";
 import { BsList } from "react-icons/bs";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import { responseData } from "@/lib/types";
 import { usePathname, useRouter } from "next/navigation";
+import { Button } from "@mui/material";
 export function Navigation() {
   const [response, setUserInfo] = useState<responseData>();
   const [loading, setLoading] = useState(false);
@@ -43,11 +43,11 @@ export function Navigation() {
           <Link href={`/freelancer`}>
             <div>Мэргэжилтэнгүүд</div>
           </Link>
-          <Link href={`/client`}>
+          <Link href={`/job`}>
             <div>Ажлын зар</div>
           </Link>
-          <Link href={`/account`}>
-            <div>Хайх</div>
+          <Link href={`/client`}>
+            <div>Манайд бүртгэлтэй байгууллагууд</div>
           </Link>
         </div>
       </div>
@@ -102,7 +102,14 @@ export function Navigation() {
                 </div>
               ) : (
                 <Link href={`/account`}>
-                  <Button className=" cursor-pointer bg-[#14A800] p-2 rounded-2xl px-5 text-background">
+                  <Button
+                    sx={{
+                      color: "green",
+                      border: "1px,  solid",
+                      borderRadius: "15px",
+                    }}
+                    className=" cursor-pointer p-2 rounded-2xl px-5 text-background"
+                  >
                     Нэвтрэх эсвэл бүртгүүлэх
                   </Button>
                 </Link>

@@ -1,16 +1,19 @@
 "use client";
 import Loading from "@/app/_component/loading";
+import CustomSkeleton from "@/app/_component/skeleton";
 import MailDetail from "@/app/account/_components/maildetailbutton";
+import { CustomJob } from "@/app/job/[id]/page";
 import { Textarea } from "@/components/ui/textarea";
 import { responseData } from "@/lib/types";
 import { Box, Button, Typography } from "@mui/material";
 import Rating from "@mui/material/Rating";
-import { featuredSkills, review, skill, user } from "@prisma/client";
+import { featuredSkills, job, review, skill, user } from "@prisma/client";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
+import { GoDotFill } from "react-icons/go";
 import { ImSpinner10 } from "react-icons/im";
 import z from "zod";
 type CustomUser = user & {
@@ -18,6 +21,7 @@ type CustomUser = user & {
   reviewee: CustomReviewee[];
   reviewer: review[];
   featuredSkills: CustomFeaturedSkill[];
+  jobpost: CustomJob[];
 };
 type CustomReviewee = review & {
   reviewee: CustomUser;
@@ -56,7 +60,6 @@ export default function Client() {
     const fetchData = async () => {
       try {
         const res1 = await axios.get(`/api/freelancers/id?id=${id}`);
-        const res2 = await axios.post(`/api/account/profileViews?id=${id}`);
         if (res1.data.success) {
           setUser(res1.data.data.user);
         }
@@ -75,6 +78,7 @@ export default function Client() {
       if (res.data.data?.informations?.id === id) {
         setOwner(true);
       }
+      await axios.post(`/api/account/profileViews?id=${id}`);
     };
     getInfo();
   }, []);
@@ -119,7 +123,7 @@ export default function Client() {
     <>
       {/* Үндсэн Background */}
       {loading ? (
-        <Loading />
+        <CustomSkeleton />
       ) : user ? (
         <div className="bg-gray-100 min-h-screen">
           {/* Цагаан блок (main container) */}
@@ -239,33 +243,31 @@ export default function Client() {
               </div>
               <div className="mt-4">
                 <div>end job posts??</div>
-                {/* {user.featuredSkills.length === 0 ? (
+                {user.jobpost.length === 0 ? (
                   <div>Онцолсон skill байхгүй байна.</div>
                 ) : (
                   <>
-                    <div className="text-lg font-semibold text-[#129600]">
-                      Уг skill -уудыг тусгайлан онцолсон байна!
+                    <div className="text-lg font-semibold mb-3 text-[#129600]">
+                      Ажлын зарууд
                     </div>
-                    {user.featuredSkills.map((ski) => (
+                    {user.jobpost.map((ski) => (
                       <div key={ski.id}>
                         <div className="flex justify-between">
-                          <h3 className="font-semibold text-md">
-                            {ski.skill.name}
+                          <h3 className="font-semibold text-md flex">
+                            <div className=" text-green-500">
+                              <GoDotFill className="animate-ping duration-4000" />
+                            </div>
+                            {ski.title}
                           </h3>
-                          <div>
-                            {ski.startedAt.split("T")[0]} -{" "}
-                            {ski.present
-                              ? `Одоог хүртэл`
-                              : ski.endedAt.split("T")[0]}
-                          </div>
+                          <div>{ski.postedAt.split("T")[0]}</div>
                         </div>
                         <div className="list-disc list-inside text-gray-700 mt-1">
-                          {ski.detail}
+                          {ski.description}
                         </div>
                       </div>
                     ))}
                   </>
-                )} */}
+                )}
               </div>
             </div>
             {/* /Профайл ерөнхий мэдээлэл

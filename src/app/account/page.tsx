@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
@@ -10,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { responseData } from "@/lib/types";
 import GoogleSession from "./_components/google";
 import { motion } from "framer-motion";
+import { Button } from "@mui/material";
 type LoginForm = {
   email: string;
   password: string;
@@ -107,6 +107,7 @@ export default function Account() {
               </div>
               <div>
                 <Button
+                  sx={{ color: "green" }}
                   onClick={onClick}
                   disabled={isValid || loading}
                   ref={LoginButtonEvent}
@@ -132,7 +133,10 @@ export default function Account() {
               <div className="border-b w-1/3"></div>
             </div>
             <div>
-              <Button className="w-full border bg-background text-foreground hover:bg-secondary  flex justify-around">
+              <Button
+                sx={{ color: "green" }}
+                className="w-full border bg-background text-foreground hover:bg-secondary  flex justify-around"
+              >
                 <Image
                   src={`/img/facebook.svg`}
                   alt="facebook logo"

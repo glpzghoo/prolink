@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import GoogleSession from "../_components/google";
 import { ImSpinner2 } from "react-icons/im";
@@ -11,6 +10,7 @@ import z from "zod";
 import Link from "next/link";
 import { responseData } from "@/lib/types";
 import { Alert } from "@/components/ui/alert";
+import { Button } from "@mui/material";
 const passwordSchema = z
   .string()
   .min(8)
@@ -167,6 +167,7 @@ export default function Login() {
 
             <div>
               <Button
+                sx={{ color: "green" }}
                 ref={LoginButtonEvent}
                 onClick={login}
                 disabled={!isValid || loading}
@@ -184,7 +185,8 @@ export default function Login() {
                   "Үргэлжлүүлэх"
                 )}
               </Button>
-              <button
+              <Button
+                sx={{ color: "green", fontSize: "10px" }}
                 disabled={resetPassLoading}
                 className=" cursor-pointer"
                 onClick={resetPassword}
@@ -202,7 +204,7 @@ export default function Login() {
                     )}
                   </div>
                 )}
-              </button>
+              </Button>
               {response?.code === "OTP_MATCHED" && (
                 <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform h-full w-full bg-secondary/70">
                   <Alert className=" transition-all whitespace-nowrap flex justify-center fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform w-1/4 ">
@@ -229,7 +231,10 @@ export default function Login() {
             <div className="border-b w-1/3"></div>
           </div>
           <div>
-            <Button className="w-full border bg-background text-foreground hover:bg-secondary  flex justify-around">
+            <Button
+              sx={{ color: "green" }}
+              className="w-full border bg-background text-foreground hover:bg-secondary  flex justify-around"
+            >
               <Image
                 src={`/img/facebook.svg`}
                 alt="facebook logo"
