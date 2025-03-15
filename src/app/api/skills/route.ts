@@ -4,8 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 export async function POST(req: NextRequest) {
   try {
-    const { name } = await req.json();
-    if (!name) {
+    const body = await req.json();
+    if (!body) {
       return NextResponse.json({
         success: false,
         code: "NO_NAME_PROVIDED",
@@ -13,24 +13,24 @@ export async function POST(req: NextRequest) {
         data: null,
       });
     }
-    const catExist = await prisma.skill.findUnique({ where: { name } });
-    if (catExist) {
-      return NextResponse.json({
-        success: false,
-        code: "SKILL_EXISTS",
-        message: "Skill аль хэдийн датабаз дээр байна!",
-        data: { catExist },
-      });
-    }
-    const newSkill = await prisma.skill.create({
-      data: { name },
+    // const catExist = await prisma.skill.findUnique({ where: { name } });
+    // if (catExist) {
+    //   return NextResponse.json({
+    //     success: false,
+    //     code: "SKILL_EXISTS",
+    //     message: "Skill аль хэдийн датабаз дээр байна!",
+    //     data: { catExist },
+    //   });
+    // }
+    const newSkill = await prisma.skill.createMany({
+      data: body,
     });
     if (newSkill) {
       return NextResponse.json({
         success: true,
         code: "NEW_SKILL_ADDED",
         message: "Шинэ skill амжилттай нэмэгдлээ!",
-        data: null,
+        data: newSkill,
       });
     }
   } catch (err) {
@@ -45,7 +45,9 @@ export async function POST(req: NextRequest) {
 }
 export async function GET() {
   try {
-    const allSkills = await prisma.skill.findMany();
+    const allSkills = await prisma.skill.findMany({
+      orderBy: { name: "asc" },
+    });
     if (!allSkills) {
       return NextResponse.json({
         success: false,

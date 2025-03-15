@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
       null
     );
   } catch (err) {
-    console.error(err, "");
+    console.error(err, "Сервер дээр асуудал гарлаа");
     return NextResponse_CatchError(err);
   }
 }

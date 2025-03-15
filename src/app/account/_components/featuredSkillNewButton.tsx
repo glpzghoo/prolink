@@ -15,6 +15,8 @@ import {
   useState,
 } from "react";
 import z from "zod";
+import { CustomFeaturedSkill } from "@/app/freelancer/[id]/page";
+import Link from "next/link";
 const formSchema = z
   .object({
     skill: z.string(),
@@ -35,11 +37,16 @@ const formSchema = z
 type Props = {
   setRefresh: Dispatch<SetStateAction<boolean>>;
   refresh: boolean;
+  featured: CustomFeaturedSkill[];
 };
-export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
+export const FeaturedSkillNewButton = ({
+  setRefresh,
+  refresh,
+  featured,
+}: Props) => {
   const [form, setForm] = useState({
     present: false,
-    skill: "dZqwabEi-t9ArW7ZD5zgD",
+    skill: "",
   });
   const [loading, setLoading] = useState(true);
   const [FormValid, setFormValid] = useState(false);
@@ -57,12 +64,17 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res1 = await axios.get(`/api/skills`);
-        const res2 = await axios.get(`/api/account`);
-        if (res2.data.success) {
-          setSkills(res2.data.data.informations.skill);
+        const res1 = await axios.get(`/api/account`);
+        if (res1.data.success) {
+          const filterSkills = res1.data.data.informations.skill.filter(
+            (skil: skill) => {
+              const filter = featured.some((ski) => ski.skillId === skil.id);
+              return !filter;
+            }
+          );
+          setSkills(filterSkills);
         } else {
-          setResponse2(res2.data);
+          setResponse2(res1.data);
         }
         setLoading(false);
       } catch (err) {
@@ -71,17 +83,7 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
       }
     };
     fetchData();
-  }, []);
-  // useEffect(() => {
-  //   if (form.present) {
-  //     setForm((prev) => {
-  //       return {
-  //         ...prev,
-  //         endedAt: null,
-  //       };
-  //     });
-  //   }
-  // }, [form.present]);
+  }, [refresh]);
   const handleForm = (
     event: ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -108,23 +110,36 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
       console.error(err, "Сервер дээр алдаа гарлаа!");
     }
   };
+  console.log(form);
   return (
     <div className="border p-5 flex flex-col justify-center gap-4">
       {skills && (
-        <select
-          defaultValue={form.skill}
-          onChange={handleForm}
-          name="skill"
-          id="skill"
-          className="border p-2 w-1/4"
-        >
-          {skills.map((skill) => (
-            <option value={skill.id} key={skill.id}>
-              {skill.name}
-            </option>
-          ))}
-        </select>
+        <div>
+          {skills.length === 0 && (
+            <div>
+              Skill харагдахгүй байна уу?{" "}
+              <Link href={`/account/settings/about`} className=" underline">
+                Энд дарж
+              </Link>{" "}
+              skill нэмээрэй!
+            </div>
+          )}
+          <select
+            defaultValue={form?.skill}
+            onChange={handleForm}
+            name="skill"
+            id="skill"
+            className="border p-2 w-1/4"
+          >
+            {skills.map((skill) => (
+              <option value={skill.id} key={skill.id}>
+                {skill.name}
+              </option>
+            ))}
+          </select>
+        </div>
       )}
+
       <Textarea name="detail" onChange={handleForm} />
       <div>
         <Label htmlFor="startedAt">Эхлэсэн</Label>

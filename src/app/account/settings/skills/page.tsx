@@ -10,10 +10,11 @@ import { CustomFeaturedSkill } from "@/app/freelancer/[id]/page";
 import { responseData } from "@/lib/types";
 
 export default function Settings() {
-  const [featured, setFeatured] = useState<CustomFeaturedSkill[]>([]);
+  const [featured, setFeatured] = useState<CustomFeaturedSkill[]>();
   const [response, setResponse] = useState<responseData>();
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(false);
+  const [deletingItem, setdeletingItem] = useState("");
   const [refresh, setRefresh] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
@@ -50,9 +51,13 @@ export default function Settings() {
       {loading ? (
         <Loading />
       ) : featured ? (
-        <div className=" w-3/4">
+        <div className=" w-2/4">
           <div className="flex flex-col gap-4">
-            <FeaturedSkillNewButton setRefresh={setRefresh} refresh={refresh} />
+            <FeaturedSkillNewButton
+              setRefresh={setRefresh}
+              refresh={refresh}
+              featured={featured}
+            />
             <div className=" font-bold">Таны онцолсон ур чадварууд</div>
             {featured.length !== 0 ? (
               featured.map((ski) => (
@@ -62,6 +67,8 @@ export default function Settings() {
                   deleteSkill={deleteSkill}
                   setLoading2={setLoading2}
                   loading2={loading2}
+                  setdeletingItem={setdeletingItem}
+                  deletingItem={deletingItem}
                 />
               ))
             ) : (
