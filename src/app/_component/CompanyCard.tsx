@@ -1,10 +1,24 @@
 import { job } from "@prisma/client";
 import Link from "next/link";
-import { calculateTime, CustomJob } from "../job/[id]/page";
+import { CustomJob } from "../job/[id]/page";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { GoDotFill } from "react-icons/go";
 type Props = {
   post: CustomJob;
+};
+const calculateTime = (data: string) => {
+  const timeago = (new Date().getTime() - new Date(data).getTime()) / 1000;
+  if (timeago / 60 / 60 / 24 > 1) {
+    return Math.round(timeago / 60 / 60 / 24) + " хоногийн өмнө";
+  } else if (timeago / 60 / 60 > 1) {
+    return Math.round(timeago / 60 / 60) + " цагийн өмнө";
+  } else if (timeago / 60 > 1) {
+    return Math.round(timeago / 60) + " минутын өмнө";
+  } else if (timeago > 1) {
+    return Math.round(timeago) + " секүндийн өмнө";
+  } else {
+    return "дөнгөж сая";
+  }
 };
 export default function CompanyCard({ post }: Props) {
   return (
