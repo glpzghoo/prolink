@@ -26,17 +26,26 @@ export async function GET(req: NextRequest) {
         skill: {
           include: {
             user: {
-              omit: { password: true },
+              omit: { password: true, phoneNumber: true, email: true },
             },
           },
         },
-        reviewee: { include: { reviewee: true } },
+        reviewee: {
+          include: {
+            reviewee: {
+              omit: { password: true, phoneNumber: true, email: true },
+            },
+          },
+        },
         reviewer: true,
         featuredSkills: {
-          include: { user: { omit: { password: true } }, skill: true },
+          include: {
+            user: { omit: { password: true, phoneNumber: true, email: true } },
+            skill: true,
+          },
         },
       },
-      omit: { password: true },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     if (!user) {
       return CustomNextResponse(

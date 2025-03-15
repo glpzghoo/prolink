@@ -17,7 +17,7 @@ type form = {
 type CustomSkill = skill & {
   user: user[];
 };
-export default function App() {
+export default function AboutSettings() {
   const router = useRouter();
   const [form, setForm] = useState<form>({
     about: "",
@@ -73,10 +73,10 @@ export default function App() {
   return userInfo ? (
     <div>
       {userInfo.success ? (
-        <div className="min-h-screen">
-          <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen bg-secondary">
+          <div className="min-h-screen flex justify-center">
             <div className="">
-              <div className="w-[468px] min-h-[522px] px-3 flex flex-col gap-6">
+              <div className="w-[800px] min-h-[522px] flex flex-col gap-6  bg-background px-20">
                 <div className="flex justify-center h-16 items-center border-b-2 font-bold">
                   {userInfo.data.user.role === "CLIENT"
                     ? "Байгууллагынхаа мэдээллийг энд засна уу!"

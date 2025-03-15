@@ -8,7 +8,6 @@ export function ClientCard({ user }: { user: CustomUser }) {
     if (!user?.reviewee || user.reviewee.length === 0) return 0;
     const total = user.reviewee.reduce((prev, acc) => prev + acc.rating, 0);
     const avg = total / user.reviewee.length / 20;
-    console.log(avg);
     return avg.toFixed(1);
   };
   return (

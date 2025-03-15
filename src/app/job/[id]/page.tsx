@@ -5,11 +5,13 @@ import CustomSkeleton from "@/app/_component/skeleton";
 import MailDetail from "@/app/account/_components/maildetailbutton";
 import { Textarea } from "@/components/ui/textarea";
 import { calculateTime } from "@/lib/helper";
+import { responseData } from "@/lib/types";
 import { Button, Rating } from "@mui/material";
 import { job, jobApplication, review, skill, user } from "@prisma/client";
 import axios from "axios";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import Snackbar from "@mui/material/Snackbar";
 import { useEffect, useState } from "react";
 import { GoDotFill } from "react-icons/go";
 import { ImSpinner10 } from "react-icons/im";
@@ -36,6 +38,8 @@ export default function App() {
   }
   const [post, setPost] = useState<CustomJob>();
   const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(false);
+  const [response, setResponse] = useState<responseData>();
   const fetchData = async () => {
     try {
       const res = await axios.get(`/api/job/post?id=${id}`);
@@ -51,7 +55,15 @@ export default function App() {
   useEffect(() => {
     fetchData();
   }, []);
-  console.log(post);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setResponse(undefined);
+    }, 4000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [response]);
   const avgRating = (user: CustomUser) => {
     if (!user.reviewee || user.reviewee.length === 0) return 0;
 
@@ -60,11 +72,14 @@ export default function App() {
     return Number(fixed.toFixed(1));
   };
   const sendJobApplication = async () => {
+    setLoading2(true);
     try {
       const res = await axios.get(`/api/sendMail/jobApplication?id=${id}`);
-      console.log(res.data);
+      setResponse(res.data);
     } catch (err) {
       console.error(err, "Сервер дээр асуудал гарлаа!");
+    } finally {
+      setLoading2(false);
     }
   };
   // avgRating(post?.poster);
@@ -175,8 +190,12 @@ export default function App() {
             <div className="mb-2 md:mb-0 font-bold">
               Уг ажлыг сонирхож байна уу?
             </div>
-            <Button onClick={sendJobApplication} sx={{ color: "green" }}>
-              Ажиллах хүсэлт илгээх
+            <Button
+              disabled={loading}
+              onClick={sendJobApplication}
+              sx={{ color: "green" }}
+            >
+              {loading ? "Ажлын хүсэлт илгээж байна!" : "Ажиллах хүсэлт илгээх"}
             </Button>
           </div>
         ) : (
@@ -191,6 +210,13 @@ export default function App() {
               </Button>
             </Link>
           </div>
+        )}
+        {response?.message && (
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={response.message ? true : false}
+            message={response.message}
+          />
         )}
 
         <div className="mt-4 pb-4 border-b">

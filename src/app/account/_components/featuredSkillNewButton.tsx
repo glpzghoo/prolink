@@ -110,7 +110,6 @@ export const FeaturedSkillNewButton = ({
       console.error(err, "Сервер дээр алдаа гарлаа!");
     }
   };
-  console.log(form);
   return (
     <div className="border p-5 flex flex-col justify-center gap-4">
       {skills && (

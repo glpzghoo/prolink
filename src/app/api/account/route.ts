@@ -9,6 +9,7 @@ export async function POST(req: NextRequest) {
       where: {
         email,
       },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     if (userExist) {
       return NextResponse.json({
@@ -70,7 +71,7 @@ export async function GET(req: NextRequest) {
         id: verified.id,
       },
       include: { skill: true },
-      omit: { password: true },
+      omit: { password: true, email: true, phoneNumber: true },
     });
     if (user) {
       return NextResponse.json({

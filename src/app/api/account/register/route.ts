@@ -15,9 +15,11 @@ export async function POST(req: NextRequest) {
   try {
     const existingUser1 = await prisma.user.findUnique({
       where: { email: body.email },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     const existingUser2 = await prisma.user.findUnique({
       where: { phoneNumber: body.phoneNumber },
+      omit: { password: true, phoneNumber: true, email: true },
     });
 
     if (existingUser1) {
@@ -45,6 +47,7 @@ export async function POST(req: NextRequest) {
         password: encryptedPass,
         role: body.companyName ? "CLIENT" : "FREELANCER",
       },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     return NextResponse.json({
       success: true,

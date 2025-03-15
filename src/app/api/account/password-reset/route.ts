@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
       where: {
         email,
       },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     const otp = Math.floor(Math.random() * 899999 + 100000);
     await transporter.sendMail({
@@ -57,6 +58,7 @@ export async function PATCH(req: NextRequest) {
       where: {
         email,
       },
+      omit: { password: true, phoneNumber: true },
     });
     const getOTP = await prisma.otp.findFirst({
       where: { otp },
@@ -71,6 +73,7 @@ export async function PATCH(req: NextRequest) {
         data: {
           password: encryptedPass,
         },
+        omit: { password: true, phoneNumber: true, email: true },
       });
       return NextResponse.json({
         code: "OTP_MATCHED",
@@ -91,5 +94,4 @@ export async function PATCH(req: NextRequest) {
       success: false,
     });
   }
-  return NextResponse.json({ message: "hi" });
 }
