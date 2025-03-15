@@ -1,5 +1,6 @@
 "use client";
 import Loading from "@/app/_component/loading";
+import CustomSkeleton from "@/app/_component/skeleton";
 import MailDetail from "@/app/account/_components/maildetailbutton";
 import { Textarea } from "@/components/ui/textarea";
 import { responseData } from "@/lib/types";
@@ -65,7 +66,6 @@ export default function Client() {
     const fetchData = async () => {
       try {
         const res1 = await axios.get(`/api/freelancers/id?id=${id}`);
-        const res2 = await axios.post(`/api/account/profileViews?id=${id}`);
         if (res1.data.success) {
           setUser(res1.data.data.user);
         }
@@ -84,6 +84,7 @@ export default function Client() {
       if (res.data.data?.informations?.id === id) {
         setOwner(true);
       }
+      await axios.post(`/api/account/profileViews?id=${id}`);
     };
     getInfo();
   }, []);
@@ -128,7 +129,7 @@ export default function Client() {
     <>
       {/* Үндсэн Background */}
       {loading ? (
-        <Loading />
+        <CustomSkeleton />
       ) : user ? (
         <div className="bg-gray-100 min-h-screen">
           {/* Цагаан блок (main container) */}

@@ -4,6 +4,7 @@ import { ClientCard } from "../_component/ ClientPostCard";
 import { review, skill, user } from "@prisma/client";
 import axios from "axios";
 import Loading from "../_component/loading";
+import CustomSkeleton from "../_component/skeleton";
 export type CustomUser = user & {
   skill: skill[];
   reviewee: review[];
@@ -53,9 +54,8 @@ export default function Freelance() {
     <div>
       {!loading ? (
         <>
-          <div className="border border-solid max-w-[1250px] text-start p-4 font-bold rounded-3xl mx-auto ">
-            Сайн байна уу ? Манай веб хуудсандах хэрэглэгчдийн дундаж үнэлгээ:{" "}
-            {allreviews(users)}/5
+          <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto ">
+            Дундаж үнэлгээ: {allreviews(users)}/5
           </div>
           <div className="max-w-[1280px] mx-auto flex  ">
             {users
@@ -64,7 +64,7 @@ export default function Freelance() {
           </div>
         </>
       ) : (
-        <Loading />
+        <CustomSkeleton />
       )}
     </div>
   );

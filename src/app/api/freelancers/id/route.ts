@@ -21,6 +21,12 @@ export async function GET(req: NextRequest) {
         featuredSkills: {
           include: { skill: true },
         },
+        jobpost: {
+          where: { status: { in: ["ACTIVE", "CLOSED"] } },
+          orderBy: {
+            postedAt: "desc",
+          },
+        },
       },
     });
     if (!user) {

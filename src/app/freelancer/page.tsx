@@ -4,6 +4,7 @@ import { ClientCard } from "../_component/ ClientPostCard";
 import { review, skill, user } from "@prisma/client";
 import axios from "axios";
 import Loading from "../_component/loading";
+import CustomSkeleton from "../_component/skeleton";
 export type CustomUser = user & {
   skill: skill[];
   reviewee: review[];
@@ -22,7 +23,13 @@ export default function Freelance() {
               return !user.companyName;
             }
           );
-          setUsers(filteredUsers);
+          const sortedUser = filteredUsers.sort(
+            (user1: CustomUser, user2: CustomUser) => {
+              const result = user2.profileViews - user1.profileViews;
+              return result;
+            }
+          );
+          setUsers(sortedUser);
         }
         setLoading(false);
       } catch (err) {
@@ -54,17 +61,16 @@ export default function Freelance() {
       {!loading ? (
         <>
           <div className="border border-solid max-w-[1250px] text-start p-4 font-bold rounded-3xl mx-auto ">
-            Сайн байна уу ? Манай веб хуудсандах хэрэглэгчдийн дундаж үнэлгээ:{" "}
-            {allreviews(users)}/5
+            Дундаж үнэлгээ: {allreviews(users)}/5
           </div>
           <div className="max-w-[1280px] mx-auto flex flex-wrap ">
-            {users
-              .map((user) => <ClientCard key={user.id} user={user} />)
-              .slice(0, 4)}
+            {users.map((user) => (
+              <ClientCard key={user.id} user={user} />
+            ))}
           </div>
         </>
       ) : (
-        <Loading />
+        <CustomSkeleton />
       )}
     </div>
   );
