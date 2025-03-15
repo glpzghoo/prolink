@@ -22,8 +22,23 @@ export async function POST(req: NextRequest) {
     const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
       id: string;
     };
-    const user = await prisma.user.findUnique({ where: { id: verify.id } });
+    const user = await prisma.user.findUnique({
+      where: { id: verify.id },
+      include: { featuredSkills: true },
+    });
     if (user) {
+      const existingFeature = user.featuredSkills.some((ski) => {
+        return ski.skillId === skill;
+      });
+      if (existingFeature) {
+        return CustomNextResponse(
+          false,
+          "FEATUREDSKILL_ALREADY_EXIST",
+          "Онцгойлсон skill аль хэдийн оруулсан байна!",
+          null
+        );
+      }
+
       if (skill && detail && startedAt && (present || endedAt)) {
         if (present) {
           const NewFeaturedSkill = await prisma.featuredSkills.create({

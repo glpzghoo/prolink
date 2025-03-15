@@ -8,11 +8,15 @@ export const FeaturedSkillsetup = ({
   deleteSkill,
   setLoading2,
   loading2,
+  deletingItem,
+  setdeletingItem,
 }: {
   skill: CustomFeaturedSkill;
   deleteSkill: (id: string) => void;
   setLoading2: Dispatch<SetStateAction<boolean>>;
   loading2: boolean;
+  deletingItem: string;
+  setdeletingItem: Dispatch<SetStateAction<string>>;
 }) => {
   const startedAt = skill.startedAt;
   const endedAt = skill.endedAt ? skill.endedAt : null;
@@ -38,11 +42,16 @@ export const FeaturedSkillsetup = ({
         <Button
           disabled={loading2}
           onClick={() => {
+            setdeletingItem(skill.id);
             deleteSkill(skill.id);
           }}
           sx={{ color: "green", padding: "5px, 5px", fontSize: "18px" }}
         >
-          {loading2 ? <>Түр хүлээнэ үү...</> : <>Устгах</>}
+          {loading2 && deletingItem === skill.id ? (
+            <>Түр хүлээнэ үү...</>
+          ) : (
+            <>Устгах</>
+          )}
         </Button>
       </div>
       <div className="flex justify-between">

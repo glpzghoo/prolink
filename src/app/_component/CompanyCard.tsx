@@ -3,22 +3,9 @@ import Link from "next/link";
 import { CustomJob } from "../job/[id]/page";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { GoDotFill } from "react-icons/go";
+import { calculateTime } from "@/lib/helper";
 type Props = {
   post: CustomJob;
-};
-const calculateTime = (data: string) => {
-  const timeago = (new Date().getTime() - new Date(data).getTime()) / 1000;
-  if (timeago / 60 / 60 / 24 > 1) {
-    return Math.round(timeago / 60 / 60 / 24) + " хоногийн өмнө";
-  } else if (timeago / 60 / 60 > 1) {
-    return Math.round(timeago / 60 / 60) + " цагийн өмнө";
-  } else if (timeago / 60 > 1) {
-    return Math.round(timeago / 60) + " минутын өмнө";
-  } else if (timeago > 1) {
-    return Math.round(timeago) + " секүндийн өмнө";
-  } else {
-    return "дөнгөж сая";
-  }
 };
 export default function CompanyCard({ post }: Props) {
   return (
@@ -39,8 +26,7 @@ export default function CompanyCard({ post }: Props) {
               </div>
             ) : (
               <div className=" text-red-600 text-xs flex items-center gap-1 whitespace-nowrap">
-                <div>Идэвхитэй зар</div>{" "}
-                <GoDotFill className="animate-ping duration-4000" />
+                <div>Идэвхигүй зар</div>{" "}
               </div>
             )}
           </div>

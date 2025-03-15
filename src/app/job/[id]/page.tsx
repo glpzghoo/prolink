@@ -39,7 +39,9 @@ export default function App() {
   const fetchData = async () => {
     try {
       const res = await axios.get(`/api/job/post?id=${id}`);
-      setPost(res.data.data.post);
+      if (res.data.success) {
+        setPost(res.data.data.post);
+      }
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     } finally {
@@ -56,6 +58,14 @@ export default function App() {
     const total = user.reviewee.reduce((prev, acc) => prev + acc.rating, 0);
     const fixed = total / user.reviewee.length / 20;
     return Number(fixed.toFixed(1));
+  };
+  const sendJobApplication = async () => {
+    try {
+      const res = await axios.get(`/api/sendMail/jobApplication?id=${id}`);
+      console.log(res.data);
+    } catch (err) {
+      console.error(err, "Сервер дээр асуудал гарлаа!");
+    }
   };
   // avgRating(post?.poster);
   return loading ? (
@@ -74,7 +84,7 @@ export default function App() {
                   </div>
                 ) : (
                   <div className=" text-red-600 text-xs flex items-center gap-1 whitespace-nowrap">
-                    <div>Идэвхитэй зар</div>{" "}
+                    <div>Идэвхигүй зар</div>{" "}
                     <GoDotFill className="animate-ping duration-4000" />
                   </div>
                 )}
@@ -160,12 +170,28 @@ export default function App() {
           </div>
         </div>
 
-        <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-around">
-          <div className="mb-2 md:mb-0 font-bold">
-            Уг ажлыг сонирхож байна уу?
+        {post.status === "ACTIVE" ? (
+          <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-around">
+            <div className="mb-2 md:mb-0 font-bold">
+              Уг ажлыг сонирхож байна уу?
+            </div>
+            <Button onClick={sendJobApplication} sx={{ color: "green" }}>
+              Ажиллах хүсэлт илгээх
+            </Button>
           </div>
-          <Button sx={{ color: "green" }}>Ажиллах хүсэлт илгээх</Button>
-        </div>
+        ) : (
+          <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-around">
+            {/* <div className="mb-2 md:mb-0 font-bold">
+              Уг пост идэвхигүй байна!
+            </div> */}
+            <Link href={`/client/${post.poster.id}`}>
+              <Button sx={{ color: "green" }}>
+                Идэвхигүй ч гэсэн ажиллах хүсэлтэй байгаа бол энд дарж
+                компанитай холбогдох хүсэлт илгээнэ үү!
+              </Button>
+            </Link>
+          </div>
+        )}
 
         <div className="mt-4 pb-4 border-b">
           <h3 className="font-semibold text-md mb-2">Бусад төстэй зарууд</h3>
@@ -178,6 +204,11 @@ export default function App() {
       </div>
     </div>
   ) : (
-    <div>Пост олдсонгүй!</div>
+    <div className="flex flex-col items-center gap-2">
+      <div>Пост олдсонгүй! </div>
+      <Link href={`/job`}>
+        <Button className=" underline">Буцах</Button>
+      </Link>
+    </div>
   );
 }

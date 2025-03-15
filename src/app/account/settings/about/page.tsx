@@ -78,7 +78,9 @@ export default function App() {
             <div className="">
               <div className="w-[468px] min-h-[522px] px-3 flex flex-col gap-6">
                 <div className="flex justify-center h-16 items-center border-b-2 font-bold">
-                  Өөрийнхөө талаарх мэдээллийг засна уу!
+                  {userInfo.data.user.role === "CLIENT"
+                    ? "Байгууллагынхаа мэдээллийг энд засна уу!"
+                    : "Байгууллагынхаа талаарх мэдээллийг энд засна уу!"}
                 </div>
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-col gap-6">
@@ -122,6 +124,11 @@ export default function App() {
                           : `Ажил олгогчдод өөрийгөө танилцуулаарай!`}
                       </div>
                     </div>
+                    {userInfo.data.user.role === "CLIENT" && (
+                      <div className=" text-sm text-green-600">
+                        Нээлттэй ажлын байраа сонгоно уу!
+                      </div>
+                    )}
                     <div className="flex whitespace-nowrap flex-wrap gap-1">
                       {skills.map((skill) => (
                         <Button
