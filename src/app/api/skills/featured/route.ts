@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.findUnique({
       where: { id: verify.id },
       include: { featuredSkills: true },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     if (user) {
       const existingFeature = user.featuredSkills.some((ski) => {
@@ -100,12 +101,13 @@ export async function GET(req: NextRequest) {
         featuredSkills: {
           include: {
             user: {
-              omit: { password: true },
+              omit: { password: true, phoneNumber: true, email: true },
             },
             skill: true,
           },
         },
       },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     return CustomNextResponse(true, "REQUEST_SUCCESS", "Хүсэлт амжилттай!", {
       user: UserFeaturedSkills,

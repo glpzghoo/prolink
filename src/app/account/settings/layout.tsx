@@ -31,7 +31,9 @@ export default function RootLayout({
         {/* <Button>Профайл тохиргоо</Button>
         <Button>Профайл тохиргоо</Button> */}
       </div>
-      <div className={`${inter.className} min-h-screen`}>{children}</div>
+      <div className={`${inter.className} min-h-screen  bg-secondary`}>
+        {children}
+      </div>
     </div>
   );
 }

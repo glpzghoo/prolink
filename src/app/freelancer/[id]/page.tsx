@@ -384,10 +384,12 @@ export default function Client() {
                           }`}
                         >
                           <div className=" font-bold flex gap-1 items-center">
-                            {
-                              user.reviewee[showFullReview - 1].reviewer
-                                .companyName
-                            }
+                            {user.reviewee[showFullReview - 1].reviewer
+                              .companyName
+                              ? user.reviewee[showFullReview - 1].reviewer
+                                  .companyName
+                              : user.reviewee[showFullReview - 1].reviewer
+                                  .firstName}
                             <ImNewTab className="text-xs" />
                           </div>
                         </Link>

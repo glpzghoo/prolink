@@ -5,6 +5,7 @@ export async function GET() {
   try {
     const users = await prisma.user.findMany({
       include: { skill: true, reviewee: true },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     if (!users) {
       return CustomNextResponse(

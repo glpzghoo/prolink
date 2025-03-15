@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
       include: {
         skill: true,
         poster: {
-          omit: { password: true },
+          omit: { password: true, phoneNumber: true, email: true },
           include: {
             reviewee: { include: { reviewer: true } },
             reviewer: true,

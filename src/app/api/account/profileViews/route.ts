@@ -8,7 +8,10 @@ export async function POST(req: NextRequest) {
     return CustomNextResponse(false, "ID_NOT_PROVIDED", "Буруу ID", null);
   }
   try {
-    const user = await prisma.user.findUnique({ where: { id } });
+    const user = await prisma.user.findUnique({
+      where: { id },
+      omit: { password: true, phoneNumber: true, email: true },
+    });
     if (!user) {
       return CustomNextResponse(
         false,
@@ -20,13 +23,13 @@ export async function POST(req: NextRequest) {
     const view = await prisma.user.update({
       where: { id },
       data: { profileViews: user?.profileViews + 1 },
+      omit: { password: true, phoneNumber: true, email: true },
     });
-    const { password, ...userInfo } = view;
     return CustomNextResponse(
       true,
       "REQUEST_SUCCESS",
       "Хүсэлт амжилттай биеллээ!",
-      { new: userInfo.profileViews }
+      { new: view.profileViews }
     );
   } catch (err) {
     console.error(err, "Сервер дээр алдаа гарлаа!");

@@ -15,6 +15,23 @@ export async function POST(req: NextRequest) {
   } = await req.json();
 
   try {
+    const poster = await prisma.user.findUnique({ where: { id: posterId } });
+    if (!poster) {
+      return CustomNextResponse(
+        false,
+        "USER_NOT_FOUND",
+        "Хэрэглэгч олдсонгүй!",
+        null
+      );
+    }
+    if (poster.role === "FREELANCER") {
+      return CustomNextResponse(
+        false,
+        "NOT_ALLOWED",
+        "Freelancer -ууд пост оруулах эрхгүй!",
+        null
+      );
+    }
     const newJob = await prisma.job.create({
       data: {
         title,

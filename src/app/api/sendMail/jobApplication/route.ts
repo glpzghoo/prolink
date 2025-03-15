@@ -22,18 +22,19 @@ export async function GET(req: NextRequest) {
     };
     const freelancer = await prisma.user.findUnique({
       where: { id: verify.id },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     if (!freelancer) {
       return CustomNextResponse(
         false,
-        "USER_FOUND",
+        "USER_NOT_FOUND",
         "Хэрэглэгчийг танисангүй!",
         null
       );
     } else if (freelancer.role === "CLIENT") {
       return CustomNextResponse(
         false,
-        "NOT_FREELANCER",
+        "NOT_A_FREELANCER",
         "Компани ажлын хүсэлт тавьж болохгүй!",
         null
       );
@@ -61,6 +62,21 @@ export async function GET(req: NextRequest) {
     const newJobApplication = await prisma.jobApplication.create({
       data: { jobId: id, freelancerId: verify.id, clientId: job.posterId },
     });
+
+    if (!newJobApplication) {
+      return CustomNextResponse(
+        false,
+        "JOB_APPLICATION_FAILED",
+        "Ижлын хүсэлт илгээж чадсангүй!",
+        null
+      );
+    }
+    return CustomNextResponse(
+      true,
+      "JOB_APPLICATION_SENT",
+      "Ажлын хүсэлт амжилттай илгээлээ!",
+      { newJobApplication }
+    );
   } catch (err) {
     console.error(err, "Сервер дээр асуудал гарлаа");
     return NextResponse_CatchError(err);

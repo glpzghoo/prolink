@@ -8,6 +8,8 @@ import { featuredSkills } from "@prisma/client";
 import Loading from "@/app/_component/loading";
 import { CustomFeaturedSkill } from "@/app/freelancer/[id]/page";
 import { responseData } from "@/lib/types";
+import AboutSettings from "../about/page";
+import { ImSpinner2 } from "react-icons/im";
 
 export default function Settings() {
   const [featured, setFeatured] = useState<CustomFeaturedSkill[]>();
@@ -47,11 +49,16 @@ export default function Settings() {
     }
   };
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full flex flex-col items-center">
       {loading ? (
-        <Loading />
+        <div className="min-h-screen flex items-center gap-2 justify-center">
+          <div>Түр хүлээнэ үү!</div>
+          <div>
+            <ImSpinner2 className="animate-spin" />
+          </div>
+        </div>
       ) : featured ? (
-        <div className=" w-2/4">
+        <div className=" w-2/4 bg-background">
           <div className="flex flex-col gap-4">
             <FeaturedSkillNewButton
               setRefresh={setRefresh}

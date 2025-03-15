@@ -30,7 +30,6 @@ export default function Company() {
   useEffect(() => {
     fetchData();
   }, []);
-  console.log(posts);
   return loading ? (
     <CustomSkeleton />
   ) : (

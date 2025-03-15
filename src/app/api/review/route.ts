@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
     }
     const reviewee = await prisma.user.findUnique({
       where: { id: revieweeId },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     if (!reviewee) {
       return CustomNextResponse(
@@ -53,6 +54,7 @@ export async function POST(req: NextRequest) {
     const reviewer = await prisma.user.findUnique({
       where: { id: verify.id },
       include: { reviewer: true },
+      omit: { password: true, phoneNumber: true, email: true },
     });
 
     if (!reviewer) {
