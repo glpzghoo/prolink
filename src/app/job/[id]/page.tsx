@@ -4,6 +4,7 @@ import Loading from "@/app/_component/loading";
 import CustomSkeleton from "@/app/_component/skeleton";
 import MailDetail from "@/app/account/_components/maildetailbutton";
 import { Textarea } from "@/components/ui/textarea";
+import { calculateTime } from "@/lib/helper";
 import { Button, Rating } from "@mui/material";
 import { job, jobApplication, review, skill, user } from "@prisma/client";
 import axios from "axios";
@@ -25,20 +26,6 @@ export type CustomUser = user & {
 type CustomReviewee = review & {
   reviewee: CustomUser;
   reviewer: CustomUser;
-};
-const calculateTime = (data: string) => {
-  const timeago = (new Date().getTime() - new Date(data).getTime()) / 1000;
-  if (timeago / 60 / 60 / 24 > 1) {
-    return Math.round(timeago / 60 / 60 / 24) + " хоногийн өмнө";
-  } else if (timeago / 60 / 60 > 1) {
-    return Math.round(timeago / 60 / 60) + " цагийн өмнө";
-  } else if (timeago / 60 > 1) {
-    return Math.round(timeago / 60) + " минутын өмнө";
-  } else if (timeago > 1) {
-    return Math.round(timeago) + " секүндийн өмнө";
-  } else {
-    return "дөнгөж сая";
-  }
 };
 
 export default function App() {

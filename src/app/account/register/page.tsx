@@ -39,7 +39,6 @@ const RegisterFormSchema = z.object({
     },
     { message: "user must be 18+" }
   ),
-  role: z.enum(["CLIENT", "FREELANCER"]),
   phoneNumber: z.string().min(8),
   password: z
     .string()
@@ -57,7 +56,6 @@ export default function Login() {
     firstName: "",
     lastName: "",
     birthday: new Date(new Date().toISOString().split("T")[0]),
-    role: "FREELANCER",
     companyName: "",
     phoneNumber: "",
     salary: 10000,
@@ -70,7 +68,6 @@ export default function Login() {
     firstName: false,
     lastName: false,
     birthday: false,
-    role: false,
     phoneNumber: false,
     salary: false,
     salaryType: false,
@@ -103,7 +100,6 @@ export default function Login() {
         firstName: false,
         lastName: false,
         birthday: false,
-        role: false,
         salary: false,
         salaryType: false,
         phoneNumber: false,
@@ -120,7 +116,6 @@ export default function Login() {
         birthday: !!errors.birthday,
         salary: !!errors.salary,
         salaryType: !!errors.salaryType,
-        role: !!errors.role,
         phoneNumber: !!errors.phoneNumber,
         password: !!errors.password,
         pfp: !!errors.pfp,

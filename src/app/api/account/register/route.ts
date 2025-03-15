@@ -40,7 +40,11 @@ export async function POST(req: NextRequest) {
     const { password } = body;
     const encryptedPass = await bcrypt.hash(password, Number(process.env.SALT));
     const newUser = await prisma.user.create({
-      data: { ...body, password: encryptedPass },
+      data: {
+        ...body,
+        password: encryptedPass,
+        role: body.companyName ? "CLIENT" : "FREELANCER",
+      },
     });
     return NextResponse.json({
       success: true,
@@ -54,7 +58,7 @@ export async function POST(req: NextRequest) {
       success: false,
       message: "Сервер дээр алдаа гарлаа!",
       code: "API_ERROR",
-      data: {},
+      data: null,
     });
   }
 }
