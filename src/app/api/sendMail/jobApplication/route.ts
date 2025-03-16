@@ -49,7 +49,12 @@ export async function GET(req: NextRequest) {
     }
     const job = await prisma.job.findUnique({ where: { id } });
     if (!job) {
-      return CustomNextResponse(false, "JOB_NOT_FOUND", "Зар олдсонгүй!", null);
+      return CustomNextResponse(
+        false,
+        "JOB_NOT_FOUND",
+        "Ажлын санал олдсонгүй!",
+        null
+      );
     } else if (job.status === "CLOSED" || job.status === "DRAFT") {
       return CustomNextResponse(
         false,
@@ -59,6 +64,18 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    const find = await prisma.jobApplication.findFirst({
+      where: { jobId: id },
+    });
+
+    if (find?.freelancerId === freelancer.id) {
+      return CustomNextResponse(
+        false,
+        "JOB_APPLICATION_EXIST",
+        "Та алв хэдийн хүсэлт гаргасан байна. Компань зөвшөөрөх хүртэл хүлээнэ үү!",
+        null
+      );
+    }
     const newJobApplication = await prisma.jobApplication.create({
       data: { jobId: id, freelancerId: verify.id, clientId: job.posterId },
     });

@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Gothic_A1,
+  Inter,
+  Montserrat,
+  Roboto,
+} from "next/font/google";
 import "./globals.css";
 import { Navigation } from "./account/_components/navigation";
 import Footer from "./account/_components/footer";
@@ -19,7 +26,7 @@ export const metadata: Metadata = {
   description:
     "Mанай веб сайт нь Монголын чадварлаг залууст зориулан гаргасан, өөрт тохирох ажлыг олох зорилготой Та мөрөөдлийн карьер болон ажлын байраа манай веб сайтаас олоорой  ",
 };
-
+const inter = Roboto({ subsets: ["latin"], weight: "400" });
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,13 +35,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased ${inter.className}`}
       >
-        <div className=" mb-10">
+        <div>
           <Navigation />
         </div>
-        <div className=" min-h-screen">{children}</div>
-        <div className=" mt-10">
+        <div className=" min-h-screen bg-background">{children}</div>
+        <div>
           <Footer />
         </div>
       </body>

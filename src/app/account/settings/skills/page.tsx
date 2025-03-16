@@ -10,6 +10,7 @@ import { CustomFeaturedSkill } from "@/app/freelancer/[id]/page";
 import { responseData } from "@/lib/types";
 import AboutSettings from "../about/page";
 import { ImSpinner2 } from "react-icons/im";
+import { Snackbar } from "@mui/material";
 
 export default function Settings() {
   const [featured, setFeatured] = useState<CustomFeaturedSkill[]>();
@@ -27,9 +28,9 @@ export default function Settings() {
         } else {
           setResponse(res.data);
         }
-        setLoading(false);
       } catch (err) {
         console.error(err, "Алдаа гарлаа");
+      } finally {
         setLoading(false);
       }
     };
@@ -48,6 +49,7 @@ export default function Settings() {
       setLoading2(false);
     }
   };
+
   return (
     <div className="w-full flex flex-col items-center">
       {loading ? (
@@ -65,7 +67,9 @@ export default function Settings() {
               refresh={refresh}
               featured={featured}
             />
-            <div className=" font-bold">Таны онцолсон ур чадварууд</div>
+            <div className=" font-bold flex justify-center">
+              Таны онцолсон ур чадварууд
+            </div>
             {featured.length !== 0 ? (
               featured.map((ski) => (
                 <FeaturedSkillsetup

@@ -12,17 +12,25 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@mui/material";
 export function Navigation() {
   const [response, setUserInfo] = useState<responseData>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
-  const router = useRouter();
+  const getInfo = async () => {
+    const res = await axios.get(`/api/account`);
+    setUserInfo(res.data);
+    await axios.get(`/api/account/refreshToken`);
+  };
   useEffect(() => {
-    const getInfo = async () => {
-      setLoading(true);
-      const res = await axios.get(`/api/account`);
-      setUserInfo(res.data);
+    try {
+      const hasRun = sessionStorage.getItem("hasRun");
+      if (!hasRun) {
+        getInfo();
+        sessionStorage.setItem("hasRun", "true");
+      }
+    } catch (err) {
+      console.error(err, "Сервертэй холбогдож чадсангүй!");
+    } finally {
       setLoading(false);
-    };
-    getInfo();
+    }
   }, [pathname]);
   const logout = async () => {
     setLoading(true);
@@ -44,7 +52,7 @@ export function Navigation() {
             <div>Мэргэжилтэнгүүд</div>
           </Link>
           <Link href={`/job`}>
-            <div>Ажлын зар</div>
+            <div>Ажлын санал</div>
           </Link>
           <Link href={`/client`}>
             <div>Манайд бүртгэлтэй байгууллагууд</div>

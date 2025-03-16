@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
         id: verified.id,
       },
       include: { skill: true },
-      omit: { password: true, email: true, phoneNumber: true },
+      omit: { password: true },
     });
     if (user) {
       return NextResponse.json({

@@ -89,6 +89,7 @@ export default function Login() {
         } else {
           router.push(`/client/${res.data.data.user.id}`);
         }
+        sessionStorage.removeItem("hasRun");
       }
       setLoading(false);
     } catch (err) {
