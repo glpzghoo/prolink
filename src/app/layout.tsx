@@ -10,6 +10,8 @@ import {
 import "./globals.css";
 import { Navigation } from "./account/_components/navigation";
 import Footer from "./account/_components/footer";
+import { Suspense } from "react";
+import Loading from "./_component/loading";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,7 +42,9 @@ export default function RootLayout({
         <div>
           <Navigation />
         </div>
-        <div className=" min-h-screen bg-background">{children}</div>
+        <div className=" min-h-screen bg-background">
+          <Suspense fallback={<Loading />}>{children}</Suspense>
+        </div>
         <div>
           <Footer />
         </div>
