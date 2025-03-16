@@ -47,6 +47,9 @@ export async function GET() {
   try {
     const allSkills = await prisma.skill.findMany({
       orderBy: { name: "asc" },
+      include: {
+        user: { omit: { password: true, email: true, phoneNumber: true } },
+      },
     });
     if (!allSkills) {
       return NextResponse.json({

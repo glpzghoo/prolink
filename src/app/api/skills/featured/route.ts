@@ -77,6 +77,12 @@ export async function POST(req: NextRequest) {
         );
       }
     }
+    return CustomNextResponse(
+      false,
+      "FEATURED_SKILL_NOT_ADDED",
+      "Мэдээлэл дутуу байна!",
+      null
+    );
   } catch (err) {
     console.error(err, "Сервер дээр асуудал гарлаа!");
     return NextResponse_CatchError(err);

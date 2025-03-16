@@ -13,7 +13,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { FaCircleArrowLeft, FaCircleArrowRight } from "react-icons/fa6";
 import { GoDotFill } from "react-icons/go";
@@ -46,6 +46,9 @@ const ratingSchema = z.object({
   rating: z.number().min(1),
 });
 export default function Client() {
+  const searchParams = useSearchParams();
+  const filter = searchParams.get("filter");
+  console.log(filter);
   const [user, setUser] = useState<CustomUser>();
   const [loading, setLoading] = useState(true);
   const [loadingAddingReview, setloadingAddingReview] = useState(false);

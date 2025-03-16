@@ -45,7 +45,7 @@ export const FeaturedSkillsetup = ({
             setdeletingItem(skill.id);
             deleteSkill(skill.id);
           }}
-          sx={{ color: "green", padding: "5px, 5px", fontSize: "18px" }}
+          sx={{ color: "green", padding: "5px, 5px", fontSize: "12px" }}
         >
           {loading2 && deletingItem === skill.id ? (
             <>Түр хүлээнэ үү...</>

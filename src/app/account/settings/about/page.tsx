@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { responseData } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { Snackbar } from "@mui/material";
 import { skill, user } from "@prisma/client";
 import axios from "axios";
 import Link from "next/link";
@@ -25,12 +26,11 @@ export default function AboutSettings() {
   });
   const [skills, setSkills] = useState<skill[]>([]);
   const [userInfo, setUserInfo] = useState<responseData>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [waiting, setWaiting] = useState(false);
   const [response, setResponse] = useState<responseData>();
   const [response2, setResponse2] = useState<responseData>();
   useEffect(() => {
-    setLoading(true);
     const fetchData = async () => {
       try {
         const res1 = await axios.get(`/api/skills`);
@@ -59,6 +59,14 @@ export default function AboutSettings() {
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setResponse(undefined);
+    }, 4000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [response]);
   const sendData = async () => {
     setLoading(true);
 
@@ -79,7 +87,7 @@ export default function AboutSettings() {
               <div className="w-[800px] min-h-[522px] flex flex-col gap-6  bg-background px-20">
                 <div className="flex justify-center h-16 items-center border-b-2 font-bold">
                   {userInfo.data.user.role === "CLIENT"
-                    ? "Байгууллагынхаа мэдээллийг энд засна уу!"
+                    ? "Өөрийнхөө мэдээллийг энд засна уу!"
                     : "Байгууллагынхаа талаарх мэдээллийг энд засна уу!"}
                 </div>
                 <div className="flex flex-col gap-2">
@@ -188,7 +196,7 @@ export default function AboutSettings() {
                     "Үргэлжлүүлэх"
                   )}
                 </Button>
-                {response && (
+                {/* {response && (
                   <div className="flex justify-around">
                     <div
                       className={`${
@@ -207,6 +215,14 @@ export default function AboutSettings() {
                       </Link>
                     )}
                   </div>
+                )} */}
+                {response?.message && (
+                  <Snackbar
+                    sx={{ color: response.success ? "green" : "red" }}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    open={response.message ? true : false}
+                    message={response.message}
+                  />
                 )}
               </div>
             </div>

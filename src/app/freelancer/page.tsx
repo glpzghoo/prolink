@@ -5,14 +5,18 @@ import { review, skill, user } from "@prisma/client";
 import axios from "axios";
 import Loading from "../_component/loading";
 import CustomSkeleton from "../_component/skeleton";
+import { useSearchParams } from "next/navigation";
+import Badge from "../_component/skillBadge";
 export type CustomUser = user & {
   skill: skill[];
   reviewee: review[];
 };
 export default function Freelance() {
   const [users, setUsers] = useState<CustomUser[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<CustomUser[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const searchParams = useSearchParams();
+  const filter = searchParams.get("filter");
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,9 +35,9 @@ export default function Freelance() {
           );
           setUsers(sortedUser);
         }
-        setLoading(false);
       } catch (err) {
         console.error(err, "aldaa frontend");
+      } finally {
         setLoading(false);
       }
     };
@@ -56,18 +60,51 @@ export default function Freelance() {
     const result = total / length / 20;
     return Number(result.toFixed(1));
   };
+  useEffect(() => {
+    const filteredUsers = users.filter((user: CustomUser) => {
+      return !user.companyName;
+    });
+    const sortedUsers = filteredUsers.sort(
+      (user1: CustomUser, user2: CustomUser) => {
+        return user2.profileViews - user1.profileViews;
+      }
+    );
+    const filterSkills = sortedUsers.filter((user: CustomUser) => {
+      return user.skill.some((sk) => sk.id === filter);
+    });
+    setFilteredUsers(filterSkills);
+  }, [filter]);
   return (
     <div>
       {!loading ? (
         <>
-          <div className="border border-solid max-w-[1250px] text-start p-4 font-bold rounded-3xl mx-auto ">
-            Дундаж үнэлгээ: {allreviews(users)}/5
-          </div>
-          <div className="max-w-[1280px] mx-auto flex flex-wrap ">
-            {users.map((user) => (
-              <ClientCard key={user.id} user={user} />
-            ))}
-          </div>
+          {filter ? (
+            <>
+              <Badge />
+              <div className="border border-solid max-w-[1250px] text-start p-4 font-bold rounded-3xl mx-auto ">
+                Дундаж үнэлгээ:{" "}
+                {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
+              </div>
+              <div className="max-w-[1280px] mx-auto flex flex-wrap ">
+                {filteredUsers.map((user) => (
+                  <ClientCard key={user.id} user={user} />
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <Badge />
+              <div className="border border-solid max-w-[1250px] text-start p-4 font-bold rounded-3xl mx-auto ">
+                Дундаж үнэлгээ:{" "}
+                {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
+              </div>
+              <div className="max-w-[1280px] mx-auto flex flex-wrap ">
+                {users.map((user) => (
+                  <ClientCard key={user.id} user={user} />
+                ))}
+              </div>
+            </>
+          )}
         </>
       ) : (
         <CustomSkeleton />

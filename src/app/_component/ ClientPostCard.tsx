@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CustomUser } from "../freelancer/page";
-import { Button } from "@/components/ui/button";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { Button } from "@/components/ui/button";
 
 export function ClientCard({ user }: { user: CustomUser }) {
   const avrRating = () => {
@@ -56,17 +56,17 @@ export function ClientCard({ user }: { user: CustomUser }) {
             {avrRating()}/5
             <p>({user.reviewee.length} үнэлгээ өгсөн)</p>
           </div>
-          <div className="grid grid-cols-2 gap-2 px-10 p-4  text-wrap  truncate">
+          <div className=" flex flex-wrap justify-center gap-2">
             {user.skill
               .map((skills) => (
                 <Button
                   key={skills.id}
-                  className="text-[10px] p-1 text-[#676767] hover:text-background rounded-3xl cursor-pointer bg-[#e9e9e9] overflow-hidden max-w-[100px]  "
+                  className=" truncate text-xs bg-secondary hover:bg-secondary text-foreground rounded-full h-5"
                 >
                   {skills.name}
                 </Button>
               ))
-              .slice(0, 4)}
+              .slice(0, 3)}
           </div>
         </div>
       </div>

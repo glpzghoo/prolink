@@ -2,7 +2,14 @@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { responseData } from "@/lib/types";
-import { Button, Input, Select, Switch, TextareaAutosize } from "@mui/material";
+import {
+  Button,
+  Input,
+  Select,
+  Snackbar,
+  Switch,
+  TextareaAutosize,
+} from "@mui/material";
 import { skill } from "@prisma/client";
 import { DatePicker } from "@mui/x-date-pickers-pro";
 
@@ -34,6 +41,7 @@ const formSchema = z
       });
     }
   });
+
 type Props = {
   setRefresh: Dispatch<SetStateAction<boolean>>;
   refresh: boolean;
@@ -84,6 +92,15 @@ export const FeaturedSkillNewButton = ({
     };
     fetchData();
   }, [refresh]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setResponse(undefined);
+    }, 4000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [response]);
   const handleForm = (
     event: ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -138,7 +155,14 @@ export const FeaturedSkillNewButton = ({
           </select>
         </div>
       )}
-
+      {response?.message && (
+        <Snackbar
+          sx={{ color: response.success ? "green" : "red" }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={response.message ? true : false}
+          message={response.message}
+        />
+      )}
       <Textarea name="detail" onChange={handleForm} />
       <div>
         <Label htmlFor="startedAt">Эхлэсэн</Label>
@@ -193,7 +217,7 @@ export const FeaturedSkillNewButton = ({
           <Label>Одоог хүртэл ажиллаж байгаа</Label>
         </div>
       </div>
-      <div>
+      {/* <div>
         {response && (
           <div
             className={` ${
@@ -203,7 +227,7 @@ export const FeaturedSkillNewButton = ({
             {response.message}
           </div>
         )}
-      </div>
+      </div> */}
       <Button disabled={!FormValid} onClick={sendData}>
         Нэмэх
       </Button>

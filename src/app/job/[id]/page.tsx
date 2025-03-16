@@ -191,11 +191,13 @@ export default function App() {
               Уг ажлыг сонирхож байна уу?
             </div>
             <Button
-              disabled={loading}
+              disabled={loading2}
               onClick={sendJobApplication}
               sx={{ color: "green" }}
             >
-              {loading ? "Ажлын хүсэлт илгээж байна!" : "Ажиллах хүсэлт илгээх"}
+              {loading2
+                ? "Ажлын хүсэлт илгээж байна!"
+                : "Ажиллах хүсэлт илгээх"}
             </Button>
           </div>
         ) : (
@@ -213,6 +215,7 @@ export default function App() {
         )}
         {response?.message && (
           <Snackbar
+            sx={{ color: response.success ? "green" : "red" }}
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={response.message ? true : false}
             message={response.message}
