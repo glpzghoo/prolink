@@ -10,7 +10,7 @@ type Props = {
 export default function CompanyCard({ post }: Props) {
   return (
     <Link href={`/job/${post.id}`}>
-      <div className="border border-solid max-w-xl rounded-3xl flex flex-col justify-center p-6 gap-6 relative">
+      <div className="border border-solid max-w-xl rounded-3xl flex flex-col justify-center p-6 gap-6 relative shadow-lg">
         <div className="flex justify-between">
           <div>
             <p className="font-bold">{post.title}</p>

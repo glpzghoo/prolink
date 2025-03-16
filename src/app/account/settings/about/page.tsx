@@ -1,4 +1,5 @@
 "use client";
+import Loading from "@/app/_component/loading";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -84,7 +85,7 @@ export default function AboutSettings() {
         <div className="min-h-screen bg-secondary">
           <div className="min-h-screen flex justify-center">
             <div className="">
-              <div className="w-[800px] min-h-[522px] flex flex-col gap-6  bg-background px-20">
+              <div className="w-[800px] min-h-[522px] flex flex-col gap-6 shadow-lg bg-background p-20">
                 <div className="flex justify-center h-16 items-center border-b-2 font-bold">
                   {userInfo.data.user.role === "CLIENT"
                     ? "Өөрийнхөө мэдээллийг энд засна уу!"
@@ -235,11 +236,8 @@ export default function AboutSettings() {
       )}
     </div>
   ) : (
-    <div className="min-h-screen flex items-center gap-2 justify-center">
-      <div>Түр хүлээнэ үү!</div>
-      <div>
-        <ImSpinner2 className="animate-spin" />
-      </div>
+    <div className="">
+      <Loading />
     </div>
   );
 }

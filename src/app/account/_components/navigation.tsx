@@ -13,6 +13,7 @@ import { Button } from "@mui/material";
 export function Navigation() {
   const [response, setUserInfo] = useState<responseData>();
   const [loading, setLoading] = useState(true);
+
   const pathname = usePathname();
   const getInfo = async () => {
     const res = await axios.get(`/api/account`);
@@ -21,11 +22,7 @@ export function Navigation() {
   };
   useEffect(() => {
     try {
-      const hasRun = sessionStorage.getItem("hasRun");
-      if (!hasRun) {
-        getInfo();
-        sessionStorage.setItem("hasRun", "true");
-      }
+      getInfo();
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     } finally {

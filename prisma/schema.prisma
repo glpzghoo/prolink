@@ -8,51 +8,48 @@ datasource db {
 }
 
 model user {
-  id             String           @id @unique @default(nanoid())
-  email          String           @unique
-  firstName      String
-  lastName       String
-  birthday       DateTime
-  role           UserRole
-  companyName    String
-  companyLocation String @default("Улаанбаатар")
-  phoneNumber    String           @unique
-  password       String
-  salary         Int              @default(10000)
-  salaryType     String           @default("HOUR")
-  pfp            String
-  about          String?
-  profileViews   Int              @default(0)
-  featuredSkills featuredSkills[]
-  reviewee       review[]         @relation("reviewee_")
-  reviewer       review[]         @relation("reviewer_")
-  skill          skill[]          @relation("skillTouser")
-  jobpost job[]
-  reportedUsers reportUser[] @relation("reportedUser")
-  reporterUser      reportUser[] @relation("reporter")
+  id                       String           @id @unique @default(nanoid())
+  email                    String           @unique
+  firstName                String
+  lastName                 String
+  birthday                 DateTime
+  role                     UserRole
+  companyName              String
+  companyLocation          String           @default("Улаанбаатар")
+  phoneNumber              String           @unique
+  password                 String
+  salary                   Int              @default(10000)
+  salaryType               String           @default("HOUR")
+  pfp                      String
+  about                    String?
+  profileViews             Int              @default(0)
+  createdAt                DateTime         @default(now())
+  featuredSkills           featuredSkills[]
+  jobpost                  job[]
+  clientJobApplication     jobApplication[] @relation("clientJobApplication")
   freelancerJobApplication jobApplication[] @relation("freelancerJobApplication")
-  clientJobApplication jobApplication[] @relation("clientJobApplication")
-  createdAt DateTime @default(now())
+  reportedUsers            reportUser[]     @relation("reportedUser")
+  reporterUser             reportUser[]     @relation("reporter")
+  reviewee                 review[]         @relation("reviewee_")
+  reviewer                 review[]         @relation("reviewer_")
+  skill                    skill[]          @relation("skillTouser")
 }
-
 
 model otp {
-  id    String @id @default(nanoid())
-  otp   Int    @unique
-  email String
+  id        String   @id @default(nanoid())
+  otp       Int      @unique
+  email     String
   createdAt DateTime @default(now())
 }
-
 
 model skill {
   id             String           @id @default(nanoid())
   name           String           @unique
+  createdAt      DateTime         @default(now())
   featuredSkills featuredSkills[]
-  job            job[]  
-  createdAt DateTime @default(now())
+  job            job[]            @relation("jobToskill")
   user           user[]           @relation("skillTouser")
 }
-
 
 model featuredSkills {
   id        String    @id @default(nanoid())
@@ -62,78 +59,79 @@ model featuredSkills {
   endedAt   DateTime?
   present   Boolean   @default(false)
   startedAt DateTime
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   skill     skill     @relation(fields: [skillId], references: [id])
   user      user      @relation(fields: [userId], references: [id])
 }
 
-
 model review {
-  id         String @id @default(nanoid())
+  id         String   @id @default(nanoid())
   rating     Int
   reviewerId String
   revieweeId String
   message    String
-  createdAt DateTime @default(now())
-  reviewee   user   @relation("reviewee_", fields: [revieweeId], references: [id])
-  reviewer   user   @relation("reviewer_", fields: [reviewerId], references: [id])
+  createdAt  DateTime @default(now())
+  reviewee   user     @relation("reviewee_", fields: [revieweeId], references: [id])
+  reviewer   user     @relation("reviewer_", fields: [reviewerId], references: [id])
 }
-
 
 model job {
-  id          String   @id @default(nanoid())
-  title       String
-  description String
-  status JobStatus @default(ACTIVE)
-  experienced Boolean
-  jobLocation String @default("Улаанбаатар")
-  jobPostView Int @default(0)
-  salary      Int
-  salaryRate  SalaryType
-  postedAt    DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  poster user @relation(references: [id], fields: [posterId])
-  posterId String
-  skill       skill[]
+  id             String           @id @default(nanoid())
+  title          String
+  description    String
+  status         JobStatus        @default(ACTIVE)
+  experienced    Boolean
+  jobLocation    String           @default("Улаанбаатар")
+  jobPostView    Int              @default(0)
+  salary         Int
+  salaryRate     SalaryType
+  postedAt       DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  posterId       String
+  poster         user             @relation(fields: [posterId], references: [id])
   jobApplication jobApplication[]
+  skill          skill[]          @relation("jobToskill")
 }
 
-
 model jobApplication {
-  id String @id @default(nanoid())
-  job job @relation(fields: [jobId], references: [id])
-  jobId String
-  accepted jobApplicationStatus @default(waiting)
-  freelancer user @relation("freelancerJobApplication",fields: [freelancerId], references: [id]) 
+  id           String               @id @default(nanoid())
+  jobId        String
+  accepted     jobApplicationStatus @default(waiting)
   freelancerId String
-  client user @relation("clientJobApplication",fields: [clientId], references: [id]) 
-  clientId String
-  createdAt DateTime @default(now())
+  clientId     String
+  createdAt    DateTime             @default(now())
+  client       user                 @relation("clientJobApplication", fields: [clientId], references: [id])
+  freelancer   user                 @relation("freelancerJobApplication", fields: [freelancerId], references: [id])
+  job          job                  @relation(fields: [jobId], references: [id])
 }
 
 model reportUser {
-  id String @id @default(nanoid())
-  reason String?
-  reportedUser user @relation("reportedUser",fields: [reportedUserId], references: [id]) //person beinge reported
+  id             String  @id @default(nanoid())
+  reason         String?
   reportedUserId String
-  reporterUser user @relation("reporter",fields: [reporterUserId], references: [id]) //person who reported
   reporterUserId String
+  reportedUser   user    @relation("reportedUser", fields: [reportedUserId], references: [id])
+  reporterUser   user    @relation("reporter", fields: [reporterUserId], references: [id])
 }
+
 enum jobApplicationStatus {
-accepted
-denied
-waiting
+  accepted
+  denied
+  waiting
 }
+
 enum SalaryType {
   MONTH
   HOUR
   DAY
 }
+
 enum JobStatus {
   ACTIVE
   CLOSED
   DRAFT
 }
+
 enum UserRole {
   CLIENT
   FREELANCER
