@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { ClientCard } from "../_component/ ClientPostCard";
 import { review, skill, user } from "@prisma/client";
 import axios from "axios";
@@ -77,7 +77,7 @@ export default function Freelance() {
   return (
     <div>
       {!loading ? (
-        <>
+        <Suspense fallback={<Loading />}>
           {filter ? (
             <>
               <Badge />
@@ -105,7 +105,7 @@ export default function Freelance() {
               </div>
             </>
           )}
-        </>
+        </Suspense>
       ) : (
         <CustomSkeleton />
       )}

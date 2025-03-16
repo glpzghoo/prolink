@@ -6,7 +6,7 @@ import { skill } from "@prisma/client";
 import axios from "axios";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { ImSpinner11, ImSpinner9 } from "react-icons/im";
 import { CustomUser } from "../freelancer/page";
 type CustomSkill = skill & {
