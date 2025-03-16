@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <div className="flex flex-col">
-      <div className="flex justify-center gap-2">
+      <div className="">
         <NavigationSettings />
         {/* <Button>Профайл тохиргоо</Button>
         <Button>Профайл тохиргоо</Button> */}

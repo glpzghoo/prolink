@@ -63,7 +63,7 @@ export default function Badge() {
     <div className=" pb-10">
       {loading ? (
         <div className="flex items-center justify-center gap-3">
-          <div>Хүлээж байна...</div> <ImSpinner9 className="animate-spin" />
+          <ImSpinner9 className="animate-spin" />
         </div>
       ) : skills.length > 0 ? (
         <>
@@ -77,14 +77,15 @@ export default function Badge() {
 
             <div
               ref={divRef}
-              className="flex w-3/4 overflow-hidden gap-3.5 text-background"
+              className="flex w-3/4 overflow-hidden gap-3.5 text-background "
             >
               {skills.map((skill) => (
                 <Link
+                  className="shadow-lg"
                   key={skill.id}
                   href={`${pathname + `?filter=${skill.id}`}`}
                 >
-                  <Button className="bg-green-900 text-xs rounded-full whitespace-nowrap px-3 cursor-pointer">
+                  <Button className="bg-green-700 hover:bg-green-900 text-xs rounded-full whitespace-nowrap px-3 cursor-pointer">
                     {skill.name} ({skill.user.length})
                   </Button>
                 </Link>

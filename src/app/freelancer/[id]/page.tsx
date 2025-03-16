@@ -140,7 +140,7 @@ export default function Client() {
       {loading ? (
         <CustomSkeleton />
       ) : user ? (
-        <div className="bg-gray-100 min-h-screen">
+        <div className="bg-gray-100 min-h-screen ">
           {/* Цагаан блок (main container) */}
 
           {user.companyName ? (
@@ -148,7 +148,7 @@ export default function Client() {
               Холбоос буруу байна!
             </div>
           ) : (
-            <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background">
+            <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg">
               {/* Дээд хэсэг */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">

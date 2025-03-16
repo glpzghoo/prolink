@@ -45,10 +45,12 @@ const formSchema = z
 type Props = {
   setRefresh: Dispatch<SetStateAction<boolean>>;
   refresh: boolean;
+  setLoading: Dispatch<SetStateAction<boolean>>;
   featured: CustomFeaturedSkill[];
 };
 export const FeaturedSkillNewButton = ({
   setRefresh,
+  setLoading,
   refresh,
   featured,
 }: Props) => {
@@ -56,7 +58,6 @@ export const FeaturedSkillNewButton = ({
     present: false,
     skill: "",
   });
-  const [loading, setLoading] = useState(true);
   const [FormValid, setFormValid] = useState(false);
   const [response, setResponse] = useState<responseData>();
   const [response2, setResponse2] = useState<responseData>();
@@ -125,6 +126,8 @@ export const FeaturedSkillNewButton = ({
       }
     } catch (err) {
       console.error(err, "Сервер дээр алдаа гарлаа!");
+    } finally {
+      setLoading(false);
     }
   };
   return (
