@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
       data: {
         about,
         skill: {
-          connect: skills,
+          set: skills,
         },
       },
       include: { skill: true },
