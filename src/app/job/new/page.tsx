@@ -20,9 +20,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { MdAccessTime } from "react-icons/md";
 import { LuCircleDollarSign } from "react-icons/lu";
 
-export default function Client() {
+export default function Client() { 
   return (
-    <div>
+    <div className="flex justify-center">
       <Card className="px-4 w-[60%] rounded-sm text-sm">
         <div className="">
           <CardTitle>Гарчиг</CardTitle>
