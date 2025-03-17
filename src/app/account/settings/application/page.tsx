@@ -1,252 +1,150 @@
 "use client";
-import Loading from "@/app/_component/loading";
+
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { responseData } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Snackbar } from "@mui/material";
-import { skill, user } from "@prisma/client";
-import axios from "axios";
+import { Star } from "lucide-react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
-type form = {
-  about: string;
-  skills: skill[];
-};
-type CustomSkill = skill & {
-  user: user[];
-};
-export default function JobApplication() {
-  const router = useRouter();
-  const [form, setForm] = useState<form>({
-    about: "",
-    skills: [],
-  });
-  const [skills, setSkills] = useState<skill[]>([]);
-  const [userInfo, setUserInfo] = useState<responseData>();
-  const [loading, setLoading] = useState(true);
-  const [waiting, setWaiting] = useState(false);
-  const [response, setResponse] = useState<responseData>();
-  const [response2, setResponse2] = useState<responseData>();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res1 = await axios.get(`/api/skills`);
-        const res2 = await axios.get(`/api/account/user`);
-        const res3 = await axios.get(`/api/application`);
+import React from "react";
 
-        if (res1.data.success) {
-          const filtered = res1.data.data.skills.map((one: CustomSkill) => {
-            const { user, ...filtered } = one;
-            return filtered;
-          });
-          setSkills(filtered);
-        }
-        setUserInfo(res2.data);
-        if (res2.data.success) {
-          const filter = res2.data.data.user.skill.map((one: CustomSkill) => {
-            const { user, ...filtered } = one;
-            return filtered;
-          });
-          console.log(filter);
-          setForm((prev) => {
-            return {
-              ...prev,
-              skills: filter,
-            };
-          });
-        } else {
-          setResponse2(res2.data);
-        }
-        setLoading(false);
-      } catch (err) {
-        console.error("Хүсэлт илгээгээгүй");
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setResponse(undefined);
-    }, 4000);
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [response]);
-  const sendData = async () => {
-    setLoading(true);
-
-    try {
-      const res = await axios.post(`/api/account/settings/about`, form);
-      setResponse(res.data);
-      setLoading(false);
-    } catch (err) {
-      console.error("Хүсэлт илгээгээгүй");
-    }
+export default function ProposalDetails() {
+  const job = {
+    title: "Web Scraping Substack + Source Code (Python)",
+    category: "Data Extraction",
+    posted: "Posted Nov 9, 2024",
+    description:
+      "I am looking for a freelancer to scrape data from the Substack leaderboards (this is one of them: https://substack.com/leaderboard/technology_PAID). We want to scrape, at one point in time, the name of the top 50 paid Substacks within each leaderboard, the monthly subscription cost, and the annual s...",
+    budget: "$250",
+    type: "Fixed-price",
   };
-  return userInfo ? (
-    <div>
-      {userInfo.success ? (
-        <div className="min-h-screen bg-secondary">
-          <div className="min-h-screen flex justify-center">
-            <div className="">
-              <div className="w-[800px] min-h-[522px] flex flex-col gap-6 shadow-lg bg-background p-20">
-                <div className="flex justify-center h-16 items-center border-b-2 font-bold">
-                  {userInfo.data.user.role === "CLIENT"
-                    ? "Өөрийнхөө мэдээллийг энд засна уу!"
-                    : "Байгууллагынхаа талаарх мэдээллийг энд засна уу!"}
-                </div>
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-col gap-6">
-                    <div>
-                      <div></div>
-                    </div>
-                    <div className="relative w-full">
-                      <Label
-                        htmlFor="about"
-                        className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
-          peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
-          peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
-            form?.about && "top-1 text-[10px] text-[#108A00]"
-          }`)}
-                      >
-                        {userInfo.data.user.companyName
-                          ? `Байгууллагын тухай`
-                          : `Миний тухай`}
-                      </Label>
-                      <Textarea
-                        defaultValue={
-                          userInfo.data.user.about
-                            ? userInfo.data.user.about
-                            : ""
-                        }
-                        onChange={(e) => {
-                          setForm((prev) => {
-                            return {
-                              ...prev,
-                              about: e.target.value,
-                            };
-                          });
-                        }}
-                        id="about"
-                        className="rounded-none peer w-full border border-gray-300 px-3 pt-5 pb-2 text-lg focus:border-[#108A00] focus:outline-none"
-                        name="about"
-                      />
-                      <div className=" text-[#717171] text-xs">
-                        {userInfo.data.user.companyName
-                          ? `Байгууллагын тухай дэлгэрэнгүй мэдээллийг оруулна уу!`
-                          : `Ажил олгогчдод өөрийгөө танилцуулаарай!`}
-                      </div>
-                    </div>
-                    {userInfo.data.user.role === "CLIENT" && (
-                      <div className=" text-sm text-green-600">
-                        Нээлттэй ажлын байраа сонгоно уу!
-                      </div>
-                    )}
-                    <div className="flex whitespace-nowrap flex-wrap gap-1">
-                      {skills.map((skill) => (
-                        <Button
-                          onClick={() => {
-                            setForm((prev) => {
-                              const skillExists = prev.skills.some(
-                                (skill1) => skill1.id === skill.id
-                              );
 
-                              if (skillExists) {
-                                return {
-                                  ...prev,
-                                  skills: prev.skills.filter(
-                                    (skill1) => skill1.id !== skill.id
-                                  ),
-                                };
-                              }
+  const client = {
+    paymentVerified: true,
+    rating: 4.9,
+    reviews: 53,
+    location: "United States",
+    startTime: "Starts: May 5, 2024 PM",
+    jobsPosted: 61,
+    jobsPostedPercentage: "61 jobs posted rate, 1 open job",
+    totalSpent: "$135K total spent",
+    hires: "96 hires, 6 active",
+    avgHourlyRate: "$19.63/hr avg hourly rate paid",
+    hours: "2,897 hours",
+    memberSince: "Member since Dec 13, 2021",
+  };
 
-                              return {
-                                ...prev,
-                                skills: [...prev.skills, skill],
-                              };
-                            });
-                          }}
-                          key={skill.id}
-                          className={`border p-1 rounded-2xl text-xs bg-background text-foreground hover:text-background cursor-pointer ${
-                            form.skills.some(
-                              (skill1) => skill1?.id === skill.id
-                            )
-                              ? "border-green-400"
-                              : ""
-                          }`}
-                        >
-                          {form.skills.some(
-                            (skill1) => skill1?.id === skill.id
-                          ) && `✓`}
-                          {skill.name}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <Button
-                  onClick={sendData}
-                  type="submit"
-                  disabled={loading}
-                  className={`w-full bg-[#108A00]
-                    }`}
-                >
-                  {loading ? (
-                    <>
-                      Түр хүлээнэ үү!
-                      <ImSpinner2 className="animate-spin" />
-                    </>
-                  ) : (
-                    "Үргэлжлүүлэх"
-                  )}
-                </Button>
-                {/* {response && (
-                  <div className="flex justify-around">
-                    <div
-                      className={`${
-                        response.success ? ` text-green-400` : `text-red-400`
-                      }`}
-                    >
-                      <div>{response.message}</div>
-                    </div>
-                    {userInfo.data.user.companyName ? (
-                      <Link href={`/client/${userInfo.data.user.id}`}>
-                        Энд дарна уу!
-                      </Link>
-                    ) : (
-                      <Link href={`/freelancer/${userInfo.data.user.id}`}>
-                        Энд дарна уу!
-                      </Link>
-                    )}
-                  </div>
-                )} */}
-                {response?.message && (
-                  <Snackbar
-                    sx={{ color: response.success ? "green" : "red" }}
-                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
-                    open={response.message ? true : false}
-                    message={response.message}
-                  />
-                )}
-              </div>
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
+        <div className="flex-1 bg-white p-6 rounded-lg shadow-lg">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold">Proposal details</h1>
+            <div className="flex gap-2">
+              <Button
+                className="bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => alert("Edit proposal clicked")}
+              >
+                Edit proposal
+              </Button>
+              <Button
+                variant="outline"
+                className="border-gray-300 text-gray-700 hover:bg-gray-100"
+                onClick={() => alert("Withdraw proposal clicked")}
+              >
+                Withdraw proposal
+              </Button>
             </div>
           </div>
+
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold mb-2">Insights</h2>
+            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+              <div className="flex-1">
+                <p className="text-gray-700">
+                  Get daily updates on competing bids, with insights into how
+                  your proposal compares.
+                </p>
+                <Button
+                  className="mt-2 bg-green-600 hover:bg-green-700 text-white"
+                  onClick={() => alert("Get connects clicked")}
+                >
+                  Get for 4 Connects
+                </Button>
+              </div>
+              <div className="w-24">
+                <img
+                  src="/business.svg"
+                  alt="Insights Graph"
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+            <p className="text-sm text-gray-500 mt-2">
+              Some editing is closed because it’s been more than 6 hours.
+            </p>
+          </div>
+
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold mb-2">Job details</h2>
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-md font-medium">{job.title}</h3>
+              <span className="text-lg font-bold">{job.budget}</span>
+            </div>
+            <div className="flex gap-2 text-sm text-gray-600 mb-2">
+              <span className="bg-gray-200 px-2 py-1 rounded">
+                {job.category}
+              </span>
+              <span>{job.posted}</span>
+            </div>
+            <p className="text-gray-700 mb-4">{job.description}</p>
+            <Link href="#" className="text-green-600 hover:underline">
+              View job posting
+            </Link>
+          </div>
+
+          <div>
+            <h2 className="text-lg font-semibold mb-2">Skills and expertise</h2>
+            <p className="text-gray-700">
+              Python, Web Scraping, Data Extraction
+            </p>
+          </div>
         </div>
-      ) : (
-        <div className="text-center min-h-screen content-center">
-          {response2?.message}
+
+        <div className="w-full lg:w-80 bg-white p-6 rounded-lg shadow-lg">
+          <h2 className="text-lg font-semibold mb-4">About the client</h2>
+          <div className="flex items-center gap-2 mb-2">
+            {client.paymentVerified && (
+              <span className="text-green-600">✓ Payment method verified</span>
+            )}
+          </div>
+          <div className="flex items-center gap-1 mb-2">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={cn(
+                    "w-5 h-5",
+                    i < Math.floor(client.rating)
+                      ? "text-yellow-400"
+                      : "text-gray-300"
+                  )}
+                />
+              ))}
+            </div>
+            <span className="text-gray-700">
+              {client.rating} of {client.reviews} reviews
+            </span>
+          </div>
+          <p className="text-gray-700 mb-2">{client.location}</p>
+          <p className="text-gray-700 mb-2">{client.startTime}</p>
+          <p className="text-gray-700 mb-2">{client.jobsPosted}</p>
+          <p className="text-gray-700 mb-2">{client.jobsPostedPercentage}</p>
+          <p className="text-gray-700 mb-2">{client.totalSpent}</p>
+          <p className="text-gray-700 mb-2">{client.hires}</p>
+          <p className="text-gray-700 mb-2">{client.avgHourlyRate}</p>
+          <p className="text-gray-700 mb-2">{client.hours}</p>
+          <p className="text-gray-700">{client.memberSince}</p>
         </div>
-      )}
-    </div>
-  ) : (
-    <div className="">
-      <Loading />
+      </div>
     </div>
   );
 }
