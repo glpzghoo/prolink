@@ -44,15 +44,21 @@ export function Navigation() {
             ProLink
           </div>
         </Link>
-        <div className=" hidden xl:flex gap-6 text-xs font-medium">
+        <div className=" hidden xl:flex gap-6 text-sm font-medium">
           <Link href={`/freelancer`}>
-            <div>Мэргэжилтэнгүүд</div>
+            <div className={`${pathname === `/freelancer` && ` underline`}`}>
+              Мэргэжилтэнгүүд
+            </div>
           </Link>
           <Link href={`/job`}>
-            <div>Ажлын санал</div>
+            <div className={`${pathname === `/job` && ` underline`}`}>
+              Ажлын санал
+            </div>
           </Link>
           <Link href={`/client`}>
-            <div>Манайд бүртгэлтэй байгууллагууд</div>
+            <div className={`${pathname === `/client` && ` underline`}`}>
+              Манайд бүртгэлтэй байгууллагууд
+            </div>
           </Link>
         </div>
       </div>
