@@ -9,6 +9,7 @@ export async function POST(req: NextRequest) {
       where: {
         email,
       },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     if (userExist) {
       return NextResponse.json({
@@ -55,7 +56,6 @@ export async function GET(req: NextRequest) {
       });
     }
     const verified = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
-      email: string;
       id: string;
     };
     if (!verified) {
@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
     }
     const user = await prisma.user.findUnique({
       where: {
-        email: verified.email,
+        id: verified.id,
       },
       include: { skill: true },
       omit: { password: true },

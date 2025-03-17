@@ -22,8 +22,24 @@ export async function POST(req: NextRequest) {
     const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
       id: string;
     };
-    const user = await prisma.user.findUnique({ where: { id: verify.id } });
+    const user = await prisma.user.findUnique({
+      where: { id: verify.id },
+      include: { featuredSkills: true },
+      omit: { password: true, phoneNumber: true, email: true },
+    });
     if (user) {
+      const existingFeature = user.featuredSkills.some((ski) => {
+        return ski.skillId === skill;
+      });
+      if (existingFeature) {
+        return CustomNextResponse(
+          false,
+          "FEATUREDSKILL_ALREADY_EXIST",
+          "Онцгойлсон skill аль хэдийн оруулсан байна!",
+          null
+        );
+      }
+
       if (skill && detail && startedAt && (present || endedAt)) {
         if (present) {
           const NewFeaturedSkill = await prisma.featuredSkills.create({
@@ -61,6 +77,12 @@ export async function POST(req: NextRequest) {
         );
       }
     }
+    return CustomNextResponse(
+      false,
+      "FEATURED_SKILL_NOT_ADDED",
+      "Мэдээлэл дутуу байна!",
+      null
+    );
   } catch (err) {
     console.error(err, "Сервер дээр асуудал гарлаа!");
     return NextResponse_CatchError(err);
@@ -85,12 +107,13 @@ export async function GET(req: NextRequest) {
         featuredSkills: {
           include: {
             user: {
-              omit: { password: true },
+              omit: { password: true, phoneNumber: true, email: true },
             },
             skill: true,
           },
         },
       },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     return CustomNextResponse(true, "REQUEST_SUCCESS", "Хүсэлт амжилттай!", {
       user: UserFeaturedSkills,

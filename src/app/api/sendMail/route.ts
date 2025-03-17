@@ -33,11 +33,11 @@ export async function POST(req: NextRequest) {
     };
     const user = await prisma.user.findUnique({
       where: { id: verify.id },
-      omit: { password: true },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     const profileOwner = await prisma.user.findUnique({
       where: { id },
-      omit: { password: true },
+      omit: { password: true, phoneNumber: true },
     });
     if (!user) {
       return CustomNextResponse(

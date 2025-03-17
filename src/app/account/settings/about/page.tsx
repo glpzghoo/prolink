@@ -1,9 +1,11 @@
 "use client";
+import Loading from "@/app/_component/loading";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { responseData } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { Snackbar } from "@mui/material";
 import { skill, user } from "@prisma/client";
 import axios from "axios";
 import Link from "next/link";
@@ -17,7 +19,7 @@ type form = {
 type CustomSkill = skill & {
   user: user[];
 };
-export default function App() {
+export default function AboutSettings() {
   const router = useRouter();
   const [form, setForm] = useState<form>({
     about: "",
@@ -25,12 +27,11 @@ export default function App() {
   });
   const [skills, setSkills] = useState<skill[]>([]);
   const [userInfo, setUserInfo] = useState<responseData>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [waiting, setWaiting] = useState(false);
   const [response, setResponse] = useState<responseData>();
   const [response2, setResponse2] = useState<responseData>();
   useEffect(() => {
-    setLoading(true);
     const fetchData = async () => {
       try {
         const res1 = await axios.get(`/api/skills`);
@@ -59,6 +60,14 @@ export default function App() {
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setResponse(undefined);
+    }, 4000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [response]);
   const sendData = async () => {
     setLoading(true);
 
@@ -73,12 +82,14 @@ export default function App() {
   return userInfo ? (
     <div>
       {userInfo.success ? (
-        <div className="min-h-screen">
-          <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen bg-secondary">
+          <div className="min-h-screen flex justify-center">
             <div className="">
-              <div className="w-[468px] min-h-[522px] px-3 flex flex-col gap-6">
+              <div className="w-[800px] min-h-[522px] flex flex-col gap-6 shadow-lg bg-background p-20">
                 <div className="flex justify-center h-16 items-center border-b-2 font-bold">
-                  Өөрийнхөө талаарх мэдээллийг засна уу!
+                  {userInfo.data.user.role === "CLIENT"
+                    ? "Өөрийнхөө мэдээллийг энд засна уу!"
+                    : "Байгууллагынхаа талаарх мэдээллийг энд засна уу!"}
                 </div>
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-col gap-6">
@@ -122,6 +133,11 @@ export default function App() {
                           : `Ажил олгогчдод өөрийгөө танилцуулаарай!`}
                       </div>
                     </div>
+                    {userInfo.data.user.role === "CLIENT" && (
+                      <div className=" text-sm text-green-600">
+                        Нээлттэй ажлын байраа сонгоно уу!
+                      </div>
+                    )}
                     <div className="flex whitespace-nowrap flex-wrap gap-1">
                       {skills.map((skill) => (
                         <Button
@@ -181,7 +197,7 @@ export default function App() {
                     "Үргэлжлүүлэх"
                   )}
                 </Button>
-                {response && (
+                {/* {response && (
                   <div className="flex justify-around">
                     <div
                       className={`${
@@ -200,6 +216,14 @@ export default function App() {
                       </Link>
                     )}
                   </div>
+                )} */}
+                {response?.message && (
+                  <Snackbar
+                    sx={{ color: response.success ? "green" : "red" }}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    open={response.message ? true : false}
+                    message={response.message}
+                  />
                 )}
               </div>
             </div>
@@ -212,11 +236,8 @@ export default function App() {
       )}
     </div>
   ) : (
-    <div className="min-h-screen flex items-center gap-2 justify-center">
-      <div>Түр хүлээнэ үү!</div>
-      <div>
-        <ImSpinner2 className="animate-spin" />
-      </div>
+    <div className="">
+      <Loading />
     </div>
   );
 }

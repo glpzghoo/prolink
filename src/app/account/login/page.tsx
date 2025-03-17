@@ -1,8 +1,6 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import GoogleSession from "../_components/google";
-import { ImSpinner2 } from "react-icons/im";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
@@ -11,6 +9,10 @@ import z from "zod";
 import Link from "next/link";
 import { responseData } from "@/lib/types";
 import { Alert } from "@/components/ui/alert";
+import { motion } from "framer-motion";
+
+import { Button } from "@mui/material";
+import Loading from "@/app/_component/loading";
 const passwordSchema = z
   .string()
   .min(8)
@@ -89,6 +91,7 @@ export default function Login() {
         } else {
           router.push(`/client/${res.data.data.user.id}`);
         }
+        sessionStorage.removeItem("hasRun");
       }
       setLoading(false);
     } catch (err) {
@@ -116,101 +119,108 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="">
-        <div className="w-[468px] h-[522px] px-3 flex flex-col gap-6">
-          <div className="flex justify-center h-16 items-center border-b-2 font-bold">
-            Нэвтрэх
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="text-xl">
-              Тавтай морил, <span className=" font-bold">{name}</span>
-            </div>
-            <div>
-              <Input
-                type="password"
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    LoginEvent();
-                  }
-                }}
-                name="password"
-                placeholder="Нууц үг"
-              />
-            </div>
-            {response?.code === "CODE_SUCCESSFULLY_SENT" && (
-              <div>
-                <Input
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      LoginEvent();
-                    }
-                  }}
-                  type="number"
-                  onChange={(e) => {
-                    setOTP(Number(e.target.value));
-                  }}
-                  name="otp"
-                  placeholder="Нэг удаагийн код"
-                />
+    <>
+      {loading && <Loading />}
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="">
+          <motion.div
+            initial={{ opacity: 0, y: 200 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            exit={{ opacity: 0, y: 50 }}
+            viewport={{ once: false }}
+            className="p-10 rounded-lg shadow-xl  bg-background"
+          >
+            <div className="w-[468px] h-[522px] px-3 flex flex-col gap-6">
+              <div className="flex justify-center h-16 items-center border-b-2 font-bold">
+                Нэвтрэх
               </div>
-            )}
-            {response?.code === "OTP_DIDN'T_MATCHED" && (
-              <div className=" text-red-400">Нэг удаагийн код таарсангүй!</div>
-            )}
-            {response?.code === "INCORRECT_PASSWORD" && (
-              <div className=" text-red-400">Нууц үг таарсангүй!</div>
-            )}
-
-            <div>
-              <Button
-                ref={LoginButtonEvent}
-                onClick={login}
-                disabled={!isValid || loading}
-                type="submit"
-                className={`w-full  ${
-                  !isValid ? `bg-foreground` : `bg-[#108A00]`
-                }`}
-              >
-                {loading ? (
-                  <>
-                    Түр хүлээнэ үү!
-                    <ImSpinner2 className="animate-spin" />
-                  </>
-                ) : (
-                  "Үргэлжлүүлэх"
-                )}
-              </Button>
-              <button
-                disabled={resetPassLoading}
-                className=" cursor-pointer"
-                onClick={resetPassword}
-              >
-                {resetPassLoading ? (
-                  <div className="flex items-center">
-                    <ImSpinner2 className="animate-spin" /> Код илгээж байна...
-                  </div>
-                ) : (
-                  <div>
-                    {response?.code === "CODE_SUCCESSFULLY_SENT" ? (
-                      <div>Ахиж код авах</div>
-                    ) : (
-                      <>Нууц үгээ мартсан уу?</>
-                    )}
-                  </div>
-                )}
-              </button>
-              {response?.code === "OTP_MATCHED" && (
-                <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform h-full w-full bg-secondary/70">
-                  <Alert className=" transition-all whitespace-nowrap flex justify-center fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform w-1/4 ">
-                    <div>Нууц үг амжилттай солигдлоо!</div>
-                  </Alert>
+              <div className="flex flex-col gap-2">
+                <div className="text-xl">
+                  Тавтай морил, <span className=" font-bold">{name}</span>
                 </div>
-              )}
-              {/* {response && (
+                <div>
+                  <Input
+                    type="password"
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        LoginEvent();
+                      }
+                    }}
+                    name="password"
+                    placeholder="Нууц үг"
+                  />
+                </div>
+                {response?.code === "CODE_SUCCESSFULLY_SENT" && (
+                  <div>
+                    <Input
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          LoginEvent();
+                        }
+                      }}
+                      type="number"
+                      onChange={(e) => {
+                        setOTP(Number(e.target.value));
+                      }}
+                      name="otp"
+                      placeholder="Нэг удаагийн код"
+                    />
+                  </div>
+                )}
+                {response?.code === "OTP_DIDN'T_MATCHED" && (
+                  <div className=" text-red-400">
+                    Нэг удаагийн код таарсангүй!
+                  </div>
+                )}
+                {response?.code === "INCORRECT_PASSWORD" && (
+                  <div className=" text-red-400">Нууц үг таарсангүй!</div>
+                )}
+
+                <div>
+                  <Button
+                    sx={{ color: "green" }}
+                    ref={LoginButtonEvent}
+                    onClick={login}
+                    disabled={!isValid || loading}
+                    type="submit"
+                    className={`w-full  ${
+                      !isValid ? `bg-foreground` : `bg-[#108A00]`
+                    }`}
+                  >
+                    {loading ? <>Түр хүлээнэ үү!</> : "Үргэлжлүүлэх"}
+                  </Button>
+                  <Button
+                    sx={{ color: "green", fontSize: "10px" }}
+                    disabled={resetPassLoading}
+                    className=" cursor-pointer"
+                    onClick={resetPassword}
+                  >
+                    {resetPassLoading ? (
+                      <div className="flex items-center">
+                        Код илгээж байна...
+                      </div>
+                    ) : (
+                      <div>
+                        {response?.code === "CODE_SUCCESSFULLY_SENT" ? (
+                          <div>Ахиж код авах</div>
+                        ) : (
+                          <>Нууц үгээ мартсан уу?</>
+                        )}
+                      </div>
+                    )}
+                  </Button>
+                  {response?.code === "OTP_MATCHED" && (
+                    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform h-full w-full bg-secondary/70">
+                      <Alert className=" transition-all whitespace-nowrap flex justify-center fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform w-1/4 ">
+                        <div>Нууц үг амжилттай солигдлоо!</div>
+                      </Alert>
+                    </div>
+                  )}
+                  {/* {response && (
                 <div>
                   {!response.userExist ? (
                     <div className=" text-red-400 justify-self-center font-bold">
@@ -221,30 +231,35 @@ export default function Login() {
                   )}
                 </div>
               )} */}
+                </div>
+              </div>
+              <div className="flex justify-evenly items-center">
+                <div className="border-b w-1/3"></div>
+                <div className="flex text-xs">Эсвэл</div>
+                <div className="border-b w-1/3"></div>
+              </div>
+              <div>
+                <Button
+                  sx={{ color: "green" }}
+                  className="w-full border bg-background text-foreground hover:bg-secondary  flex justify-around"
+                >
+                  <Image
+                    src={`/img/facebook.svg`}
+                    alt="facebook logo"
+                    width={20}
+                    height={20}
+                  />
+                  <div>Facebook -ээр нэвтрэх</div>
+                  <div></div>
+                </Button>
+              </div>
+              <div>
+                <GoogleSession />
+              </div>
             </div>
-          </div>
-          <div className="flex justify-evenly items-center">
-            <div className="border-b w-1/3"></div>
-            <div className="flex text-xs">Эсвэл</div>
-            <div className="border-b w-1/3"></div>
-          </div>
-          <div>
-            <Button className="w-full border bg-background text-foreground hover:bg-secondary  flex justify-around">
-              <Image
-                src={`/img/facebook.svg`}
-                alt="facebook logo"
-                width={20}
-                height={20}
-              />
-              <div>Facebook -ээр нэвтрэх</div>
-              <div></div>
-            </Button>
-          </div>
-          <div>
-            <GoogleSession />
-          </div>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

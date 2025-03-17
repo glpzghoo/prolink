@@ -15,9 +15,11 @@ export async function POST(req: NextRequest) {
   try {
     const existingUser1 = await prisma.user.findUnique({
       where: { email: body.email },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     const existingUser2 = await prisma.user.findUnique({
       where: { phoneNumber: body.phoneNumber },
+      omit: { password: true, phoneNumber: true, email: true },
     });
 
     if (existingUser1) {
@@ -40,7 +42,12 @@ export async function POST(req: NextRequest) {
     const { password } = body;
     const encryptedPass = await bcrypt.hash(password, Number(process.env.SALT));
     const newUser = await prisma.user.create({
-      data: { ...body, password: encryptedPass },
+      data: {
+        ...body,
+        password: encryptedPass,
+        role: body.companyName ? "CLIENT" : "FREELANCER",
+      },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     return NextResponse.json({
       success: true,
@@ -54,7 +61,7 @@ export async function POST(req: NextRequest) {
       success: false,
       message: "Сервер дээр алдаа гарлаа!",
       code: "API_ERROR",
-      data: {},
+      data: null,
     });
   }
 }

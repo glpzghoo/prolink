@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter, Montserrat } from "next/font/google";
 import "../../globals.css";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import NavigationSettings from "./_component/navigation_settings";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -25,21 +26,14 @@ export default function RootLayout({
 }>) {
   return (
     <div className="flex flex-col">
-      <div className="flex justify-center gap-2">
-        <Link href={`/account/settings/skills`}>
-          <Button sx={{ color: `green` }}>Ур чадварууд</Button>
-        </Link>
-
-        <Link href={`/account/settings/about`}>
-          <Button sx={{ color: `green` }}>Тухай</Button>
-        </Link>
-        <Link href={`/account/settings`}>
-          <Button sx={{ color: `green` }}>Аккаунтны тохиргоо</Button>
-        </Link>
+      <div className="">
+        <NavigationSettings />
         {/* <Button>Профайл тохиргоо</Button>
         <Button>Профайл тохиргоо</Button> */}
       </div>
-      <div className={`${inter.className} min-h-screen`}>{children}</div>
+      <div className={`${inter.className} min-h-screen  bg-secondary`}>
+        {children}
+      </div>
     </div>
   );
 }

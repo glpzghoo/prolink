@@ -1,27 +1,35 @@
 "use client";
 import Loading from "@/app/_component/loading";
+import CustomSkeleton from "@/app/_component/skeleton";
 import MailDetail from "@/app/account/_components/maildetailbutton";
+import { CustomJob } from "@/app/job/[id]/page";
 import { Textarea } from "@/components/ui/textarea";
+import { calculateTime } from "@/lib/helper";
 import { responseData } from "@/lib/types";
 import { Box, Button, Typography } from "@mui/material";
 import Rating from "@mui/material/Rating";
-import { featuredSkills, review, skill, user } from "@prisma/client";
+import { featuredSkills, job, review, skill, user } from "@prisma/client";
 import axios from "axios";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
-import { ImSpinner10 } from "react-icons/im";
+import { useParams, useSearchParams } from "next/navigation";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { FaCircleArrowLeft, FaCircleArrowRight } from "react-icons/fa6";
+import { GoDotFill } from "react-icons/go";
+import { ImNewTab, ImSpinner10 } from "react-icons/im";
 import z from "zod";
 type CustomUser = user & {
   skill: CustomSkill[];
   reviewee: CustomReviewee[];
   reviewer: review[];
   featuredSkills: CustomFeaturedSkill[];
+  jobpost: CustomJob[];
 };
 type CustomReviewee = review & {
   reviewee: CustomUser;
   reviewer: CustomUser;
+  createdAt: string;
 };
 type CustomSkill = skill & {
   user: CustomUser[];
@@ -38,13 +46,27 @@ const ratingSchema = z.object({
   rating: z.number().min(1),
 });
 export default function Client() {
+  const searchParams = useSearchParams();
+  const filter = searchParams.get("filter");
+  console.log(filter);
   const [user, setUser] = useState<CustomUser>();
   const [loading, setLoading] = useState(true);
   const [loadingAddingReview, setloadingAddingReview] = useState(false);
   const [change, setChange] = useState(false);
   const [isValidRatingForm, setisValidRatingForm] = useState(true);
   const [ratingResponse, setratingResponse] = useState<responseData>();
-
+  const [showFullReview, setshowFullReview] = useState<number | undefined>();
+  const div = useRef<HTMLDivElement>(null);
+  const handleLeftScroll = () => {
+    if (div.current) {
+      div.current.scrollBy({ left: -400, behavior: "smooth" });
+    }
+  };
+  const handleRightScroll = () => {
+    if (div.current) {
+      div.current.scrollBy({ left: 400, behavior: "smooth" });
+    }
+  };
   const params = useParams();
   const { id } = params as { id: string };
   if (!id) {
@@ -56,7 +78,6 @@ export default function Client() {
     const fetchData = async () => {
       try {
         const res1 = await axios.get(`/api/freelancers/id?id=${id}`);
-        const res2 = await axios.post(`/api/account/profileViews?id=${id}`);
         if (res1.data.success) {
           setUser(res1.data.data.user);
         }
@@ -75,6 +96,7 @@ export default function Client() {
       if (res.data.data?.informations?.id === id) {
         setOwner(true);
       }
+      await axios.post(`/api/account/profileViews?id=${id}`);
     };
     getInfo();
   }, []);
@@ -119,11 +141,11 @@ export default function Client() {
     <>
       {/* Үндсэн Background */}
       {loading ? (
-        <Loading />
+        <CustomSkeleton />
       ) : user ? (
-        <div className="bg-gray-100 min-h-screen">
+        <div className="bg-gray-100 min-h-screen ">
           {/* Цагаан блок (main container) */}
-          <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background">
+          <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg ">
             {/* Дээд хэсэг */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
@@ -238,55 +260,79 @@ export default function Client() {
                 <p className="text-gray-700 mt-2">{user.about}</p>
               </div>
               <div className="mt-4">
-                <div>end job posts??</div>
-                {/* {user.featuredSkills.length === 0 ? (
-                  <div>Онцолсон skill байхгүй байна.</div>
+                {user.jobpost.length === 0 ? (
+                  <div> Ажлын зар байхгүй байна.</div>
                 ) : (
                   <>
-                    <div className="text-lg font-semibold text-[#129600]">
-                      Уг skill -уудыг тусгайлан онцолсон байна!
+                    <div className="text-lg font-semibold mb-3 text-[#129600]">
+                      Ажлын зарууд
                     </div>
-                    {user.featuredSkills.map((ski) => (
+                    {user.jobpost.map((ski) => (
                       <div key={ski.id}>
                         <div className="flex justify-between">
-                          <h3 className="font-semibold text-md">
-                            {ski.skill.name}
+                          <h3 className="font-semibold text-md flex">
+                            <div className=" text-green-500">
+                              <GoDotFill className="animate-ping duration-4000" />
+                            </div>
+                            {ski.title}
                           </h3>
-                          <div>
-                            {ski.startedAt.split("T")[0]} -{" "}
-                            {ski.present
-                              ? `Одоог хүртэл`
-                              : ski.endedAt.split("T")[0]}
-                          </div>
+                          <div>{ski.postedAt.split("T")[0]}</div>
                         </div>
                         <div className="list-disc list-inside text-gray-700 mt-1">
-                          {ski.detail}
+                          {ski.description}
                         </div>
                       </div>
                     ))}
                   </>
-                )} */}
+                )}
               </div>
             </div>
             {/* /Профайл ерөнхий мэдээлэл
 
-            {/* Үнэлгээ (жишээ) */}
+              {/* Үнэлгээ (жишээ) */}
             <div className="mt-4 border-b pb-4">
-              <h3 className="font-semibold text-md">Үнэлгээ</h3>
-              <div className="mt-2 flex gap-3 whitespace-nowrap overflow-scroll">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-md">Үнэлгээ</h3>
+                <div className="flex gap-4">
+                  <Button sx={{ color: "green" }} onClick={handleLeftScroll}>
+                    <FaCircleArrowLeft className=" text-xl" />
+                  </Button>
+                  <Button sx={{ color: "green" }} onClick={handleRightScroll}>
+                    <FaCircleArrowRight className=" text-xl" />
+                  </Button>
+                </div>
+              </div>
+              <div
+                ref={div}
+                className="mt-2 flex gap-3 whitespace-nowrap overflow-hidden scrollbar-hide"
+              >
                 {/* Үнэлгээний зурвасын жишээ (placeholder) */}
                 {user.reviewee.length > 0 ? (
-                  user.reviewee.map((reviewe) => (
+                  user.reviewee.map((reviewe, index) => (
                     <div
+                      onClick={() => {
+                        if (!showFullReview) {
+                          setshowFullReview(index + 1);
+                        } else if (showFullReview === index + 1) {
+                          setshowFullReview(undefined);
+                        } else if (showFullReview) {
+                          setshowFullReview(index + 1);
+                        }
+                      }}
                       key={reviewe.id}
-                      className="border flex flex-col gap-10 p-6"
+                      className="border flex flex-col gap-10 p-6 relative max-w-96 hover:bg-green-100  cursor-pointer"
                     >
                       <div className="flex flex-col justify-center">
-                        <h1 className=" font-semibold text-xl text-[#129600]">
-                          {reviewe.reviewer.companyName
-                            ? reviewe.reviewer.companyName
-                            : reviewe.reviewer.firstName}
-                        </h1>
+                        <div className="flex justify-between">
+                          <h1 className=" font-semibold text-xl text-[#129600]">
+                            {reviewe.reviewer.companyName
+                              ? reviewe.reviewer.companyName
+                              : reviewe.reviewer.firstName}
+                          </h1>
+                          <div className="text-xs text-gray-400 absolute top-0 right-0 p-2">
+                            {calculateTime(reviewe.createdAt)}
+                          </div>
+                        </div>
                         <div className="flex gap-2">
                           <Rating
                             name="half-rating-read"
@@ -297,7 +343,7 @@ export default function Client() {
                           <div>{reviewe.rating / 20} / 5</div>
                         </div>
                       </div>
-                      <div>{reviewe.message}</div>
+                      <div className=" truncate">{reviewe.message}</div>
                     </div>
                   ))
                 ) : (
@@ -311,6 +357,51 @@ export default function Client() {
                 )}
               </div>
             </div>
+            {/* show full review */}
+            {showFullReview && (
+              <div>
+                {showFullReview > 0 && (
+                  <motion.div
+                    key={showFullReview}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    className="py-4 border-b"
+                  >
+                    <div className=" font-semibold flex gap-3">
+                      <div>Үнэлгээ үзүүлсэн байгууллага: </div>
+                      <Link
+                        target="blank"
+                        className=""
+                        href={`/client/${
+                          user.reviewee[showFullReview - 1].reviewer.id
+                        }`}
+                      >
+                        <div className=" font-bold flex gap-1 items-center">
+                          {user.reviewee[showFullReview - 1].reviewer
+                            .companyName
+                            ? user.reviewee[showFullReview - 1].reviewer
+                                .companyName
+                            : user.reviewee[showFullReview - 1].reviewer
+                                .firstName}
+                          <ImNewTab className="text-xs" />
+                        </div>
+                      </Link>
+                    </div>
+                    <div>
+                      <Rating
+                        name="half-rating-read"
+                        value={user.reviewee[showFullReview - 1].rating / 20}
+                        precision={0.5}
+                        readOnly
+                      />
+                    </div>
+                    <div>{user.reviewee[showFullReview - 1].message}</div>
+                  </motion.div>
+                )}
+              </div>
+            )}
 
             {/* Ажлын түүх */}
             {/* <div className="mt-4 pb-4 border-b">

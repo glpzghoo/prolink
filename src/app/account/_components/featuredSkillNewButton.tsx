@@ -2,7 +2,14 @@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { responseData } from "@/lib/types";
-import { Button, Input, Select, Switch, TextareaAutosize } from "@mui/material";
+import {
+  Button,
+  Input,
+  Select,
+  Snackbar,
+  Switch,
+  TextareaAutosize,
+} from "@mui/material";
 import { skill } from "@prisma/client";
 import { DatePicker } from "@mui/x-date-pickers-pro";
 
@@ -15,6 +22,8 @@ import {
   useState,
 } from "react";
 import z from "zod";
+import { CustomFeaturedSkill } from "@/app/freelancer/[id]/page";
+import Link from "next/link";
 const formSchema = z
   .object({
     skill: z.string(),
@@ -32,16 +41,23 @@ const formSchema = z
       });
     }
   });
+
 type Props = {
   setRefresh: Dispatch<SetStateAction<boolean>>;
   refresh: boolean;
+  setLoading: Dispatch<SetStateAction<boolean>>;
+  featured: CustomFeaturedSkill[];
 };
-export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
+export const FeaturedSkillNewButton = ({
+  setRefresh,
+  setLoading,
+  refresh,
+  featured,
+}: Props) => {
   const [form, setForm] = useState({
     present: false,
-    skill: "dZqwabEi-t9ArW7ZD5zgD",
+    skill: "",
   });
-  const [loading, setLoading] = useState(true);
   const [FormValid, setFormValid] = useState(false);
   const [response, setResponse] = useState<responseData>();
   const [response2, setResponse2] = useState<responseData>();
@@ -57,12 +73,17 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res1 = await axios.get(`/api/skills`);
-        const res2 = await axios.get(`/api/account`);
-        if (res2.data.success) {
-          setSkills(res2.data.data.informations.skill);
+        const res1 = await axios.get(`/api/account`);
+        if (res1.data.success) {
+          const filterSkills = res1.data.data.informations.skill.filter(
+            (skil: skill) => {
+              const filter = featured.some((ski) => ski.skillId === skil.id);
+              return !filter;
+            }
+          );
+          setSkills(filterSkills);
         } else {
-          setResponse2(res2.data);
+          setResponse2(res1.data);
         }
         setLoading(false);
       } catch (err) {
@@ -71,17 +92,16 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
       }
     };
     fetchData();
-  }, []);
-  // useEffect(() => {
-  //   if (form.present) {
-  //     setForm((prev) => {
-  //       return {
-  //         ...prev,
-  //         endedAt: null,
-  //       };
-  //     });
-  //   }
-  // }, [form.present]);
+  }, [refresh]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setResponse(undefined);
+    }, 4000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [response]);
   const handleForm = (
     event: ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -106,24 +126,45 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
       }
     } catch (err) {
       console.error(err, "Сервер дээр алдаа гарлаа!");
+    } finally {
+      setLoading(false);
     }
   };
   return (
     <div className="border p-5 flex flex-col justify-center gap-4">
       {skills && (
-        <select
-          defaultValue={form.skill}
-          onChange={handleForm}
-          name="skill"
-          id="skill"
-          className="border p-2 w-1/4"
-        >
-          {skills.map((skill) => (
-            <option value={skill.id} key={skill.id}>
-              {skill.name}
-            </option>
-          ))}
-        </select>
+        <div>
+          {skills.length === 0 && (
+            <div>
+              Skill харагдахгүй байна уу?{" "}
+              <Link href={`/account/settings/about`} className=" underline">
+                Энд дарж
+              </Link>{" "}
+              skill нэмээрэй!
+            </div>
+          )}
+          <select
+            defaultValue={form?.skill}
+            onChange={handleForm}
+            name="skill"
+            id="skill"
+            className="border p-2 w-1/4"
+          >
+            {skills.map((skill) => (
+              <option value={skill.id} key={skill.id}>
+                {skill.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      {response?.message && (
+        <Snackbar
+          sx={{ color: response.success ? "green" : "red" }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={response.message ? true : false}
+          message={response.message}
+        />
       )}
       <Textarea name="detail" onChange={handleForm} />
       <div>
@@ -179,7 +220,7 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
           <Label>Одоог хүртэл ажиллаж байгаа</Label>
         </div>
       </div>
-      <div>
+      {/* <div>
         {response && (
           <div
             className={` ${
@@ -189,7 +230,7 @@ export const FeaturedSkillNewButton = ({ setRefresh, refresh }: Props) => {
             {response.message}
           </div>
         )}
-      </div>
+      </div> */}
       <Button disabled={!FormValid} onClick={sendData}>
         Нэмэх
       </Button>

@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
@@ -10,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { responseData } from "@/lib/types";
 import GoogleSession from "./_components/google";
 import { motion } from "framer-motion";
+import { Button } from "@mui/material";
+import Loading from "../_component/loading";
 type LoginForm = {
   email: string;
   password: string;
@@ -74,81 +75,81 @@ export default function Account() {
     }
   };
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 200 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      exit={{ opacity: 0, y: 50 }}
-      viewport={{ once: false }}
-      className="p-10 rounded-lg shadow-lg"
-    >
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="">
-          <div className="w-[468px] h-[522px] px-3 flex flex-col gap-6">
-            <div className="flex justify-center h-16 items-center border-b-2 font-bold">
-              Нэвтрэх эсвэл бүртгүүлэх
-            </div>
-            <div className="flex flex-col gap-2">
-              <div className="text-xl">Тавтай морил</div>
-              <div>
-                <Input
-                  defaultValue={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleLoginEvent();
-                    }
-                  }}
-                  name="email"
-                  placeholder="Email"
-                />
+    <>
+      {loading && <Loading />}
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background">
+        <motion.div
+          initial={{ opacity: 0, y: 200 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          exit={{ opacity: 0, y: 50 }}
+          viewport={{ once: false }}
+          className="p-10 rounded-lg shadow-xl"
+        >
+          <div className="">
+            <div className="w-[468px] h-[522px] px-3 flex flex-col gap-6">
+              <div className="flex justify-center h-16 items-center border-b-2 font-bold">
+                Нэвтрэх эсвэл бүртгүүлэх
+              </div>
+              <div className="flex flex-col gap-2">
+                <div className="text-xl">Тавтай морил</div>
+                <div>
+                  <Input
+                    defaultValue={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleLoginEvent();
+                      }
+                    }}
+                    name="email"
+                    placeholder="Email"
+                  />
+                </div>
+                <div>
+                  <Button
+                    sx={{ color: "green" }}
+                    onClick={onClick}
+                    disabled={isValid || loading}
+                    ref={LoginButtonEvent}
+                    type="submit"
+                    className={`w-full  ${
+                      isValid ? `bg-foreground` : `bg-[#108A00]`
+                    }`}
+                  >
+                    {loading ? <>Түр хүлээнэ үү!</> : "Үргэлжлүүлэх"}
+                  </Button>
+                </div>
+              </div>
+              <div className="flex justify-evenly items-center">
+                <div className="border-b w-1/3"></div>
+                <div className="flex text-xs">Эсвэл</div>
+                <div className="border-b w-1/3"></div>
               </div>
               <div>
                 <Button
-                  onClick={onClick}
-                  disabled={isValid || loading}
-                  ref={LoginButtonEvent}
-                  type="submit"
-                  className={`w-full  ${
-                    isValid ? `bg-foreground` : `bg-[#108A00]`
-                  }`}
+                  sx={{ color: "green" }}
+                  className="w-full border bg-background text-foreground hover:bg-secondary  flex justify-around"
                 >
-                  {loading ? (
-                    <>
-                      Түр хүлээнэ үү!
-                      <ImSpinner2 className="animate-spin" />
-                    </>
-                  ) : (
-                    "Үргэлжлүүлэх"
-                  )}
+                  <Image
+                    src={`/img/facebook.svg`}
+                    alt="facebook logo"
+                    width={20}
+                    height={20}
+                  />
+                  <div>Facebook -ээр нэвтрэх</div>
+                  <div></div>
                 </Button>
               </div>
-            </div>
-            <div className="flex justify-evenly items-center">
-              <div className="border-b w-1/3"></div>
-              <div className="flex text-xs">Эсвэл</div>
-              <div className="border-b w-1/3"></div>
-            </div>
-            <div>
-              <Button className="w-full border bg-background text-foreground hover:bg-secondary  flex justify-around">
-                <Image
-                  src={`/img/facebook.svg`}
-                  alt="facebook logo"
-                  width={20}
-                  height={20}
-                />
-                <div>Facebook -ээр нэвтрэх</div>
-                <div></div>
-              </Button>
-            </div>
-            <div>
-              <GoogleSession />
+              <div>
+                <GoogleSession />
+              </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </motion.div>
+    </>
   );
 }
