@@ -39,12 +39,16 @@ export default function App() {
   const [post, setPost] = useState<CustomJob>();
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(false);
+  const [userApplied, setUserApplied] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
   const [response, setResponse] = useState<responseData>();
   const fetchData = async () => {
     try {
       const res = await axios.get(`/api/job/post?id=${id}`);
       if (res.data.success) {
         setPost(res.data.data.post);
+        if (res.data.data.userApplied) setUserApplied(true);
+        console.log(res.data);
       }
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
@@ -54,7 +58,7 @@ export default function App() {
   };
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [isClicked]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -73,6 +77,7 @@ export default function App() {
   };
   const sendJobApplication = async () => {
     setLoading2(true);
+    setIsClicked(!isClicked);
     try {
       const res = await axios.get(`/api/sendMail/jobApplication?id=${id}`);
       setResponse(res.data);
@@ -185,7 +190,9 @@ export default function App() {
           </div>
         </div>
 
-        {post.status === "ACTIVE" ? (
+        {userApplied ? (
+          <div>Already applied</div>
+        ) : post.status === "ACTIVE" ? (
           <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-around">
             <div className="mb-2 md:mb-0 font-bold">
               Уг ажлыг сонирхож байна уу?
