@@ -10,6 +10,7 @@ import axios from "axios";
 import { Star } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { set } from "zod";
 
 type CustomJobApplication = jobApplication & {
   job: CustomJob;
@@ -31,30 +32,6 @@ export default function ProposalDetails() {
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
 
-  const job = {
-    title: "Web Scraping Substack + Source Code (Python)",
-    category: "Data Extraction",
-    posted: "Posted Nov 9, 2024",
-    description:
-      "I am looking for a freelancer to scrape data from the Substack leaderboards (this is one of them: https://substack.com/leaderboard/technology_PAID). We want to scrape, at one point in time, the name of the top 50 paid Substacks within each leaderboard, the monthly subscription cost, and the annual s...",
-    budget: "$250",
-    type: "Fixed-price",
-  };
-
-  const client = {
-    paymentVerified: true,
-    rating: 4.9,
-    reviews: 53,
-    location: "United States",
-    startTime: "Starts: May 5, 2024 PM",
-    jobsPosted: 61,
-    jobsPostedPercentage: "61 jobs posted rate, 1 open job",
-    totalSpent: "$135K total spent",
-    hires: "96 hires, 6 active",
-    avgHourlyRate: "$19.63/hr avg hourly rate paid",
-    hours: "2,897 hours",
-    memberSince: "Member since Dec 13, 2021",
-  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -80,6 +57,20 @@ export default function ProposalDetails() {
     };
     fetchData();
   }, [refresh]);
+
+  const deleteApplication = async (id: string) => {
+    try {
+      setLoading(true);
+      const res = await axios.delete(`/api/jobApplication?id=${id}`);
+      if (res.data.success) {
+        setRefresh(!refresh);
+      }
+      setLoading(false);
+    } catch (err) {
+      console.log(err, "Сервертэй холбогдож чадсангүй!");
+    }
+  };
+
   const avgRating = (rating: review[]): number => {
     const totalRating = rating.reduce((prev, acc) => {
       prev += acc.rating;
@@ -110,7 +101,7 @@ export default function ProposalDetails() {
                 <Button
                   variant="outline"
                   className="border-gray-300 text-gray-700 hover:bg-gray-100"
-                  onClick={() => alert("Withdraw proposal clicked")}
+                  onClick={() => deleteApplication(application.id)}
                 >
                   Устгах
                 </Button>
@@ -191,13 +182,11 @@ export default function ProposalDetails() {
           <div className="w-full lg:w-80 bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-lg font-semibold"></h2>
             <div className="flex items-center gap-2 mb-2">
-              {client.paymentVerified && (
-                <span className="text-2xl font-bold">
-                  {user?.role === "CLIENT"
-                    ? "Ажил горилогчийн тухай"
-                    : "Ажил олгогчийн тухай"}
-                </span>
-              )}
+              <span className="text-2xl font-bold">
+                {user?.role === "CLIENT"
+                  ? "Ажил горилогчийн тухай"
+                  : "Ажил олгогчийн тухай"}
+              </span>
             </div>
             <div className="flex items-center gap-1 mb-2">
               <div className="flex">
