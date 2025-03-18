@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       });
     }
     const accessToken = jwt.sign(
-      { id: user.id, companyName: user.companyName },
+      { id: user.id, companyName: user.companyName, role: user.role },
       process.env.ACCESS_TOKEN,
       { expiresIn: "1h" }
     );
