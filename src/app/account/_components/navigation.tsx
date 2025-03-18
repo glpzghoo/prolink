@@ -145,6 +145,20 @@ export function Navigation() {
           )}
         </div>
       </div>
+      <div>
+      <Link href={`/job/new`}>
+                  <Button
+                    sx={{
+                      color: "green",
+                      border: "1px,  solid",
+                      borderRadius: "8px",
+                    }}
+                    className="cursor-pointer p-2 rounded-2xl px-5 text-background"
+                  >
+                    Зар нэмэх
+                  </Button>
+                </Link>
+      </div>
     </div>
   );
 }
