@@ -85,7 +85,13 @@ export default function Badge() {
                   key={skill.id}
                   href={`${pathname + `?filter=${skill.id}`}`}
                 >
-                  <Button className="bg-green-700 hover:bg-green-900 text-xs rounded-full whitespace-nowrap px-3 cursor-pointer">
+                  <Button
+                    className={`bg-background ${
+                      filter === skill.id
+                        ? `bg-[#199500] text-background`
+                        : `text-foreground`
+                    } border-green-500 border hover:text-background  hover:bg-[#199500] text-xs rounded-full whitespace-nowrap px-3 cursor-pointer`}
+                  >
                     {skill.name} ({skill.user.length})
                   </Button>
                 </Link>

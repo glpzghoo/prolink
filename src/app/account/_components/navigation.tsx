@@ -44,15 +44,21 @@ export function Navigation() {
             ProLink
           </div>
         </Link>
-        <div className=" hidden xl:flex gap-6 text-xs font-medium">
+        <div className=" hidden xl:flex gap-6 text-sm font-medium">
           <Link href={`/freelancer`}>
-            <div>Мэргэжилтэнгүүд</div>
+            <div className={`${pathname === `/freelancer` && ` underline`}`}>
+              Мэргэжилтэнгүүд
+            </div>
           </Link>
           <Link href={`/job`}>
-            <div>Ажлын санал</div>
+            <div className={`${pathname === `/job` && ` underline`}`}>
+              Ажлын санал
+            </div>
           </Link>
           <Link href={`/client`}>
-            <div>Манайд бүртгэлтэй байгууллагууд</div>
+            <div className={`${pathname === `/client` && ` underline`}`}>
+              Манайд бүртгэлтэй байгууллагууд
+            </div>
           </Link>
         </div>
       </div>
@@ -122,6 +128,20 @@ export function Navigation() {
             </div>
           )}
         </div>
+      </div>
+      <div>
+      <Link href={`/job/new`}>
+                  <Button
+                    sx={{
+                      color: "green",
+                      border: "1px,  solid",
+                      borderRadius: "8px",
+                    }}
+                    className="cursor-pointer p-2 rounded-2xl px-5 text-background"
+                  >
+                    Зар нэмэх
+                  </Button>
+                </Link>
       </div>
     </div>
   );
