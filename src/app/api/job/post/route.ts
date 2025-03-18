@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { CustomNextResponse, NextResponse_CatchError } from "@/lib/responses";
 import { NextRequest, NextResponse } from "next/server";
-
+import jwt from "jsonwebtoken";
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   if (!id) {
@@ -13,6 +13,11 @@ export async function GET(req: NextRequest) {
     );
   }
   try {
+    const accessToken = req.cookies.get("accessToken")?.value;
+    if (!accessToken) {
+      return NextResponse.json({ balls: "a" });
+    }
+
     const post = await prisma.job.findUnique({
       where: { id },
       include: {
@@ -32,8 +37,16 @@ export async function GET(req: NextRequest) {
         where: { id },
         data: { jobPostView: post.jobPostView + 1 },
       });
+      const verified = jwt.verify(accessToken, process.env.ACCESS_TOKEN!) as {
+        id: string;
+      };
+      const userApplied = post.jobApplication.some(
+        (jo) => jo.freelancerId === verified.id
+      );
+
       return CustomNextResponse(true, "REQUEST_SUCESS", "Хүсэлт амжилттай!", {
         post,
+        userApplied,
       });
     }
     return CustomNextResponse(
