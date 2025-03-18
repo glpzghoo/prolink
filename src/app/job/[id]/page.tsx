@@ -190,22 +190,24 @@ export default function App() {
           </div>
         </div>
 
-        {userApplied ? (
-          <div>Already applied</div>
-        ) : post.status === "ACTIVE" ? (
+        {post.status === "ACTIVE" ? (
           <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-around">
             <div className="mb-2 md:mb-0 font-bold">
               Уг ажлыг сонирхож байна уу?
             </div>
-            <Button
-              disabled={loading2}
-              onClick={sendJobApplication}
-              sx={{ color: "green" }}
-            >
-              {loading2
-                ? "Ажлын хүсэлт илгээж байна!"
-                : "Ажиллах хүсэлт илгээх"}
-            </Button>
+            {userApplied ? (
+              <div className="text-gray-400 font-bold">Already applied</div>
+            ) : (
+              <Button
+                disabled={loading2}
+                onClick={sendJobApplication}
+                sx={{ color: "green" }}
+              >
+                {loading2
+                  ? "Ажлын хүсэлт илгээж байна!"
+                  : "Ажиллах хүсэлт илгээх"}
+              </Button>
+            )}
           </div>
         ) : (
           <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-around">
