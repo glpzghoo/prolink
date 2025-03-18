@@ -15,6 +15,9 @@ export default function NavigationSettings() {
         <Link href={`/account/settings`}>
           <Button sx={{ color: `green` }}>Аккаунтны тохиргоо</Button>
         </Link>
+        <Link href={`/account/settings/application`}>
+          <Button sx={{ color: `green` }}>Анкет</Button>
+        </Link>
       </div>
     </div>
   );

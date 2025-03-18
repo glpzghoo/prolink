@@ -46,17 +46,33 @@ export function Navigation() {
         </Link>
         <div className=" hidden xl:flex gap-6 text-sm font-medium">
           <Link href={`/freelancer`}>
-            <div className={`${pathname === `/freelancer` && ` underline`}`}>
+            <div
+              className={`${
+                pathname === `/freelancer` &&
+                `border-b border-[#14A800] text-[#14A800]`
+              } p-2 hover:border-b hover:border-[#14A800] hover:transition-all `}
+            >
               Мэргэжилтэнгүүд
             </div>
+            {/* <div className=" h-full w-1 hover:w-full transition-all hover:border-b hover:border-[#14A800] p-1"></div> */}
           </Link>
           <Link href={`/job`}>
-            <div className={`${pathname === `/job` && ` underline`}`}>
+            <div
+              className={`${
+                pathname === `/job` &&
+                `border-b border-[#14A800] text-[#14A800]`
+              } p-2 hover:border-b hover:border-[#14A800] hover:transition-all `}
+            >
               Ажлын санал
             </div>
           </Link>
           <Link href={`/client`}>
-            <div className={`${pathname === `/client` && ` underline`}`}>
+            <div
+              className={`${
+                pathname === `/client` &&
+                `border-b border-[#14A800] text-[#14A800]`
+              } p-2 hover:border-b hover:border-[#14A800] hover:transition-all `}
+            >
               Манайд бүртгэлтэй байгууллагууд
             </div>
           </Link>

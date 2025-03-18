@@ -64,11 +64,13 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const find = await prisma.jobApplication.findFirst({
+    const find = await prisma.jobApplication.findMany({
       where: { jobId: id },
     });
 
-    if (find?.freelancerId === freelancer.id) {
+    const userExist = find.some((use) => use.freelancerId === verify.id);
+
+    if (userExist) {
       return CustomNextResponse(
         false,
         "JOB_APPLICATION_EXIST",
