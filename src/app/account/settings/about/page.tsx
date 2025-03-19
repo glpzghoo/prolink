@@ -50,7 +50,6 @@ export default function AboutSettings() {
             const { user, ...filtered } = one;
             return filtered;
           });
-          console.log(filter);
           setForm((prev) => {
             return {
               ...prev,

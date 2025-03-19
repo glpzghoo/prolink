@@ -20,7 +20,6 @@ export default function Badge() {
   const [loading, setLoading] = useState(true);
   const [skills, setSkills] = useState<CustomSkill[]>([]);
   const [response, setResponse] = useState<CustomSkill[]>([]);
-  console.log(pathname);
   const fetchSkills = async () => {
     let res;
     try {
@@ -37,7 +36,6 @@ export default function Badge() {
       }
     }
   };
-  console.log({ response });
   //   const data = await fetchSkills();
   useEffect(() => {
     fetchSkills();

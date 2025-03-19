@@ -76,7 +76,6 @@ export default function AccountSettings() {
     if (event.target.files) {
       const response = await axios.get(`/api/sign-cloudinary`);
       const { timestamp, signature, api_key } = response.data;
-      console.log(timestamp, signature, api_key);
 
       const data = new FormData();
       data.append("timestamp", timestamp.toString());
@@ -100,7 +99,6 @@ export default function AccountSettings() {
         password,
       });
       setResponse(res.data);
-      console.log(res.data);
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     } finally {
@@ -130,7 +128,6 @@ export default function AccountSettings() {
         password,
       });
       setResponse(res.data);
-      console.log(res.data);
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     } finally {

@@ -22,7 +22,6 @@ export async function GET(req: NextRequest) {
       id: string;
       role: string;
     };
-    console.log(verify);
     if (verify.role === "CLIENT") {
       const user = await prisma.user.findUnique({
         where: { id: verify.id },
