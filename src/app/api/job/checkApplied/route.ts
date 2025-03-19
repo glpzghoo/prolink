@@ -1,5 +1,10 @@
 import { prisma } from "@/lib/prisma";
-import { CustomNextResponse, NextResponse_CatchError } from "@/lib/responses";
+import {
+  CustomNextResponse,
+  NextResponse_CatchError,
+  NextResponse_NoCookie,
+  NextResponse_NoEnv,
+} from "@/lib/responses";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 export async function GET(req: NextRequest) {
@@ -13,6 +18,21 @@ export async function GET(req: NextRequest) {
     );
   }
   try {
+    if (!process.env.ACCESS_TOKEN) {
+      return NextResponse_NoEnv(`ACCESS_TOKEN`);
+    }
+    const accessToken = req.cookies.get(`accessToken`)?.value;
+    if (!accessToken) {
+      return NextResponse.json({
+        success: false,
+        code: "REQUEST_FAILED",
+        message: "Хүсэлт амжилтгүй!",
+      });
+    }
+    const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
+      id: string;
+    };
+
     const post = await prisma.job.findUnique({
       where: { id },
       include: {
@@ -28,19 +48,18 @@ export async function GET(req: NextRequest) {
       },
     });
     if (post) {
-      const updateView = await prisma.job.update({
-        where: { id },
-        data: { jobPostView: post.jobPostView + 1 },
-      });
+      const userApplied = post.jobApplication.some(
+        (jo) => jo.freelancerId === verify.id
+      );
 
       return CustomNextResponse(true, "REQUEST_SUCESS", "Хүсэлт амжилттай!", {
-        post,
+        userApplied,
       });
     }
     return CustomNextResponse(
       false,
-      "REQUEST_FAILED",
-      "Хүсэлт амжилтгүй! Пост олдсонгүй!",
+      "JOB_NOT_FOUND",
+      "Ажлын санал олдсонгүй!",
       null
     );
   } catch (err) {

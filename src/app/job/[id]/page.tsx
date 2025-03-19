@@ -20,12 +20,20 @@ export type CustomJob = job & {
   postedAt: string;
   skill: skill[];
   jobApplication: jobApplication[];
+  poster: CustomUser;
+  postedAt: string;
+  skill: skill[];
+  jobApplication: jobApplication[];
 };
 export type CustomUser = user & {
   reviewee: CustomReviewee[];
   reviewer: review[];
+  reviewee: CustomReviewee[];
+  reviewer: review[];
 };
 type CustomReviewee = review & {
+  reviewee: CustomUser;
+  reviewer: CustomUser;
   reviewee: CustomUser;
   reviewer: CustomUser;
 };
