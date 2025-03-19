@@ -105,7 +105,6 @@ model jobApplication {
   job          job                  @relation(fields: [jobId], references: [id])
 }
 
-
 model reportUser {
   id             String  @id @default(nanoid())
   reason         String?
