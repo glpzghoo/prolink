@@ -58,18 +58,20 @@ export default function ProposalDetails() {
     fetchData();
   }, [refresh]);
 
-  const deleteApplication = async (id: string) => {
-    try {
-      setLoading(true);
-      const res = await axios.delete(`/api/jobApplication?id=${id}`);
-      if (res.data.success) {
-        setRefresh(!refresh);
-      }
-      setLoading(false);
-    } catch (err) {
-      console.log(err, "Сервертэй холбогдож чадсангүй!");
-    }
-  };
+  // const deleteApplication = async (id: string) => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await axios.delete(`/api/jobApplication?id=${id}`);
+  //     if (res.data.success) {
+  //       setRefresh(!refresh);
+  //     }
+  //     setLoading(false);
+  //   } catch (err) {
+  //     console.log(err, "Сервертэй холбогдож чадсангүй!");
+  //   }
+  // };
+
+  // const changeApplicationStatus = await axios.post(`api/jobApplication`);
 
   const avgRating = (rating: review[]): number => {
     const totalRating = rating.reduce((prev, acc) => {
@@ -91,20 +93,65 @@ export default function ProposalDetails() {
           <div className="flex-1 bg-white p-6 rounded-lg shadow-lg">
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-2xl font-bold">{application.job.title}</h1>
+              {user?.role === "FREELANCER" ? (
+                <div className="flex">
+                  <Button
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    onClick={() => alert("Edit proposal clicked")}
+                  >
+                    Төлөв өөрчлөх
+                  </Button>
+                  {!application.cancelled ? (
+                    <p className=" whitespace-nowrap text-xs">
+                      {role === "CLIENT"
+                        ? application.cancelled
+                          ? "Ажил олгогч хүсэлтээ буцаасан."
+                          : "Ажил олгогч таныг хүлээж байна."
+                        : application.clientStatus === "waiting"
+                        ? `Хүлээгдэж байна!`
+                        : application.clientStatus === "accepted"
+                        ? "Зөвшөөрсөн."
+                        : `Татгалзсан`}
+                    </p>
+                  ) : (
+                    <div className=" text-xs whitespace-nowrap">
+                      Ажил та хүсэлтээ буцаасан байна!
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <Button
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    onClick={() => alert("Edit proposal clicked")}
+                  >
+                    Төлөв өөрчлөх
+                  </Button>
+                  {!application.cancelled ? (
+                    <p className=" whitespace-nowrap">
+                      {role === "CLIENT"
+                        ? application.cancelled
+                          ? "Ажил олгогч хүсэлтээ буцаасан."
+                          : "Ажил олгогч таныг хүлээж байна."
+                        : application.clientStatus === "waiting"
+                        ? `Хүлээгдэж байна!`
+                        : application.clientStatus === "accepted"
+                        ? "Зөвшөөрсөн."
+                        : `Татгалзсан `}
+                    </p>
+                  ) : (
+                    <div>Ажил горилогч хүсэлтээ буцаасан байна!</div>
+                  )}
+                </div>
+              )}
               <div className="flex gap-2">
-                <Button
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                  onClick={() => alert("Edit proposal clicked")}
-                >
-                  Төлөв өөрчлөх
-                </Button>
-                <Button
+                {/* <Button
                   variant="outline"
                   className="border-gray-300 text-gray-700 hover:bg-gray-100"
                   onClick={() => deleteApplication(application.id)}
                 >
                   Устгах
-                </Button>
+                </Button> */}
               </div>
             </div>
             {/* <div className="mb-6">

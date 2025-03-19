@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
       id: string;
       role: string;
     };
-
+    console.log(verify);
     if (verify.role === "CLIENT") {
       const user = await prisma.user.findUnique({
         where: { id: verify.id },
@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
               job: { include: { skill: true } },
               freelancer: { include: { reviewee: true } },
             },
+            orderBy: { createdAt: "desc" },
           },
         },
         omit: { password: true },
@@ -54,6 +55,7 @@ export async function GET(req: NextRequest) {
               job: { include: { skill: true } },
               client: { include: { reviewee: true } },
             },
+            orderBy: { createdAt: "desc" },
           },
         },
         omit: { password: true },
@@ -109,35 +111,6 @@ export async function DELETE(req: NextRequest) {
     );
   } catch (err) {
     console.error(err, "Сервер дээр асуудал гарлаа!");
-    return NextResponse_CatchError(err);
-  }
-}
-
-export async function POST(req: NextRequest) {
-  try {
-    const { jobApplicationId, status } = await req.json();
-    if (!process.env.ACCESS_TOKEN) {
-      return NextResponse_NoEnv("ACCESS TOKEN");
-    }
-    const accessToken = req.cookies.get("accessToken")?.value;
-    if (!accessToken) {
-      return NextResponse_NoCookie();
-    }
-    const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
-      id: string;
-    };
-    const jobApplication = await prisma.jobApplication.update({
-      where: { id: jobApplicationId },
-      data: { accepted: status },
-    });
-    return CustomNextResponse(
-      true,
-      "REQUEST_SUCCESS",
-      "Амжилттай шинэчлэгдлээ!",
-      jobApplication
-    );
-  } catch (err) {
-    console.error(err, "Сервер дээр алдаа гарлаа");
     return NextResponse_CatchError(err);
   }
 }
