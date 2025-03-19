@@ -8,8 +8,9 @@ import axios from "axios";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import { responseData } from "@/lib/types";
 import { usePathname, useRouter } from "next/navigation";
-import { Button, Input } from "@mui/material";
+import { Button, Input, ThemeProvider } from "@mui/material";
 import { userInfo } from "os";
+import { theme } from "@/lib/theme";
 export function Navigation() {
   const [response, setUserInfo] = useState<responseData>();
   const [loading, setLoading] = useState(true);
@@ -85,11 +86,9 @@ export function Navigation() {
           <div className="bg-[#14A800] rounded-full p-1">
             <IoIosSearch className="text-2xl text-background" />
           </div>
-          <Input
-            sx={{ color: "green", borderColor: "green" }}
-            className="border-none shadow-none "
-            placeholder="Хайх"
-          />
+          <ThemeProvider theme={theme}>
+            <Input className="border-none shadow-none " placeholder="Хайх" />
+          </ThemeProvider>
         </div>
 
         <div className="flex items-center h-8 rounded-full justify-around gap-2 p-3">
@@ -126,15 +125,15 @@ export function Navigation() {
                   </Link>
                   <button
                     onClick={logout}
-                    className="  p-0 bg-background hover:bg-secondary cursor-pointer"
+                    className=" p-0 bg-background hover:bg-secondary cursor-pointer rounded-full overflow-hidden"
                   >
                     <RiLogoutBoxRFill className=" text-[#14A800] text-3xl " />
                   </button>{" "}
                   {response?.data?.informations?.role == "CLIENT" && (
                     <Link href={`/job/new`}>
-                      <button className="bg-[#14A800] rounded-xl p-2 text-white">
-                        Post a job
-                      </button>
+                      <Button sx={{ color: "#14A800" }}>
+                        Ажлын санал оруулах
+                      </Button>
                     </Link>
                   )}
                 </div>

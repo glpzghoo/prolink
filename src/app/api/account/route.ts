@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
     if (!accessToken) {
       return NextResponse.json({
         success: false,
-        message: "user is not signed in",
+        message: "Хэрэглэгч нэвтрээгүй байна!",
         code: "USER_NOT_SIGNED",
         data: {},
       });
@@ -70,7 +70,7 @@ export async function GET(req: NextRequest) {
       where: {
         id: verified.id,
       },
-      include: { skill: true },
+      include: { skill: true, jobpost: { orderBy: { postedAt: "desc" } } },
       omit: { password: true },
     });
     if (user) {

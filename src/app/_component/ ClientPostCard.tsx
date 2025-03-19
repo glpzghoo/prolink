@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CustomUser } from "../freelancer/page";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export function ClientCard({ user }: { user: CustomUser }) {
   const avrRating = () => {
@@ -28,8 +29,16 @@ export function ClientCard({ user }: { user: CustomUser }) {
               }`}
           </p>
         </div>
-        <div className="flex pb-6 flex-col items-center ">
-          <img src={`${user.pfp}`} className="w-24 h-24 rounded-full" />
+        <div className="flex pb-6 flex-col items-center justify-center ">
+          <div className="w-24 h-24 rounded-full overflow-hidden flex justify-center items-center">
+            <Image
+              src={`${user.pfp}`}
+              className=""
+              alt="pfp"
+              width={100}
+              height={100}
+            />
+          </div>
           <p className="font-bold text-2xl">
             {" "}
             {user.companyName ? user.companyName : user.lastName}

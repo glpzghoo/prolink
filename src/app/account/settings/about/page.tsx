@@ -35,15 +35,17 @@ export default function AboutSettings() {
     const fetchData = async () => {
       try {
         const res1 = await axios.get(`/api/skills`);
-        const res2 = await axios.get(`/api/account/user`);
 
         if (res1.data.success) {
           const filtered = res1.data.data.skills.map((one: CustomSkill) => {
             const { user, ...filtered } = one;
             return filtered;
           });
+
           setSkills(filtered);
         }
+        const res2 = await axios.get(`/api/account/user`);
+
         setUserInfo(res2.data);
         if (res2.data.success) {
           const filter = res2.data.data.user.skill.map((one: CustomSkill) => {

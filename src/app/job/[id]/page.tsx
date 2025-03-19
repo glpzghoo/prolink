@@ -110,9 +110,8 @@ export default function App() {
                     <GoDotFill className="animate-ping duration-4000" />
                   </div>
                 ) : (
-                  <div className=" text-red-600 text-xs flex items-center gap-1 whitespace-nowrap">
+                  <div className=" text-pink-400 text-xs flex items-center gap-1 whitespace-nowrap">
                     <div>Идэвхигүй зар</div>{" "}
-                    <GoDotFill className="animate-ping duration-4000" />
                   </div>
                 )}
               </span>
