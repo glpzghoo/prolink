@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { StepOne } from "../_components/StepOne";
 import { StepTwo } from "../_components/StepTwo";
 import { StepThree } from "../_components/StepThree";
+import { StepFour } from "../_components/StepFour";
+import { StepFive } from "../_components/StepFive";
+import { StepSix } from "../_components/StepSix";
 
 type PostProps = {
   currentStep: number;
@@ -21,6 +24,21 @@ const Post = ({ currentStep, setCurrentStep }: PostProps) => {
 
   if (currentStep === 3) {
     return <StepThree
+    setCurrentStep={setCurrentStep} />;
+  }
+
+  if (currentStep === 4) {
+    return <StepFour
+    setCurrentStep={setCurrentStep} />;
+  }
+
+  if (currentStep === 5) {
+    return <StepFive
+    setCurrentStep={setCurrentStep} />;
+  }
+
+  if (currentStep === 6) {
+    return <StepSix
     setCurrentStep={setCurrentStep} />;
   }
 

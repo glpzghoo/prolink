@@ -13,7 +13,7 @@ export function StepOne({ setCurrentStep }: StepOneProps) {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white p-6">
-      <h1 className="text-3xl font-bold text-center mb-6">
+      <h1 className="text-2xl font-bold text-center mb-6">
         Бид танд хэрхэн туслах вэ?
       </h1>
       <RadioGroup

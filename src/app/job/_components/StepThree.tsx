@@ -1,3 +1,4 @@
+"use client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -48,7 +49,7 @@ export function StepThree({ setCurrentStep }: StepThreeProps) {
                 </span>
               ))}
               <Input 
-                placeholder="Хайх эсвэл 10 ур чадвар нэмэх" 
+                placeholder="Ур чадвар нэмэх"
                 className="border-none focus:ring-0 p-0 flex-1"
                 readOnly
               />
@@ -76,7 +77,7 @@ export function StepThree({ setCurrentStep }: StepThreeProps) {
               disabled={selectedSkills.length === 0}
               className={`font-semibold px-6 transition-opacity ${selectedSkills.length === 0 ? "opacity-50 cursor-not-allowed" : "bg-[#129b00] text-white hover:bg-[#129b00]/90"}`}
             >
-              Дараагийнх: Хамрах хүрээ
+              Үргэлжлүүлэх
             </Button>
           </div>
         </CardContent>

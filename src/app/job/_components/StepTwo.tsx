@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -58,7 +57,7 @@ export function StepTwo({ setCurrentStep }: JobTitleStepProps) {
             disabled={!title.trim()}
             className={`font-semibold px-6 transition-opacity ${!title.trim() ? "opacity-50 cursor-not-allowed" : "bg-[#129b00] text-white hover:bg-[#129b00]/90"}`}
           >
-            Дараах: Ур чадвар
+            Үргэлжлүүлэх
           </Button>
         </div>
       </div>
