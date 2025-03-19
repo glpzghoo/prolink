@@ -114,3 +114,53 @@ export async function DELETE(req: NextRequest) {
     return NextResponse_CatchError(err);
   }
 }
+
+export async function PUT(req: NextRequest) {
+  const { statusValue, applicationId } = await req.json();
+  try {
+    if (!process.env.ACCESS_TOKEN) {
+      return NextResponse_NoEnv("ACCESS_TOKEN");
+    }
+
+    const accessToken = req.cookies.get("accessToken")?.value;
+    if (!accessToken) {
+      return NextResponse_NoCookie();
+    }
+
+    const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
+      id: string;
+      role: string;
+    };
+    if (verify.role === "FREELANCER") {
+      return CustomNextResponse(
+        false,
+        "NOT_PERMITTED",
+        "Ажил горилогчид төлөв өөрчлөх эрх байхгүй",
+        null
+      );
+    }
+    const jobApplication = await prisma.jobApplication.update({
+      where: {
+        id: applicationId,
+      },
+      data: { clientStatus: statusValue },
+    });
+    if (jobApplication) {
+      return CustomNextResponse(
+        true,
+        "REQUEST_SUCCESSFUL",
+        "Төлөв амжилттай өөрчлөгдлөө.",
+        jobApplication
+      );
+    }
+    return CustomNextResponse(
+      false,
+      "REQUEST FAILED",
+      "Төлөв өөрчилж чадсангүй.",
+      null
+    );
+  } catch (err) {
+    console.error(err, "Сервер дээр асуудал гарлаа!");
+    return NextResponse_CatchError(err);
+  }
+}
