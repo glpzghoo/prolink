@@ -233,6 +233,6 @@ export default function ProposalDetails() {
       </div>
     ))
   ) : (
-    <div>no job applications</div>
+    <div className="text-center">no job applications</div>
   );
 }

@@ -82,7 +82,6 @@ export default function App() {
       setLoading2(false);
     }
   };
-  // avgRating(post?.poster);
   return loading ? (
     <CustomSkeleton />
   ) : post ? (
