@@ -113,16 +113,31 @@ export async function DELETE(req: NextRequest) {
   }
 }
 
-export async function POST(req: NextRequest) {try{
-  const {jobApplicationId, status} = await req.json();
-  if (!process.env.ACCESS_TOKEN) {
-    return NextResponse_NoEnv("ACCESS TOKEN");
+export async function POST(req: NextRequest) {
+  try {
+    const { jobApplicationId, status } = await req.json();
+    if (!process.env.ACCESS_TOKEN) {
+      return NextResponse_NoEnv("ACCESS TOKEN");
+    }
+    const accessToken = req.cookies.get("accessToken")?.value;
+    if (!accessToken) {
+      return NextResponse_NoCookie();
+    }
+    const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
+      id: string;
+    };
+    const jobApplication = await prisma.jobApplication.update({
+      where: { id: jobApplicationId },
+      data: { accepted: status },
+    });
+    return CustomNextResponse(
+      true,
+      "REQUEST_SUCCESS",
+      "Амжилттай шинэчлэгдлээ!",
+      jobApplication
+    );
+  } catch (err) {
+    console.error(err, "Сервер дээр алдаа гарлаа");
+    return NextResponse_CatchError(err);
   }
-  const accessToken = req.cookies.get("accessToken")?.value;
-  if (!accessToken) {
-    return NextResponse_NoCookie();
-  }
-  const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {id: string};
-  const jobApplication = await prisma.jobApplication.update({ where: {id: jobApplicationId}, data: {accepted : status}});
-  return CustomNextResponse(true, "REQUEST_SUCCESS", "Амжилттай шинэчлэгдлээ!", jobApplication);
-}}
+}
