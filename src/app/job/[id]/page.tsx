@@ -20,20 +20,12 @@ export type CustomJob = job & {
   postedAt: string;
   skill: skill[];
   jobApplication: jobApplication[];
-  poster: CustomUser;
-  postedAt: string;
-  skill: skill[];
-  jobApplication: jobApplication[];
 };
 export type CustomUser = user & {
   reviewee: CustomReviewee[];
   reviewer: review[];
-  reviewee: CustomReviewee[];
-  reviewer: review[];
 };
 type CustomReviewee = review & {
-  reviewee: CustomUser;
-  reviewer: CustomUser;
   reviewee: CustomUser;
   reviewer: CustomUser;
 };
@@ -55,7 +47,6 @@ export default function App() {
       const res = await axios.get(`/api/job/post?id=${id}`);
       if (res.data.success) {
         setPost(res.data.data.post);
-        if (res.data.data.userApplied) setUserApplied(true);
         console.log(res.data);
       }
     } catch (err) {
@@ -76,6 +67,16 @@ export default function App() {
       clearTimeout(timeout);
     };
   }, [response]);
+  useEffect(() => {
+    const fetc = async () => {
+      const response = await axios.get(`/api/job/checkApplied?id=${id}`);
+      if (response.data.success) {
+        setUserApplied(true);
+      }
+      console.log(response.data);
+    };
+    fetc();
+  }, []);
   const avgRating = (user: CustomUser) => {
     if (!user.reviewee || user.reviewee.length === 0) return 0;
 
