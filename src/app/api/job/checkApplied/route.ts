@@ -36,14 +36,6 @@ export async function GET(req: NextRequest) {
     const post = await prisma.job.findUnique({
       where: { id },
       include: {
-        poster: {
-          omit: { password: true, phoneNumber: true, email: true },
-          include: {
-            reviewee: { include: { reviewer: true } },
-            reviewer: true,
-          },
-        },
-        skill: true,
         jobApplication: true,
       },
     });

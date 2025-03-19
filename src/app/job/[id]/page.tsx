@@ -47,7 +47,6 @@ export default function App() {
       const res = await axios.get(`/api/job/post?id=${id}`);
       if (res.data.success) {
         setPost(res.data.data.post);
-        console.log(res.data);
       }
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
@@ -71,12 +70,11 @@ export default function App() {
     const fetc = async () => {
       const response = await axios.get(`/api/job/checkApplied?id=${id}`);
       if (response.data.success) {
-        setUserApplied(true);
+        setUserApplied(!!response.data.data.userApplied);
       }
-      console.log(response.data);
     };
     fetc();
-  }, []);
+  }, [isClicked]);
   const avgRating = (user: CustomUser) => {
     if (!user.reviewee || user.reviewee.length === 0) return 0;
 
@@ -86,7 +84,6 @@ export default function App() {
   };
   const sendJobApplication = async () => {
     setLoading2(true);
-    setIsClicked(!isClicked);
     try {
       const res = await axios.get(`/api/sendMail/jobApplication?id=${id}`);
       setResponse(res.data);
@@ -94,6 +91,7 @@ export default function App() {
       console.error(err, "Сервер дээр асуудал гарлаа!");
     } finally {
       setLoading2(false);
+      setIsClicked(!isClicked);
     }
   };
   // avgRating(post?.poster);
@@ -160,7 +158,7 @@ export default function App() {
             <div>-</div>
             <div>
               Ажил олгогчийн дундаж үнэлгээ:{" "}
-              <span className=" font-bold">{avgRating(post.poster)}</span>
+              <span className=" font-bold">{avgRating(post.poster)}/5</span>
             </div>
           </div>
         </div>
@@ -198,14 +196,13 @@ export default function App() {
             </div>
           </div>
         </div>
-
         {post.status === "ACTIVE" ? (
           <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-around">
             <div className="mb-2 md:mb-0 font-bold">
               Уг ажлыг сонирхож байна уу?
             </div>
             {userApplied ? (
-              <div className="text-gray-400 font-bold">Already applied</div>
+              <div className="text-gray-400 font-bold">Хүсэлт илгээсэн!</div>
             ) : (
               <Button
                 disabled={loading2}
@@ -239,12 +236,10 @@ export default function App() {
             message={response.message}
           />
         )}
-
         <div className="mt-4 pb-4 border-b">
           <h3 className="font-semibold text-md mb-2">Бусад төстэй зарууд</h3>
           <div className="flex flex-wrap gap-2"></div>
         </div>
-
         <div className="w-full">
           <div className=" flex gap-14 whitespace-nowrap overflow-scroll"></div>
         </div>
