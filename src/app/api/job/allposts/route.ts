@@ -5,6 +5,7 @@ import { NextRequest } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     const allposts = await prisma.job.findMany({
+      where: { status: { in: ["ACTIVE", "CLOSED"] } },
       include: {
         skill: true,
         poster: {
@@ -16,16 +17,14 @@ export async function GET(req: NextRequest) {
         },
         jobApplication: true,
       },
+      orderBy: { postedAt: "desc" },
     });
-    const filteredPosts = allposts.filter((post) => {
-      return post.status === "ACTIVE" || post.status === "CLOSED";
-    });
+
     return CustomNextResponse(true, "REQUEST_SUCCESS", "Хүсэлт амжилттай!", {
-      posts: filteredPosts,
+      posts: allposts,
     });
   } catch (err) {
     console.error(err, "Сервер дээр асуудал гарлаа");
-
     return NextResponse_CatchError(err);
   }
 }

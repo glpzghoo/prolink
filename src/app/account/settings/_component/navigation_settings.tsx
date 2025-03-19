@@ -28,18 +28,20 @@ export default function NavigationSettings() {
   return (
     <div className="bg-background flex justify-center gap-2">
       <div>
-        <Link href={`/account/settings/skills`}>
-          <Button sx={{ color: `green`, textTransform: "capitalize" }}>
-            Профайл
-          </Button>
-        </Link>
-        {user?.role === "CLIENT" && (
-          <Link href={`/account/settings/jobs`}>
-            <Button sx={{ color: `green`, textTransform: "capitalize" }}>
-              Ажлын саналууд
-            </Button>
-          </Link>
-        )}
+        {user &&
+          (user.role === "CLIENT" ? (
+            <Link href={`/account/settings/jobs`}>
+              <Button sx={{ color: `green`, textTransform: "capitalize" }}>
+                Ажлын саналууд
+              </Button>
+            </Link>
+          ) : (
+            <Link href={`/account/settings/skills`}>
+              <Button sx={{ color: `green`, textTransform: "capitalize" }}>
+                Профайл
+              </Button>
+            </Link>
+          ))}
         <Link href={`/account/settings/application`}>
           <Button sx={{ color: `green`, textTransform: "capitalize" }}>
             Анкет
