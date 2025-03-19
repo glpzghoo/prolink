@@ -94,17 +94,17 @@ model job {
 }
 
 model jobApplication {
-  id           String               @id @default(nanoid())
+  id           String       @id @default(nanoid())
   jobId        String
-  accepted     jobApplicationStatus @default(waiting)
   freelancerId String
   clientId     String
-  createdAt    DateTime             @default(now())
-  client       user                 @relation("clientJobApplication", fields: [clientId], references: [id])
-  freelancer   user                 @relation("freelancerJobApplication", fields: [freelancerId], references: [id])
-  job          job                  @relation(fields: [jobId], references: [id])
+  createdAt    DateTime     @default(now())
+  cancelled    Boolean      @default(false)
+  clientStatus clientStatus @default(waiting)
+  client       user         @relation("clientJobApplication", fields: [clientId], references: [id])
+  freelancer   user         @relation("freelancerJobApplication", fields: [freelancerId], references: [id])
+  job          job          @relation(fields: [jobId], references: [id])
 }
-
 
 model reportUser {
   id             String  @id @default(nanoid())
@@ -115,7 +115,7 @@ model reportUser {
   reporterUser   user    @relation("reporter", fields: [reporterUserId], references: [id])
 }
 
-enum jobApplicationStatus {
+enum clientStatus {
   accepted
   denied
   waiting
