@@ -368,11 +368,11 @@ export default function Client() {
                   {showFullReview > 0 && (
                     <motion.div
                       key={showFullReview}
-                      initial={{ opacity: 0, height: 0 }}
+                      initial={{ opacity: 0, height: "auto" }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.8, ease: "easeInOut" }}
-                      className="py-4 border-b"
+                      className="py-4 "
                     >
                       <div className=" font-semibold flex gap-3">
                         <div>Үнэлгээ үзүүлсэн байгууллага: </div>
