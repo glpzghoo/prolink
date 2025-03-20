@@ -115,6 +115,22 @@ export default function ProposalDetails() {
       : "Татгалзсан.";
   };
 
+  const getStatusStyles = (application: CustomJobApplication) => {
+    if (application.cancelled) {
+      return "bg-red-100 text-red-800";
+    }
+    switch (application.clientStatus) {
+      case "waiting":
+        return "bg-yellow-100 text-yellow-800";
+      case "accepted":
+        return "bg-green-100 text-green-800";
+      case "denied":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
   if (loading) return <Loading />;
   if (!applicationData.length) {
     return (
@@ -172,15 +188,13 @@ export default function ProposalDetails() {
                           Хадгалах
                         </Button>
                       </div>
-                    ) : (
-                      <Button
-                        className="bg-green-600 hover:bg-green-700"
-                        onClick={() => alert("Edit proposal clicked")}
-                      >
-                        Төлөв өөрчлөх
-                      </Button>
-                    )}
-                    <p className="text-sm text-gray-600">
+                    ) : null}
+                    <p
+                      className={cn(
+                        "text-sm font-medium px-3 py-1 rounded-full",
+                        getStatusStyles(application)
+                      )}
+                    >
                       {renderStatusMessage(application)}
                     </p>
                   </div>
