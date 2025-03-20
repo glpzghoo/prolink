@@ -4,92 +4,109 @@ import { FeaturedSkillsetup } from "../../_components/featuredSkillChange";
 import { FeaturedSkillNewButton } from "../../_components/featuredSkillNewButton";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { featuredSkills } from "@prisma/client";
 import Loading from "@/app/_component/loading";
 import { CustomFeaturedSkill } from "@/app/freelancer/[id]/page";
 import { responseData } from "@/lib/types";
 
 export default function Settings() {
-  const [featured, setFeatured] = useState<CustomFeaturedSkill[]>();
+  const [featured, setFeatured] = useState<CustomFeaturedSkill[]>([]);
   const [response, setResponse] = useState<responseData>();
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(false);
-  const [deletingItem, setdeletingItem] = useState("");
+  const [deletingItem, setDeletingItem] = useState("");
   const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const res = await axios.get(`/api/skills/featured`);
-        if (res.data.success) {
+        console.log("Featured Skills Response:", res.data);
+        if (res.data.success && res.data.data?.user?.featuredSkills) {
           setFeatured(res.data.data.user.featuredSkills);
         } else {
           setResponse(res.data);
+          setFeatured([]);
         }
       } catch (err) {
-        console.error(err, "Алдаа гарлаа");
+        console.error("Fetch Error:", err);
+        setResponse({
+          success: false,
+          message: "Сервертэй холбогдож чадсангүй",
+        });
+        setFeatured([]);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
   }, [refresh]);
+
   const deleteSkill = async (id: string) => {
     try {
       setLoading2(true);
+      setDeletingItem(id);
       const res = await axios.delete(`/api/skills/featured?id=${id}`);
       if (res.data.success) {
-        setRefresh(!refresh);
+        setRefresh((prev) => !prev);
+      } else {
+        setResponse(res.data);
       }
-      setLoading2(false);
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
+      console.error("Delete Error:", err);
+      setResponse({ success: false, message: "Устгахад алдаа гарлаа" });
     } finally {
       setLoading2(false);
+      setDeletingItem("");
     }
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
       {loading ? (
-        <div>
-          <Loading />
-        </div>
-      ) : featured ? (
-        <div className="w-full flex flex-col items-center">
-          <div className=" w-2/4 bg-background  shadow-lg">
-            <div className="flex flex-col gap-4">
+        <Loading />
+      ) : (
+        <div className="w-full max-w-6xl mx-auto">
+          <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+              Ур чадварын тохиргоо
+            </h2>
+            <div className="flex flex-col gap-6">
               <FeaturedSkillNewButton
                 setRefresh={setRefresh}
                 refresh={refresh}
-                setLoading={setLoading}
+                setLoading={setLoading2}
                 featured={featured}
               />
-              <div className=" font-bold flex justify-center">
-                Таны онцолсон ур чадварууд
-              </div>
-              {featured.length !== 0 ? (
-                featured.map((ski) => (
-                  <FeaturedSkillsetup
-                    key={ski.id}
-                    skill={ski}
-                    deleteSkill={deleteSkill}
-                    setLoading2={setLoading2}
-                    loading2={loading2}
-                    setdeletingItem={setdeletingItem}
-                    deletingItem={deletingItem}
-                  />
-                ))
-              ) : (
-                <div className="text-xs">
-                  Одоогоор онцолсон ур чадварууд алга
+              <div className="flex flex-col gap-4">
+                <div className="text-lg font-semibold text-gray-800 border-b pb-4 text-center">
+                  Таны онцолсон ур чадварууд
                 </div>
-              )}
+                {featured.length > 0 ? (
+                  featured.map((skill) => (
+                    <FeaturedSkillsetup
+                      key={skill.id}
+                      skill={skill}
+                      deleteSkill={deleteSkill}
+                      setLoading2={setLoading2}
+                      loading2={loading2}
+                      setdeletingItem={setDeletingItem}
+                      deletingItem={deletingItem}
+                    />
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500 text-center">
+                    Одоогоор онцолсон ур чадварууд алга
+                  </p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <div className={`min-h-screen flex items-center gap-2 justify-center`}>
-          {response?.message}
+          {response?.message && (
+            <div className="mt-4 text-center text-sm text-red-600">
+              {response.message}
+            </div>
+          )}
         </div>
       )}
     </div>
