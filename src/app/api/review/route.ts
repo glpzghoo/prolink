@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
     }
     const reviewee = await prisma.user.findUnique({
       where: { id: revieweeId },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     if (!reviewee) {
       return CustomNextResponse(
@@ -48,18 +49,72 @@ export async function POST(req: NextRequest) {
 
     const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
       id: string;
+      companyName: string;
     };
-    const newReview = await prisma.review.create({
-      data: { rating, message, revieweeId, reviewerId: verify.id },
+    const reviewer = await prisma.user.findUnique({
+      where: { id: verify.id },
+      include: { reviewer: true },
+      omit: { password: true, phoneNumber: true, email: true },
     });
+
+    if (!reviewer) {
+      return CustomNextResponse(
+        false,
+        "REVIEWER_DOES_NOT_EXIST",
+        "Үнэлгээ өгөгчийг танисангүй!",
+        null
+      );
+    }
+
+    if (revieweeId === reviewer.id) {
+      return CustomNextResponse(
+        false,
+        "CAN_NOT_RATE_YOURSELF",
+        "Та өөртөө үнэлгээ өгч болохгүй!",
+        null
+      );
+    }
+    const findreview = await prisma.review.findFirst({
+      where: { revieweeId: revieweeId, reviewerId: reviewer.id },
+    });
+    if (findreview) {
+      return CustomNextResponse(
+        false,
+        "ALREADY_REVIEWED_USER",
+        "Та аль хэдийн үнэлгээ үзүүлсэн байна!",
+        null
+      );
+    }
+    if (reviewer.companyName && !reviewee.companyName) {
+      const newReview = await prisma.review.create({
+        data: { rating, message, revieweeId, reviewerId: verify.id },
+      });
+      return CustomNextResponse(
+        true,
+        "NEW_REVIEW_ADDED",
+        "Үнэлгээ амжилттай постлолоо!",
+        { newReview }
+      );
+    }
+    if (!reviewer.companyName && reviewee.companyName) {
+      const newReview = await prisma.review.create({
+        data: { rating, message, revieweeId, reviewerId: verify.id },
+      });
+      return CustomNextResponse(
+        true,
+        "NEW_REVIEW_ADDED",
+        "Үнэлгээ амжилттай постлолоо!",
+        { newReview }
+      );
+    }
     return CustomNextResponse(
-      true,
-      "NEW_REVIEW_ADDED",
-      "Үнэлгээ амжилттай постлолоо!",
-      { newReview }
+      false,
+      "NO_PERMISSION",
+      "Зөвхөн байгууллага мэрэгжилтэнд, мэргэжилтэн байгууллагад үнэлгээ өгөх эрхтэй!",
+      null
     );
   } catch (err) {
-    console.error(err, "");
+    console.error(err, "Сервер дээр асуудал гарлаа");
     return NextResponse_CatchError(err);
   }
 }

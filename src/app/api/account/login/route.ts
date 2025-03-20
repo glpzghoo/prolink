@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.findUnique({
       where: { email },
       include: { skill: true },
+      omit: { email: true, phoneNumber: true },
     });
     if (!user) {
       return NextResponse.json({
@@ -34,15 +35,13 @@ export async function POST(req: NextRequest) {
       });
     }
     const accessToken = jwt.sign(
-      { email: user.email, id: user.id },
+      { id: user.id, companyName: user.companyName, role: user.role },
       process.env.ACCESS_TOKEN,
       { expiresIn: "1h" }
     );
-    const refreshToken = jwt.sign(
-      { email: user.email, id: user.id },
-      process.env.REFRESH_TOKEN,
-      { expiresIn: "4h" }
-    );
+    const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_TOKEN, {
+      expiresIn: "4h",
+    });
     const { password, ...userInfo } = user;
     const response = NextResponse.json({
       success: true,

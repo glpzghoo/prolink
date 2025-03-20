@@ -1,10 +1,11 @@
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { Button } from "@mui/material";
 
 export default function GoogleSession() {
   return (
     <Button
+      sx={{ color: "green" }}
       onClick={() => {
         signIn();
       }}

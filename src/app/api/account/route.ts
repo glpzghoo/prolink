@@ -9,6 +9,7 @@ export async function POST(req: NextRequest) {
       where: {
         email,
       },
+      omit: { password: true, phoneNumber: true, email: true },
     });
     if (userExist) {
       return NextResponse.json({
@@ -49,13 +50,12 @@ export async function GET(req: NextRequest) {
     if (!accessToken) {
       return NextResponse.json({
         success: false,
-        message: "user is not signed in",
+        message: "Хэрэглэгч нэвтрээгүй байна!",
         code: "USER_NOT_SIGNED",
         data: {},
       });
     }
     const verified = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
-      email: string;
       id: string;
     };
     if (!verified) {
@@ -68,9 +68,9 @@ export async function GET(req: NextRequest) {
     }
     const user = await prisma.user.findUnique({
       where: {
-        email: verified.email,
+        id: verified.id,
       },
-      include: { skill: true },
+      include: { skill: true, jobpost: { orderBy: { postedAt: "desc" } } },
       omit: { password: true },
     });
     if (user) {

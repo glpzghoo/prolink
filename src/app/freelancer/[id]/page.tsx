@@ -1,7 +1,9 @@
 "use client";
 import Loading from "@/app/_component/loading";
+import CustomSkeleton from "@/app/_component/skeleton";
 import MailDetail from "@/app/account/_components/maildetailbutton";
 import { Textarea } from "@/components/ui/textarea";
+import { calculateTime } from "@/lib/helper";
 import { responseData } from "@/lib/types";
 import { Box, Button, Typography } from "@mui/material";
 import Rating from "@mui/material/Rating";
@@ -9,9 +11,12 @@ import { featuredSkills, review, skill, user } from "@prisma/client";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { ImSpinner10 } from "react-icons/im";
+import { ImNewTab, ImSpinner10 } from "react-icons/im";
+import { FaCircleArrowLeft } from "react-icons/fa6";
+import { FaCircleArrowRight } from "react-icons/fa6";
 import z from "zod";
 type CustomUser = user & {
   skill: CustomSkill[];
@@ -22,6 +27,7 @@ type CustomUser = user & {
 type CustomReviewee = review & {
   reviewee: CustomUser;
   reviewer: CustomUser;
+  createdAt: string;
 };
 type CustomSkill = skill & {
   user: CustomUser[];
@@ -39,6 +45,7 @@ const ratingSchema = z.object({
 export default function Client() {
   const div = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<CustomUser>();
+  const [showFullReview, setshowFullReview] = useState<number | undefined>();
   const [loading, setLoading] = useState(true);
   const [loadingAddingReview, setloadingAddingReview] = useState(false);
   const [change, setChange] = useState(false);
@@ -59,13 +66,12 @@ export default function Client() {
   if (!id) {
     return <div>NOPE</div>;
   }
-  const [ratingForm, setRatingForm] = useState({ rating: 0 });
+  const [ratingForm, setRatingForm] = useState({ rating: 0, message: "" });
   const [owner, setOwner] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res1 = await axios.get(`/api/freelancers/id?id=${id}`);
-        const res2 = await axios.post(`/api/account/profileViews?id=${id}`);
         if (res1.data.success) {
           setUser(res1.data.data.user);
         }
@@ -84,6 +90,7 @@ export default function Client() {
       if (res.data.data?.informations?.id === id) {
         setOwner(true);
       }
+      await axios.post(`/api/account/profileViews?id=${id}`);
     };
     getInfo();
   }, []);
@@ -109,8 +116,9 @@ export default function Client() {
       .catch((err) => console.error("fail: ", err));
   };
   const sendRating = async () => {
+    setratingResponse(undefined);
+    setloadingAddingReview(true);
     try {
-      setloadingAddingReview(true);
       const res = await axios.post(`/api/review`, {
         ...ratingForm,
         revieweeId: id,
@@ -118,26 +126,29 @@ export default function Client() {
       setratingResponse(res.data);
       if (res.data.success) {
         setChange(!change);
+        setRatingForm({ rating: 0, message: "" });
       }
-      setloadingAddingReview(false);
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
+    } finally {
+      setloadingAddingReview(false);
     }
   };
   return (
     <>
       {/* Үндсэн Background */}
       {loading ? (
-        <Loading />
+        <CustomSkeleton />
       ) : user ? (
-        <div className="bg-gray-100 min-h-screen">
+        <div className="bg-gray-100 min-h-screen ">
           {/* Цагаан блок (main container) */}
+
           {user.companyName ? (
             <div className="flex justify-center min-h-screen items-center">
               Холбоос буруу байна!
             </div>
           ) : (
-            <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background">
+            <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg">
               {/* Дээд хэсэг */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
@@ -182,7 +193,7 @@ export default function Client() {
                   {owner && (
                     <Link href={`/account/settings/about`}>
                       <button className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2">
-                        Мэдээлэл өөрчлөх
+                        Дашбоард
                       </button>
                     </Link>
                   )}
@@ -287,8 +298,12 @@ export default function Client() {
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-md">Үнэлгээ</h3>
                   <div className="flex gap-4">
-                    <Button onClick={handleLeftScroll}>{`<`}</Button>
-                    <Button onClick={handleRightScroll}>{`>`}</Button>
+                    <Button sx={{ color: "green" }} onClick={handleLeftScroll}>
+                      <FaCircleArrowLeft className=" text-xl" />
+                    </Button>
+                    <Button sx={{ color: "green" }} onClick={handleRightScroll}>
+                      <FaCircleArrowRight className=" text-xl" />
+                    </Button>
                   </div>
                 </div>
                 <div
@@ -297,17 +312,31 @@ export default function Client() {
                 >
                   {/* Үнэлгээний зурвасын жишээ (placeholder) */}
                   {user.reviewee.length > 0 ? (
-                    user.reviewee.map((reviewe) => (
+                    user.reviewee.map((reviewe, index) => (
                       <div
+                        onClick={() => {
+                          if (!showFullReview) {
+                            setshowFullReview(index + 1);
+                          } else if (showFullReview === index + 1) {
+                            setshowFullReview(undefined);
+                          } else if (showFullReview) {
+                            setshowFullReview(index + 1);
+                          }
+                        }}
                         key={reviewe.id}
-                        className="border flex flex-col gap-10 p-6"
+                        className="border flex flex-col gap-10 p-6 relative max-w-96 hover:bg-green-100  cursor-pointer"
                       >
                         <div className="flex flex-col justify-center">
-                          <h1 className=" font-semibold text-xl text-[#129600]">
-                            {reviewe.reviewer.companyName
-                              ? reviewe.reviewer.companyName
-                              : reviewe.reviewer.firstName}
-                          </h1>
+                          <div className="flex justify-between">
+                            <h1 className=" font-semibold text-xl text-[#129600]">
+                              {reviewe.reviewer.companyName
+                                ? reviewe.reviewer.companyName
+                                : reviewe.reviewer.firstName}
+                            </h1>
+                            <div className="text-xs text-gray-400 absolute top-0 right-0 p-2">
+                              {calculateTime(reviewe.createdAt)}
+                            </div>
+                          </div>
                           <div className="flex gap-2">
                             <Rating
                               name="half-rating-read"
@@ -318,7 +347,7 @@ export default function Client() {
                             <div>{reviewe.rating / 20} / 5</div>
                           </div>
                         </div>
-                        <div>{reviewe.message}</div>
+                        <div className=" truncate">{reviewe.message}</div>
                       </div>
                     ))
                   ) : (
@@ -333,6 +362,52 @@ export default function Client() {
                 </div>
               </div>
 
+              {/* show full review */}
+              {showFullReview && (
+                <div>
+                  {showFullReview > 0 && (
+                    <motion.div
+                      key={showFullReview}
+                      initial={{ opacity: 0, height: "auto" }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.8, ease: "easeInOut" }}
+                      className="py-4 "
+                    >
+                      <div className=" font-semibold flex gap-3">
+                        <div>Үнэлгээ үзүүлсэн байгууллага: </div>
+                        <Link
+                          target="blank"
+                          className=""
+                          href={`/client/${
+                            user.reviewee[showFullReview - 1].reviewer.id
+                          }`}
+                        >
+                          <div className=" font-bold flex gap-1 items-center">
+                            {user.reviewee[showFullReview - 1].reviewer
+                              .companyName
+                              ? user.reviewee[showFullReview - 1].reviewer
+                                  .companyName
+                              : user.reviewee[showFullReview - 1].reviewer
+                                  .firstName}
+                            <ImNewTab className="text-xs" />
+                          </div>
+                        </Link>
+                      </div>
+                      <div>
+                        <Rating
+                          name="half-rating-read"
+                          value={user.reviewee[showFullReview - 1].rating / 20}
+                          precision={0.5}
+                          readOnly
+                        />
+                      </div>
+                      <div>{user.reviewee[showFullReview - 1].message}</div>
+                    </motion.div>
+                  )}
+                </div>
+              )}
+
               {/* Ажлын түүх */}
               {/* <div className="mt-4 pb-4 border-b">
               <h3 className="font-semibold text-md mb-1">Ажлын түүх</h3>
@@ -340,7 +415,7 @@ export default function Client() {
                 Дууссан ажлууд (9) | Явагдаж буй ажлууд (1)
               </p>
             </div> */}
-              <div>
+              <div className=" py-5 border-b">
                 <div>Үнэлгээ өгөх</div>
                 <div>
                   <Rating
@@ -360,6 +435,7 @@ export default function Client() {
                 </div>
                 <div>
                   <Textarea
+                    value={ratingForm?.message ? ratingForm.message : ""}
                     onChange={(e) => {
                       setRatingForm((prev) => {
                         return {
@@ -370,6 +446,7 @@ export default function Client() {
                     }}
                   />
                 </div>
+
                 <div className="flex items-center gap-2">
                   <Button
                     onClick={sendRating}
@@ -393,9 +470,13 @@ export default function Client() {
                   {ratingResponse && (
                     <div>
                       {ratingResponse?.success ? (
-                        <div>{ratingResponse.message}</div>
+                        <div className=" text-green-700">
+                          {ratingResponse.message}
+                        </div>
                       ) : (
-                        <div>{ratingResponse.message}</div>
+                        <div className=" text-red-700">
+                          {ratingResponse.message}
+                        </div>
                       )}
                     </div>
                   )}

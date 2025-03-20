@@ -10,16 +10,33 @@ export async function GET(req: NextRequest) {
   try {
     const user = await prisma.user.findUnique({
       where: { id },
-      omit: { password: true },
+      omit: { password: true, email: true, phoneNumber: true },
       include: {
         skill: {
-          include: { user: { omit: { password: true } } },
+          include: {
+            user: { omit: { password: true, email: true, phoneNumber: true } },
+          },
         },
         reviewee: {
-          include: { reviewee: true, reviewer: true },
+          include: {
+            reviewee: {
+              omit: { password: true, email: true, phoneNumber: true },
+            },
+            reviewer: {
+              omit: { password: true, email: true, phoneNumber: true },
+            },
+          },
+          orderBy: { createdAt: "desc" },
         },
         featuredSkills: {
           include: { skill: true },
+          orderBy: { startedAt: "desc" },
+        },
+        jobpost: {
+          where: { status: { in: ["ACTIVE", "CLOSED"] } },
+          orderBy: {
+            postedAt: "desc",
+          },
         },
       },
     });
