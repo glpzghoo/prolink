@@ -41,7 +41,7 @@ export function ClientCard({ user }: { user: CustomUser }) {
           </div>
           <p className="font-bold text-2xl">
             {" "}
-            {user.companyName ? user.companyName : user.lastName}
+            {user.companyName ? user.companyName : user.firstName}
           </p>
           <div className="flex items-center gap-1 text-[#676767] text-sm">
             <svg
