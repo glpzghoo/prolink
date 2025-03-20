@@ -1,12 +1,11 @@
 "use client";
 import Loading from "@/app/_component/loading";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { calculateTime } from "@/lib/helper";
 import { responseData } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Snackbar } from "@mui/material";
+import { Button, Snackbar } from "@mui/material";
 import { job, skill, user } from "@prisma/client";
 import axios from "axios";
 import Link from "next/link";
@@ -84,7 +83,7 @@ export default function AboutSettings() {
                       <div>харсан: </div>
                       <div>{post.jobPostView}</div>
                     </div>
-                  </div>   
+                  </div>
                   <div>{post.experienced}</div>
                   <div>
                     {post.status === "ACTIVE" ? (
@@ -103,10 +102,8 @@ export default function AboutSettings() {
                     )}
                   </div>
                   <Link href={`/job/new`}>
-                      <Button sx={{ color: "#14A800" }}>
-                        Устгах
-                      </Button>
-                    </Link>
+                    <Button sx={{ color: "#14A800" }}>Устгах</Button>
+                  </Link>
                 </div>
               ))}
             </div>
