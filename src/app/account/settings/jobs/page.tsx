@@ -84,8 +84,7 @@ export default function AboutSettings() {
                       <div>харсан: </div>
                       <div>{post.jobPostView}</div>
                     </div>
-                  </div>
-
+                  </div>   
                   <div>{post.experienced}</div>
                   <div>
                     {post.status === "ACTIVE" ? (
@@ -103,6 +102,11 @@ export default function AboutSettings() {
                       </div>
                     )}
                   </div>
+                  <Link href={`/job/new`}>
+                      <Button sx={{ color: "#14A800" }}>
+                        Устгах
+                      </Button>
+                    </Link>
                 </div>
               ))}
             </div>
