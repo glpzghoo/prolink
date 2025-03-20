@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <div className="w-full flex flex-col items-center h-[388px] justify-around bg-secondary">
       {/* 1 */}
-      <div className="flex w-[70%] justify-between text-sm">
+      <div className="flex w-full justify-around text-sm">
         <div className=" flex flex-col gap-3">
           <h1 className="font-semibold">Ажил горилогч</h1>
           <div>Хэрхэн байгууллагатай хамтран ажиллах вэ?</div>
@@ -32,7 +32,7 @@ export default function Footer() {
         </div>
       </div>
       {/* 2 */}
-      <div className=" border-t w-[75%] py-7 flex justify-between items-center">
+      <div className=" border-t w-full py-7 flex justify-around items-center">
         <div className="flex gap-2.5">
           <div>© 2025 ProLink, Inc.</div>
           <div>&#xB7;</div>

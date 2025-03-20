@@ -262,8 +262,43 @@ export default function Client() {
                     {user.salary}/{user.salaryType === "HOUR" ? `цаг` : `сар`}
                   </p> */}
                 </div>
-                <p className="text-gray-700 mt-2">{user.about}</p>
+                <p className="text-gray-700 mt-2">
+                  {user.about} Lorem ipsum dolor, sit amet consectetur
+                  adipisicing elit. Illo tempora nesciunt ad. Rerum quasi ut
+                  facere dolorum ad accusamus quam autem iure vero accusantium
+                  voluptates facilis, soluta quas nihil! Earum.
+                </p>
               </div>
+            </div>
+            <div className="mt-4 ">
+              {user.jobpost.length === 0 ? (
+                <div> Ажлын зар байхгүй байна.</div>
+              ) : (
+                <>
+                  <div className="text-lg font-semibold mb-3 text-[#129600]">
+                    Ажлын зарууд
+                  </div>
+                  {user.jobpost.map((ski) => (
+                    <div
+                      key={ski.id}
+                      className="border border-gray-200 p-4 mt-6 rounded-3xl shadow-md"
+                    >
+                      <div className="flex justify-between">
+                        <h3 className="font-semibold text-md items-center flex gap-2">
+                          <div className=" text-green-500">
+                            <GoDotFill className="animate-ping duration-4000" />
+                          </div>
+                          {ski.title}
+                        </h3>
+                        <div>{ski.postedAt.split("T")[0]}</div>
+                      </div>
+                      <div className="list-disc list-inside text-gray-700 mt-1">
+                        {ski.description}
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
             </div>
             {/* /Профайл ерөнхий мэдээлэл
 
@@ -467,37 +502,6 @@ export default function Client() {
                   ))}
               </div>
             </div> */}
-
-            <div className="mt-4 ">
-              {user.jobpost.length === 0 ? (
-                <div> Ажлын зар байхгүй байна.</div>
-              ) : (
-                <>
-                  <div className="text-lg font-semibold mb-3 text-[#129600]">
-                    Ажлын зарууд
-                  </div>
-                  {user.jobpost.map((ski) => (
-                    <div
-                      key={ski.id}
-                      className="border border-gray-200 p-4 rounded-3xl shadow-md"
-                    >
-                      <div className="flex justify-between">
-                        <h3 className="font-semibold text-md items-center flex gap-2">
-                          <div className=" text-green-500">
-                            <GoDotFill className="animate-ping duration-4000" />
-                          </div>
-                          {ski.title}
-                        </h3>
-                        <div>{ski.postedAt.split("T")[0]}</div>
-                      </div>
-                      <div className="list-disc list-inside text-gray-700 mt-1">
-                        {ski.description}
-                      </div>
-                    </div>
-                  ))}
-                </>
-              )}
-            </div>
 
             {/* Доод линкүүдийн хэсэг */}
 

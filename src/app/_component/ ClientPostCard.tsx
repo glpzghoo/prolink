@@ -13,7 +13,7 @@ export function ClientCard({ user }: { user: CustomUser }) {
   };
   return (
     <Link
-      className="w-[280px] max-h-[450px] md:mt-8 mx-auto border border-[#e9e9e9] rounded-xl p-4 shadow-lg"
+      className="w-[280px] max-h-[450px] mt-8 mx-auto border border-[#e9e9e9] rounded-xl p-4 shadow-lg"
       href={user.companyName ? `/client/${user.id}` : `/freelancer/${user.id}`}
     >
       <div>

@@ -98,7 +98,7 @@ export default function Freelance() {
                 Дундаж үнэлгээ:{" "}
                 {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
               </div>
-              <div className="max-w-[1280px] mx-auto flex flex-wrap ">
+              <div className="max-w-[1280px] mx-auto flex flex-wrap mt-4 ">
                 {users.map((user) => (
                   <ClientCard key={user.id} user={user} />
                 ))}
