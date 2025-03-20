@@ -7,16 +7,13 @@ import { cn } from "@/lib/utils";
 import { Rating } from "@mui/material";
 import { job, jobApplication, review, skill, user } from "@prisma/client";
 import axios from "axios";
-import { Star } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { set } from "zod";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -26,7 +23,10 @@ type CustomJobApplication = jobApplication & {
   client: CustomUser;
   createdAt: string;
   freelancer: CustomUser;
+  cancelled: boolean;
+  clientStatus: string;
 };
+
 type CustomJob = job & {
   postedAt: string;
   skill: skill[];
@@ -36,7 +36,7 @@ export default function ProposalDetails() {
   const [applicationData, setApplicationData] = useState<
     CustomJobApplication[]
   >([]);
-  const [user, setUser] = useState<user>();
+  const [user, setUser] = useState<user | undefined>();
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(false);
@@ -47,22 +47,23 @@ export default function ProposalDetails() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`/api/jobApplication`);
-        if (res.data.success) {
-          if (res.data.data.user.role === "CLIENT") {
-            setUser(res.data.data.user);
-            setRole(res.data.data.user.role);
-            setApplicationData(res.data.data.user.clientJobApplication);
-          } else {
-            setRole(res.data.data.user.role);
-            setUser(res.data.data.user);
-            setApplicationData(res.data.data.user.freelancerJobApplication);
-          }
+        setLoading(true);
+        const res = await axios.get("/api/jobApplication");
+        if (res.data?.success && res.data?.data?.user) {
+          const { user } = res.data.data;
+          setUser(user);
+          setRole(user.role);
+          setApplicationData(
+            user.role === "CLIENT"
+              ? user.clientJobApplication || []
+              : user.freelancerJobApplication || []
+          );
         } else {
-          setApplicationData(res.data);
+          console.warn("Unexpected API response:", res.data);
+          setApplicationData([]);
         }
       } catch (err) {
-        console.error(err, "Алдаа гарлаа");
+        console.error("API Error:", err);
       } finally {
         setLoading(false);
       }
@@ -71,6 +72,7 @@ export default function ProposalDetails() {
   }, [refresh]);
 
   const changeApplicationStatus = async () => {
+    if (!statusValue || !applicationId) return;
     setLoading2(true);
     try {
       const response = await axios.put("/api/jobApplication", {
@@ -81,169 +83,118 @@ export default function ProposalDetails() {
         setRefresh(!refresh);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Status Update Error:", err);
     } finally {
       setLoading2(false);
     }
   };
 
-  // const deleteApplication = async (id: string) => {
-  //   try {
-  //     setLoading(true);
-  //     const res = await axios.delete(`/api/jobApplication?id=${id}`);
-  //     if (res.data.success) {
-  //       setRefresh(!refresh);
-  //     }
-  //     setLoading(false);
-  //   } catch (err) {
-  //     console.log(err, "Сервертэй холбогдож чадсангүй!");
-  //   }
-  // };
-
   const avgRating = (rating: review[]): number => {
-    const totalRating = rating.reduce((prev, acc) => {
-      prev += acc.rating;
-      return prev;
-    }, 0);
-
-    const avg = totalRating / rating.length / 20;
-
-    return Number(avg.toFixed(1));
+    if (!rating.length) return 0;
+    const totalRating = rating.reduce((prev, acc) => prev + acc.rating, 0);
+    return Number((totalRating / rating.length / 20).toFixed(1));
   };
 
-  return loading ? (
-    <Loading />
-  ) : applicationData.length > 0 ? (
-    <>
+  const renderStatusMessage = (application: CustomJobApplication) => {
+    if (application.cancelled) {
+      return role === "CLIENT"
+        ? "Ажил горилогч хүсэлтээ буцаасан байна!"
+        : "Та хүсэлтээ буцаасан байна!";
+    }
+    if (role === "CLIENT") {
+      return application.clientStatus === "waiting"
+        ? "Хүлээгдэж байна!"
+        : application.clientStatus === "accepted"
+        ? "Зөвшөөрсөн."
+        : "Татгалзсан.";
+    }
+    return application.clientStatus === "waiting"
+      ? "Ажил олгогч таныг хүлээж байна."
+      : application.clientStatus === "accepted"
+      ? "Зөвшөөрсөн."
+      : "Татгалзсан.";
+  };
+
+  if (loading) return <Loading />;
+  if (!applicationData.length) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-600 text-lg">
+        Одоогоор ажлын хүсэлт байхгүй байна.
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
       {loading2 && <Loading />}
-      {applicationData.map((application) => (
-        <React.Fragment key={application.id}>
-          <div className=" bg-gray-100 p-6" key={application.id}>
-            <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
-              <div className="flex-1 bg-white p-6 rounded-lg shadow-lg">
-                <div className="flex justify-between items-center mb-4">
-                  <h1 className="text-2xl font-bold">
+      <div className="max-w-6xl mx-auto space-y-6">
+        {applicationData.map((application) => (
+          <div
+            key={application.id}
+            className="bg-white rounded-xl shadow-md overflow-hidden"
+          >
+            <div className="p-6 flex flex-col lg:flex-row gap-6">
+              <div className="flex-1 space-y-6">
+                <div className="flex justify-between items-center">
+                  <h1 className="text-2xl font-bold text-gray-800">
                     {application.job.title}
                   </h1>
-                  {user?.role === "FREELANCER" ? (
-                    <div className="flex">
+                  <div className="flex items-center gap-4">
+                    {role === "CLIENT" ? (
+                      <div className="flex items-center gap-2">
+                        <Select
+                          defaultValue={application.clientStatus}
+                          onValueChange={(value) => {
+                            setStatusValue(value);
+                            setApplicationId(application.id);
+                          }}
+                        >
+                          <SelectTrigger className="w-[180px] border-gray-300">
+                            <SelectValue placeholder="Төлөв сонгох" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="accepted">
+                                Зөвшөөрөх
+                              </SelectItem>
+                              <SelectItem value="denied">Татгалзах</SelectItem>
+                              <SelectItem value="waiting">
+                                Хүлээгдэж байна
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          className="bg-green-600 hover:bg-green-700"
+                          onClick={changeApplicationStatus}
+                          disabled={loading2}
+                        >
+                          Хадгалах
+                        </Button>
+                      </div>
+                    ) : (
                       <Button
-                        className="bg-green-600 hover:bg-green-700 text-white"
+                        className="bg-green-600 hover:bg-green-700"
                         onClick={() => alert("Edit proposal clicked")}
                       >
                         Төлөв өөрчлөх
                       </Button>
-                      {!application.cancelled ? (
-                        <p className=" whitespace-nowrap text-xs">
-                          {role === "CLIENT"
-                            ? application.cancelled
-                              ? "Ажил олгогч хүсэлтээ буцаасан."
-                              : "Ажил олгогч таныг хүлээж байна."
-                            : application.clientStatus === "waiting"
-                            ? `Хүлээгдэж байна!`
-                            : application.clientStatus === "accepted"
-                            ? "Зөвшөөрсөн."
-                            : `Татгалзсан`}
-                        </p>
-                      ) : (
-                        <div className=" text-xs whitespace-nowrap">
-                          Ажил та хүсэлтээ буцаасан байна!
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div>
-                      <Select
-                        defaultValue={application.clientStatus}
-                        onValueChange={(e) => {
-                          setStatusValue(e);
-                          setApplicationId(application.id);
-                        }}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Төлөв өөрчлөх" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value="accepted">Зөвшөөрөх</SelectItem>
-                            <SelectItem value="denied">Татгалзах</SelectItem>
-                            <SelectItem value="waiting">
-                              Хүлээгдэж байна
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      <Button
-                        className="bg-green-600 hover:bg-green-700 text-white"
-                        onClick={changeApplicationStatus}
-                      >
-                        Төлөв өөрчлөх
-                      </Button>
-                      {!application.cancelled ? (
-                        <div className=" whitespace-nowrap">
-                          {role === "CLIENT" && (
-                            <div>
-                              {application.cancelled
-                                ? "Ажил олгогч хүсэлтээ буцаасан."
-                                : application.clientStatus === "waiting"
-                                ? `Хүлээгдэж байна!`
-                                : application.clientStatus === "accepted"
-                                ? "Зөвшөөрсөн."
-                                : application.clientStatus === "denied"
-                                ? `Татгалзсан`
-                                : !application.cancelled
-                                ? "Ажил олгогч таныг хүлээж байна."
-                                : "Ажил олгогч хүсэлтээ буцаасан."}
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div>Ажил горилогч хүсэлтээ буцаасан байна!</div>
-                      )}
-                    </div>
-                  )}
-                  <div className="flex gap-2">
-                    {/* <Button
-                  variant="outline"
-                  className="border-gray-300 text-gray-700 hover:bg-gray-100"
-                  onClick={() => deleteApplication(application.id)}
-                >
-                  Устгах
-                </Button> */}
+                    )}
+                    <p className="text-sm text-gray-600">
+                      {renderStatusMessage(application)}
+                    </p>
                   </div>
                 </div>
-                {/* <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-2">Insights</h2>
-              <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                <div className="flex-1">
-                  <p className="text-gray-700">
-                    Get daily updates on competing bids, with insights into how
-                    your proposal compares.
-                  </p>
-                  <Button
-                    className="mt-2 bg-green-600 hover:bg-green-700 text-white"
-                    onClick={() => alert("Get connects clicked")}
-                  >
-                    Get for 4 Connects
-                  </Button>
-                </div>
-                <div className="w-24">
-                  <img
-                    src="/business.svg"
-                    alt="Insights Graph"
-                    className="w-full h-auto"
-                  />
-                </div>
-              </div>
-            </div> */}
-                <div className="mb-6">
-                  <h2 className="text-lg font-semibold mb-2">
-                    Ажлын саналын дэлгэрэнгүй
+
+                <div className="space-y-4">
+                  <h2 className="text-lg font-semibold text-gray-700">
+                    Ажлын дэлгэрэнгүй
                   </h2>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-lg font-bold">
-                      {application.job.salary}/
-                      <span className="text-gray-400">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xl font-bold text-gray-800">
+                      {application.job.salary}
+                      <span className="text-gray-500 text-sm ml-1">
+                        /
                         {application.job.salaryRate === "MONTH"
                           ? "сар"
                           : application.job.salaryRate === "DAY"
@@ -252,94 +203,87 @@ export default function ProposalDetails() {
                       </span>
                     </span>
                   </div>
-                  <div className="flex gap-2 text-sm text-gray-600 mb-2">
-                    {/* <span className="bg-gray-200 px-2 py-1 rounded">
-                  {job.category}
-                </span> */}
+                  <div className="flex gap-2 text-sm text-gray-600">
                     <span>
-                      Нийтлэсэн огноо: {application.job.postedAt.split("T")[0]}
+                      Нийтлэсэн: {application.job.postedAt.split("T")[0]}
                     </span>
                   </div>
-                  <p className="text-gray-700 mb-4">
+                  <p className="text-gray-700 leading-relaxed">
                     {application.job.description}
                   </p>
                   <Link
-                    target="blank"
                     href={`/job/${application.job.id}`}
+                    target="_blank"
                     className="text-green-600 hover:underline"
                   >
                     Ажлын саналтай танилцах
                   </Link>
                 </div>
+
                 <div>
-                  <h2 className="text-lg font-semibold mb-2">
-                    Шаардагдах ур чадварууд:
+                  <h2 className="text-lg font-semibold text-gray-700">
+                    Шаардлага
                   </h2>
-                  <div className="text-gray-700">
-                    <div>
-                      {application.job.skill.map((skill) => (
-                        <div key={skill.id}>{skill.name}</div>
-                      ))}
-                    </div>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {application.job.skill.map((skill) => (
+                      <span
+                        key={skill.id}
+                        className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
+                      >
+                        {skill.name}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>
-              <div className="w-full lg:w-80 bg-white p-6 rounded-lg shadow-lg">
-                <h2 className="text-lg font-semibold"></h2>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-2xl font-bold">
-                    {user?.role === "CLIENT"
-                      ? "Ажил горилогчийн тухай"
-                      : "Ажил олгогчийн тухай"}
-                  </span>
-                </div>
-                <div className="flex items-center gap-1 mb-2">
-                  <div className="flex">
-                    <div className="flex gap-2">
-                      <Rating
-                        name="half-rating-read"
-                        value={
-                          role === "CLIENT"
-                            ? avgRating(application.freelancer.reviewee)
-                            : avgRating(application.client.reviewee)
-                        }
-                        precision={0.5}
-                        readOnly
-                      />
-                    </div>
+
+              <div className="lg:w-80 bg-gray-50 p-6 rounded-lg">
+                <h2 className="text-lg font-semibold text-gray-700 mb-4">
+                  {role === "CLIENT"
+                    ? "Ажил горилогчийн тухай"
+                    : "Ажил олгогчийн тухай"}
+                </h2>
+                <div className="space-y-3 text-gray-700">
+                  <div className="flex items-center gap-2">
+                    <Rating
+                      name="half-rating-read"
+                      value={
+                        role === "CLIENT"
+                          ? avgRating(application.freelancer.reviewee)
+                          : avgRating(application.client.reviewee)
+                      }
+                      precision={0.5}
+                      readOnly
+                    />
+                    <span>
+                      {role === "CLIENT"
+                        ? avgRating(application.freelancer.reviewee)
+                        : avgRating(application.client.reviewee)}{" "}
+                      / 5
+                    </span>
                   </div>
-                  <span className="text-gray-700">
+                  <p>
+                    <strong>Байршил:</strong>{" "}
                     {role === "CLIENT"
-                      ? avgRating(application.freelancer.reviewee)
-                      : avgRating(application.client.reviewee)}
-                    /5 reviews
-                  </span>
+                      ? application.freelancer.companyLocation
+                      : application.client.companyLocation}
+                  </p>
+                  <p>
+                    <strong>Огноо:</strong>{" "}
+                    {application.createdAt.split("T")[0]}
+                  </p>
+                  <p>
+                    <strong>Холбоо барих:</strong>{" "}
+                    {role === "CLIENT"
+                      ? application.freelancer.email
+                      : application.client.email}
+                  </p>
                 </div>
-                <p className="text-gray-700 mb-2">
-                  Байршил:
-                  {role === "CLIENT"
-                    ? application.freelancer.companyLocation
-                    : application.client.companyLocation}
-                </p>
-                <p className="text-gray-700 mb-2">
-                  Огноо:
-                  {role === "CLIENT"
-                    ? application.createdAt.split("T")[0]
-                    : application.createdAt.split("T")[0]}
-                </p>
-                <p className="text-gray-700 mb-2">
-                  Холбоо барих :
-                  {role === "CLIENT"
-                    ? application.freelancer.email
-                    : application.client.email}
-                </p>
               </div>
             </div>
           </div>
-        </React.Fragment>
-      ))}
-    </>
-  ) : (
-    <div className="text-center">no job applications</div>
+        ))}
+      </div>
+    </div>
   );
 }

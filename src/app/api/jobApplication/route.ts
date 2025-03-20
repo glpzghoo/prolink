@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
     if (!process.env.ACCESS_TOKEN) {
       return NextResponse_NoEnv(`ACCESS_TOKEN`);
     }
+
     const accessToken = req.cookies.get(`accessToken`)?.value;
     if (!accessToken) {
       return NextResponse_NoCookie();
@@ -22,6 +23,7 @@ export async function GET(req: NextRequest) {
       id: string;
       role: string;
     };
+
     if (verify.role === "CLIENT") {
       const user = await prisma.user.findUnique({
         where: { id: verify.id },
@@ -41,9 +43,7 @@ export async function GET(req: NextRequest) {
         true,
         "REQUEST_SUCCESS",
         "Ажил олгогчийн анкетүүд амжилттай татлаа!",
-        {
-          user,
-        }
+        { user }
       );
     } else if (verify.role === "FREELANCER") {
       const user = await prisma.user.findUnique({
@@ -64,13 +64,31 @@ export async function GET(req: NextRequest) {
         true,
         "REQUEST_SUCCESS",
         "Ажил горилогчийн анкетүүд амжилттай татлаа!",
+        { user }
+      );
+    } else {
+      return new Response(
+        JSON.stringify({ success: false, message: "Invalid role" }),
         {
-          user,
+          status: 403,
+          headers: { "Content-Type": "application/json" },
         }
       );
     }
   } catch (err) {
     console.error(err, "Сервер дээр асуудал гарлаа!");
+
+    return new Response(
+      JSON.stringify({
+        success: false,
+        message: "Internal Server Error",
+        error: err,
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }
 
@@ -142,7 +160,7 @@ export async function PUT(req: NextRequest) {
       where: {
         id: applicationId,
       },
-      data: { clientStatus: statusValue },
+      data: { clientStatus: statusValue as clientStatus },
     });
     if (jobApplication) {
       return CustomNextResponse(
