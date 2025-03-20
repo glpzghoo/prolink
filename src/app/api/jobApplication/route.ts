@@ -160,7 +160,7 @@ export async function PUT(req: NextRequest) {
       where: {
         id: applicationId,
       },
-      data: { clientStatus: statusValue as clientStatus },
+      data: { clientStatus: statusValue },
     });
     if (jobApplication) {
       return CustomNextResponse(
