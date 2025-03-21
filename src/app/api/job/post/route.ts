@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
             reviewer: true,
           },
         },
-        skill: true,
+        skill: { include: { job: true } },
         jobApplication: true,
       },
     });

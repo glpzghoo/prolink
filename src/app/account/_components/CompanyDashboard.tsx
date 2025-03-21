@@ -11,6 +11,7 @@ import Rating from "@mui/material/Rating";
 import { featuredSkills, job, review, skill, user } from "@prisma/client";
 import axios from "axios";
 import { motion } from "framer-motion";
+import _ from "lodash";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
@@ -50,6 +51,7 @@ export default function Client() {
   const filter = searchParams.get("filter");
   console.log(filter);
   const [user, setUser] = useState<CustomUser>();
+  const [similarUsers, setSimilarUsers] = useState<CustomUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingAddingReview, setloadingAddingReview] = useState(false);
   const [change, setChange] = useState(false);
@@ -80,6 +82,14 @@ export default function Client() {
         const res1 = await axios.get(`/api/freelancers/id?id=${id}`);
         if (res1.data.success) {
           setUser(res1.data.data.user);
+          const userr: CustomUser = res1.data.data.user;
+          const similar = _.uniqBy(userr.skill, "id");
+          const flat = similar.flatMap((a) => a.user);
+          const uniqs = _.uniqBy(flat, "id");
+          const filter = uniqs.filter(
+            (s) => s.id !== id && s.role === "CLIENT"
+          );
+          setSimilarUsers(filter);
         }
         setLoading(false);
       } catch (err) {
@@ -502,31 +512,20 @@ export default function Client() {
             {/* Доод линкүүдийн хэсэг */}
 
             {/* 1-р багана: Бусад чадварлаг хүмүүсийг хайх */}
-            <div className="w-full pt-4">
-              <div className=" flex gap-14 whitespace-nowrap overflow-scroll">
-                {user.skill.map((skill) => (
-                  <div key={skill.id}>
-                    <h4 className="font-semibold mb-2">{skill.name}</h4>
-                    <ul className="space-y-1">
-                      {skill.user.map((skil) => (
-                        <li className="" key={skil.id}>
-                          {skil.companyName ? (
-                            <Link href={`/client/${skil.id}`}>
-                              {skil.companyName}
-                            </Link>
-                          ) : (
-                            <Link href={`/freelancer/${skil.id}`}>
-                              <div>
-                                {skil.lastName} {` `}
-                                {skil.firstName}
-                              </div>
-                            </Link>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+            <div className="w-full flex flex-col p-4 gap-5">
+              <div className=" font-semibold">Төстэй ажил олгогчид~</div>
+              <div className=" flex gap-14 whitespace-nowrap flex-wrap">
+                {similarUsers.length > 0 ? (
+                  similarUsers.map((skil) => (
+                    <li className="" key={skil.id}>
+                      <Link href={`/client/${skil.id}`}>
+                        {skil.companyName}
+                      </Link>
+                    </li>
+                  ))
+                ) : (
+                  <div>Одоогоор байхгүй байна!</div>
+                )}
               </div>
             </div>
             {/* /Доод линкүүдийн хэсэг */}
