@@ -1,28 +1,33 @@
 "use client";
 import Loading from "@/app/_component/loading";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { calculateTime } from "@/lib/helper";
-import { responseData } from "@/lib/types";
-import { cn } from "@/lib/utils";
-import { Button, Snackbar } from "@mui/material";
-import { job, skill, user } from "@prisma/client";
+import { Button } from "@mui/material";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { GoDotFill } from "react-icons/go";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
-type CustomJob = job & {
+
+type CustomJob = {
+  id: string;
+  title: string;
+  salary: number;
+  salaryRate: string;
+  description: string;
+  jobLocation: string;
   postedAt: string;
+  jobPostView: number;
+  experienced: string;
+  status: string;
 };
 
 type CustomUser = {
@@ -33,9 +38,9 @@ type CustomUser = {
 export default function AboutSettings() {
   const [user, setUser] = useState<CustomUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [waiting, setWaiting] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const router = useRouter();
+  const [deleteJobId, setDeleteJobId] = useState<string | null>(null);
 
   useEffect(() => {
     const getInfo = async () => {
@@ -51,42 +56,48 @@ export default function AboutSettings() {
       }
     };
     getInfo();
-  }, [refresh]);
+  }, []);
 
   const deleteJob = async (jobId: string) => {
-    if (!confirm("Та уг ажлын саналыг устгах гэж байгаадаа итгэлтэй байна уу?"))
-      return (
-        <Card>
-          <CardHeader>
-            <CardTitle>Card Title</CardTitle>
-            <CardDescription>Card Description</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card Content</p>
-          </CardContent>
-          <CardFooter>
-            <p>Card Footer</p>
-          </CardFooter>
-        </Card>
-      );
+    if (deleteJobId) return (
+      <div>
+        <Dialog>
+          <DialogContent>
+            <DialogDescription>
+              <DialogTitle>Ажлын санал устгах</DialogTitle>
+              <DialogHeader>Та энэ ажлын саналыг устгахдаа итгэлтэй байна уу?</DialogHeader>
+              <Button onClick={() => setDeleteJobId(null)}>Тийм</Button>
+              <Button onClick={() => deleteJob(jobId)}>Үгүй</Button>
+            </DialogDescription>
+        </DialogContent>
+        </Dialog>
+      </div>
+    );
+
     try {
-      setWaiting(true);
       const response = await axios.delete(`/api/job/post?id=${jobId}`);
       if (response.data.success) {
-        alert("Ажлын санал амжилттай устгагдлаа!");
+        <Dialog>
+        <DialogContent>
+          <DialogDescription>
+            <DialogTitle>Ажлын санал устгах</DialogTitle>
+            <DialogHeader>Та энэ ажлын саналыг устгахдаа итгэлтэй байна уу?</DialogHeader>
+            <Button onClick={() => setDeleteJobId(null)}>Тийм</Button>
+            <Button onClick={() => deleteJob(jobId)}>Үгүй</Button>
+          </DialogDescription>
+      </DialogContent>
+      </Dialog>
         setRefresh(!refresh);
       } else {
         alert(`Алдаа гарлаа: ${response.data.message}`);
       }
     } catch (error) {
       console.error("Устгах явцад алдаа гарлаа:", error);
-      alert("Алдаа гарлаа!");
-    } finally {
-      setWaiting(false);
+      alert("Алдаа гарлаа! Дахин оролдоно уу.");
     }
   };
 
-  const updateJob = async (jobId: string) => {
+  const jobUpdate = async (jobId: string) => {
     if (!confirm("Энэ ажлын саналыг шинэчлэхдээ итгэлтэй байна уу?")) return;
 
     try {
@@ -107,7 +118,7 @@ export default function AboutSettings() {
     <div className="bg-secondary flex flex-col items-center">
       {user?.role === "CLIENT" ? (
         <>
-          {waiting && <Loading />}
+          {loading && <Loading />}
           <div className="bg-background w-1/2 shadow-lg p-4">
             <h2 className="font-bold mb-4">Таны оруулсан ажлын саналууд:</h2>
             {user.jobpost.length > 0 ? (
@@ -118,12 +129,12 @@ export default function AboutSettings() {
                       user.jobpost.length > i + 1 && `border-b border-gray-200`
                     } py-5 relative flex flex-col gap-1`}
                     key={post.id}
-                  >
+                  > 
                     <div className=" flex justify-between">
                       <Link target="blank" href={`/job/${post.id}`}>
                         <div className="font-bold">{post.title}</div>
                       </Link>
-                      <div className="flex justify-end font-semibold text-green-700  absolute top-0 right-0">
+                      <div className="flex justify-end font-semibold text-green-700 absolute top-0 right-0">
                         <div>Таны амласан цалин: {post.salary}</div>/
                         <div>
                           {post.salaryRate === "MONTH"
@@ -135,48 +146,55 @@ export default function AboutSettings() {
                       </div>
                     </div>
 
-                    <div> {post.description}</div>
+                    <div>{post.description}</div>
                     <div>Байршил: {post.jobLocation}</div>
                     <div className="flex justify-between">
                       <div className="text-gray-400/70 text-xs absolute bottom-2 left-0">
                         Зар үүссэн огноо: {post.postedAt.split("T")[0]} (
                         {calculateTime(post.postedAt)})
                       </div>
-                      <div className="flex  absolute bottom-2 right-0">
-                        <div>харсан: </div>
+                      <div className="flex absolute bottom-2 right-0">
+                        <div>Харсан: </div>
                         <div>{post.jobPostView}</div>
                       </div>
                     </div>
                     <div>{post.experienced}</div>
                     <div>
                       {post.status === "ACTIVE" ? (
-                        <div className=" text-[#14A800] text-xs absolute top-0 left-0 flex items-center gap-1">
+                        <div className="text-[#14A800] text-xs absolute top-0 left-0 flex items-center gap-1">
                           <GoDotFill className="animate-ping duration-4000" />
-                          <p>идэвхитэй пост</p>
+                          <p>Идэвхтэй пост</p>
                         </div>
                       ) : post.status === "CLOSED" ? (
-                        <div className=" text-pink-400/70 text-xs absolute top-0 left-0 flex items-center gap-1">
-                          <p>идэвхигүй пост</p>
+                        <div className="text-pink-400/70 text-xs absolute top-0 left-0 flex items-center gap-1">
+                          <p>Идэвхигүй пост</p>
                         </div>
                       ) : (
-                        <div className=" text-gray-400/70 text-xs absolute top-0 left-0 flex items-center gap-1">
+                        <div className="text-gray-400/70 text-xs absolute top-0 left-0 flex items-center gap-1">
                           <p>Ноорог пост</p>
                         </div>
                       )}
                     </div>
-                    <Button
-                      onClick={() => {
-                        deleteJob(post.id);
-                      }}
-                      sx={{ color: "#14A800" }}
-                    >
-                      Устгах
-                    </Button>
+                    <div className="flex gap-2 mt-2">
+                      <Button
+                        onClick={() => deleteJob(post.id)}
+                        className="bg-red-600 text-white w-20 h-7"
+                      >
+                        Устгах
+                      </Button>
+                      <Button
+                        onChange={() => jobUpdate(post.title && post.description)}
+                        onClick={() => jobUpdate(post.id)}
+                        className="bg-blue-600 text-white w-20 h-7"
+                      >
+                        Шинэчлэх
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p>Таньд оруулсан ажлын санал алга!</p>
+              <p>Танд оруулсан ажлын санал алга!</p>
             )}
           </div>
         </>
