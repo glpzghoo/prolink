@@ -22,7 +22,7 @@ import { ImCheckmark, ImCheckmark2 } from "react-icons/im";
 export function Navigation() {
   const [response, setUserInfo] = useState<responseData>();
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter();
   const pathname = usePathname();
   const getInfo = async () => {
     const res = await axios.get(`/api/account`);
@@ -43,6 +43,9 @@ export function Navigation() {
     setUserInfo(undefined);
     const res = await axios.get(`/api/account/logout`);
     setUserInfo(res.data);
+    if (res.data.success) {
+      router.refresh();
+    }
     setLoading(false);
   };
   return (
