@@ -41,10 +41,11 @@ export function Navigation() {
     <div className="flex justify-around items-center py-4">
       <div className="flex items-center gap-7">
         <Link href={`/`}>
-          <div className="flex items-center text-[#14A800] font-extrabold text-xl">
+          <div className="flex justify-between items-center text-[#14A800] font-extrabold text-xl">
             ProLink
           </div>
         </Link>
+        {/* <div>Нэвтрэх</div> */}
         <div className=" hidden xl:flex gap-6 text-sm font-medium">
           <Link href={`/freelancer`}>
             <div

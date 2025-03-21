@@ -7,8 +7,7 @@ import {
 
 export default function Footer() {
   return (
-    <div className="w-full flex flex-col items-center h-[388px] justify-around bg-secondary">
-      {/* 1 */}
+    <div className="w-full flex flex-col items-center h-screen justify-around bg-secondary">
       <div className="flex w-[70%] justify-between text-sm">
         <div className=" flex flex-col gap-3">
           <h1 className="font-semibold">Ажил горилогч</h1>
@@ -31,18 +30,18 @@ export default function Footer() {
           <div>Airbnb Luxe</div>
         </div>
       </div>
-      {/* 2 */}
-      <div className=" border-t w-[75%] py-7 flex justify-between items-center">
-        <div className="flex gap-2.5">
+
+      <div className=" border-t w-[70%] py-7 grid md:grid-cols-2 grid-cols-1 gap-4 justify-around items-center ">
+        <div className="flex gap-4">
           <div>© 2025 ProLink, Inc.</div>
           <div>&#xB7;</div>
           <div>Хувийн нууц</div>
           <div>&#xB7;</div>
           <div>Үйлчилгээний нөхцөл</div>
         </div>
-        <div className="flex gap-7 items-center">
+        <div className="flex gap-7 items-center mt-4">
           <div>Dark/Light</div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 ">
             <div>
               <IoLogoFacebook />
             </div>
