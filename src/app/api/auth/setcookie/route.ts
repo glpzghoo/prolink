@@ -21,12 +21,7 @@ export async function GET(req: NextRequest) {
 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    return CustomNextResponse(
-      false,
-      "USER_NOT_FOUND",
-      "Хэрэглэгч олдсонгүй~!",
-      null
-    );
+    return NextResponse.redirect(new URL("/account/user_not_found", req.url));
   }
   const accessToken = jwt.sign(
     { id: user.id, companyName: user.companyName, role: user.role },
