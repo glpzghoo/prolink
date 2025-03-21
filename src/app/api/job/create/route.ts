@@ -1,21 +1,48 @@
 import { prisma } from "@/lib/prisma";
-import { CustomNextResponse, NextResponse_CatchError } from "@/lib/responses";
+import {
+  CustomNextResponse,
+  NextResponse_CatchError,
+  NextResponse_NoCookie,
+  NextResponse_NoEnv,
+} from "@/lib/responses";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import { SalaryType } from "@prisma/client";
 
 export async function POST(req: NextRequest) {
-  const {
-    title,
-    description,
-    experienced,
-    salary,
-    salaryRate,
-    posterId,
-    skill,
-    status,
-  } = await req.json();
+  const { title, requirements, exp, salary, salaryRate, selectedSkills } =
+    await req.json();
+  console.log(title, requirements, exp, salary, salaryRate, selectedSkills);
 
+  const parsedSalaryRate = Object.values(SalaryType).includes(
+    salaryRate as SalaryType
+  )
+    ? (salaryRate as SalaryType)
+    : null;
+
+  if (!parsedSalaryRate) {
+    return CustomNextResponse(
+      false,
+      "INVALID_ENUM",
+      "Invalid salary type!",
+      null
+    );
+  }
+
+  if (!process.env.ACCESS_TOKEN) {
+    return NextResponse_NoEnv(`ACCESS_TOKEN`);
+  }
+
+  const accessToken = req.cookies.get(`accessToken`)?.value;
+  if (!accessToken) {
+    return NextResponse_NoCookie();
+  }
+
+  const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
+    id: string;
+  };
   try {
-    const poster = await prisma.user.findUnique({ where: { id: posterId } });
+    const poster = await prisma.user.findUnique({ where: { id: verify?.id } });
     if (!poster) {
       return CustomNextResponse(
         false,
@@ -32,16 +59,30 @@ export async function POST(req: NextRequest) {
         null
       );
     }
+
+    const validSkills = await prisma.skill.findMany({
+      where: { name: { in: selectedSkills } },
+      select: { id: true },
+    });
+
+    if (validSkills.length !== selectedSkills.length) {
+      return CustomNextResponse(
+        false,
+        "INVALID_SKILLS",
+        "One or more skills do not exist!",
+        null
+      );
+    }
+
     const newJob = await prisma.job.create({
       data: {
         title,
-        description,
-        experienced,
+        description: requirements,
+        experienced: exp,
         salary,
-        salaryRate,
-        posterId,
-        skill: { connect: skill },
-        ...(status ? { status } : {}),
+        salaryRate: salaryRate as SalaryType,
+        posterId: verify?.id,
+        skill: { connect: validSkills.map((skill) => ({ id: skill.id })) },
       },
     });
     if (!newJob) {

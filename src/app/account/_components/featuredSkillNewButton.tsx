@@ -1,20 +1,13 @@
 "use client";
+import { CustomFeaturedSkill } from "@/app/freelancer/[id]/page";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { responseData } from "@/lib/types";
-import {
-  Button,
-  Input,
-  Select,
-  Snackbar,
-  Switch,
-  TextareaAutosize,
-} from "@mui/material";
+import { Button, Input, Snackbar, Switch } from "@mui/material";
 import { skill } from "@prisma/client";
-import { DatePicker } from "@mui/x-date-pickers-pro";
-
 import axios from "axios";
-import {
+import Link from "next/link";
+import React, {
   ChangeEvent,
   Dispatch,
   SetStateAction,
@@ -22,13 +15,19 @@ import {
   useState,
 } from "react";
 import z from "zod";
-import { CustomFeaturedSkill } from "@/app/freelancer/[id]/page";
-import Link from "next/link";
+
+type Props = {
+  setRefresh: Dispatch<SetStateAction<boolean>>;
+  refresh: boolean;
+  setLoading: Dispatch<SetStateAction<boolean>>;
+  featured: CustomFeaturedSkill[];
+};
+
 const formSchema = z
   .object({
-    skill: z.string(),
-    detail: z.string(),
-    startedAt: z.date(),
+    skill: z.string().min(1, "Skill is required"),
+    detail: z.string().min(1, "Detail is required"),
+    startedAt: z.date({ required_error: "Start date is required" }),
     present: z.boolean(),
     endedAt: z.date().optional(),
   })
@@ -37,17 +36,11 @@ const formSchema = z
       ctx.addIssue({
         path: ["endedAt"],
         code: "custom",
-        message: "endedAt is required when present is not checked",
+        message: "Хүртэл огноо шаардлагатай (одоог хүртэл ажиллаагүй бол)",
       });
     }
   });
 
-type Props = {
-  setRefresh: Dispatch<SetStateAction<boolean>>;
-  refresh: boolean;
-  setLoading: Dispatch<SetStateAction<boolean>>;
-  featured: CustomFeaturedSkill[];
-};
 export const FeaturedSkillNewButton = ({
   setRefresh,
   setLoading,
@@ -55,188 +48,231 @@ export const FeaturedSkillNewButton = ({
   featured,
 }: Props) => {
   const [form, setForm] = useState({
-    present: false,
     skill: "",
+    detail: "",
+    startedAt: undefined as Date | undefined,
+    present: false,
+    endedAt: undefined as Date | undefined,
   });
-  const [FormValid, setFormValid] = useState(false);
+  const [formValid, setFormValid] = useState(false);
   const [response, setResponse] = useState<responseData>();
-  const [response2, setResponse2] = useState<responseData>();
-  const [skills, setSkills] = useState<skill[]>();
+  const [skills, setSkills] = useState<skill[]>([]);
+
   useEffect(() => {
     const result = formSchema.safeParse(form);
-    if (result.success) {
-      setFormValid(true);
-    } else {
-      setFormValid(false);
-    }
+    setFormValid(result.success);
   }, [form]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res1 = await axios.get(`/api/account`);
-        if (res1.data.success) {
-          const filterSkills = res1.data.data.informations.skill.filter(
-            (skil: skill) => {
-              const filter = featured.some((ski) => ski.skillId === skil.id);
-              return !filter;
-            }
+        setLoading(true);
+        const res = await axios.get(`/api/account`);
+        if (res.data.success && res.data.data?.informations?.skill) {
+          const filterSkills = res.data.data.informations.skill.filter(
+            (skill: skill) => !featured.some((f) => f.skillId === skill.id)
           );
           setSkills(filterSkills);
         } else {
-          setResponse2(res1.data);
+          setResponse(res.data);
         }
-        setLoading(false);
       } catch (err) {
-        console.error("Хүсэлт илгээгээгүй");
+        console.error("Хүсэлт илгээгээгүй", err);
+      } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, [refresh]);
+  }, [refresh, featured, setLoading]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setResponse(undefined);
     }, 4000);
-    return () => {
-      clearTimeout(timeout);
-    };
+    return () => clearTimeout(timeout);
   }, [response]);
+
   const handleForm = (
     event: ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const name = event.target.name;
-    const value = event.target.value;
-
-    setForm((prev) => {
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
+    const { name, value } = event.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+
   const sendData = async () => {
+    if (!formValid) return;
     try {
+      setLoading(true);
       const res = await axios.post(`/api/skills/featured`, form);
       setResponse(res.data);
       if (res.data.success) {
-        setRefresh(!refresh);
+        setRefresh((prev) => !prev);
+        setForm({
+          skill: "",
+          detail: "",
+          startedAt: undefined,
+          present: false,
+          endedAt: undefined,
+        });
       }
     } catch (err) {
-      console.error(err, "Сервер дээр алдаа гарлаа!");
+      console.error("Сервер дээр алдаа гарлаа!", err);
     } finally {
       setLoading(false);
     }
   };
+
   return (
-    <div className="border p-5 flex flex-col justify-center gap-4">
-      {skills && (
-        <div>
-          {skills.length === 0 && (
-            <div>
-              Skill харагдахгүй байна уу?{" "}
-              <Link href={`/account/settings/about`} className=" underline">
-                Энд дарж
-              </Link>{" "}
-              skill нэмээрэй!
-            </div>
-          )}
+    <div className="bg-white rounded-xl shadow-md p-6 flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="skill" className="text-sm font-medium text-gray-700">
+          Ур чадвар
+        </Label>
+        {skills?.length === 0 ? (
+          <p className="text-sm text-gray-600">
+            Skill харагдахгүй байна уу?{" "}
+            <Link
+              href="/account/settings/about"
+              className="text-green-600 hover:underline"
+            >
+              Энд дарж
+            </Link>{" "}
+            skill нэмээрэй!
+          </p>
+        ) : (
           <select
-            defaultValue={form?.skill}
+            value={form.skill}
             onChange={handleForm}
             name="skill"
             id="skill"
-            className="border p-2 w-1/4"
+            className="w-full mt-1 rounded-md border border-gray-300 px-4 py-2 text-gray-700 focus:border-green-600 focus:outline-none"
           >
-            {skills.map((skill) => (
+            <option value="" disabled>
+              Ур чадвар сонгоно уу
+            </option>
+            {skills?.map((skill) => (
               <option value={skill.id} key={skill.id}>
                 {skill.name}
               </option>
             ))}
           </select>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="detail" className="text-sm font-medium text-gray-700">
+          Дэлгэрэнгүй
+        </Label>
+        <Textarea
+          value={form.detail}
+          onChange={handleForm}
+          name="detail"
+          id="detail"
+          className="w-full mt-1 rounded-md border border-gray-300 px-4 py-3 text-gray-700 focus:border-green-600 focus:outline-none"
+          rows={4}
+          placeholder="Энд ур чадварынхаа талаар дэлгэрэнгүй бичнэ үү"
+        />
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <Label
+            htmlFor="startedAt"
+            className="text-sm font-medium text-gray-700"
+          >
+            Эхлэсэн
+          </Label>
+          <Input
+            id="startedAt"
+            type="date"
+            name="startedAt"
+            value={
+              form.startedAt ? form.startedAt.toISOString().split("T")[0] : ""
+            }
+            onChange={(e) => {
+              const date = new Date(e.target.value);
+              setForm((prev) => ({ ...prev, startedAt: date }));
+            }}
+            className="w-full mt-1 rounded-md border border-gray-300 px-4 py-2 text-gray-700 focus:border-green-600 focus:outline-none"
+            sx={{ "& input": { padding: "8px 12px" } }}
+          />
         </div>
-      )}
+
+        <div className="flex items-center gap-6">
+          <div className="flex-1 flex flex-col gap-2">
+            <Label
+              htmlFor="endedAt"
+              className="text-sm font-medium text-gray-700"
+            >
+              Хүртэл
+            </Label>
+            <Input
+              id="endedAt"
+              name="endedAt"
+              type="date"
+              value={
+                form.endedAt ? form.endedAt.toISOString().split("T")[0] : ""
+              }
+              onChange={(e) => {
+                const date = new Date(e.target.value);
+                setForm((prev) => ({ ...prev, endedAt: date }));
+              }}
+              disabled={form.present}
+              className="w-full mt-1 rounded-md border border-gray-300 px-4 py-2 text-gray-700 focus:border-green-600 focus:outline-none disabled:bg-gray-100"
+              sx={{ "& input": { padding: "8px 12px" } }}
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={form.present}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, present: e.target.checked }))
+              }
+              sx={{
+                "& .MuiSwitch-switchBase.Mui-checked": { color: "#16a34a" },
+                "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                  backgroundColor: "#16a34a",
+                },
+              }}
+            />
+            <Label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+              Одоог хүртэл
+            </Label>
+          </div>
+        </div>
+      </div>
+
+      <Button
+        onClick={sendData}
+        disabled={!formValid}
+        sx={{
+          width: "100%",
+          backgroundColor: formValid ? "#16a34a" : "#d1d5db",
+          color: "white",
+          fontWeight: 500,
+          padding: "12px 0",
+          borderRadius: "8px",
+          textTransform: "none",
+          "&:hover": { backgroundColor: formValid ? "#15803d" : "#d1d5db" },
+          "&:disabled": { backgroundColor: "#d1d5db", cursor: "not-allowed" },
+        }}
+      >
+        Нэмэх
+      </Button>
+
       {response?.message && (
         <Snackbar
           sx={{ color: response.success ? "green" : "red" }}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          open={response.message ? true : false}
+          open={Boolean(response.message)}
           message={response.message}
         />
       )}
-      <Textarea name="detail" onChange={handleForm} />
-      <div>
-        <Label htmlFor="startedAt">Эхлэсэн</Label>
-        <Input
-          id="startedAt"
-          type="date"
-          name="startedAt"
-          // max={new Date().toISOString().split("T")[0]}
-          onChange={(e) => {
-            const date = new Date(e.target.value);
-
-            setForm((prev) => {
-              return {
-                ...prev,
-                startedAt: date,
-              };
-            });
-          }}
-        />
-      </div>
-      <div className=" flex items-center gap-6">
-        <div className="">
-          <Label htmlFor="endedAt">Хүртэл</Label>
-          <Input
-            onChange={(e) => {
-              const date = new Date(e.target.value);
-
-              setForm((prev) => {
-                return {
-                  ...prev,
-                  endedAt: date,
-                };
-              });
-            }}
-            id="endedAt"
-            name="endedAt"
-            type="date"
-            disabled={form.present}
-          />
-        </div>
-        <div className=" flex gap-2">
-          <Switch
-            onChange={(e) => {
-              setForm((prev) => {
-                return {
-                  ...prev,
-                  present: e.target.checked,
-                };
-              });
-            }}
-          />
-          <Label>Одоог хүртэл ажиллаж байгаа</Label>
-        </div>
-      </div>
-      {/* <div>
-        {response && (
-          <div
-            className={` ${
-              response.success ? ` text-green-400` : ` text-red-400`
-            } `}
-          >
-            {response.message}
-          </div>
-        )}
-      </div> */}
-      <Button disabled={!FormValid} onClick={sendData}>
-        Нэмэх
-      </Button>
-      {/* <div className="border h-20 w-20 rounded-full flex justify-center items-center text-7xl font-thin">
-        +
-      </div> */}
     </div>
   );
 };

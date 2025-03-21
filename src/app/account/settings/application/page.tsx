@@ -4,7 +4,7 @@ import Loading from "@/app/_component/loading";
 import { CustomUser } from "@/app/client/page";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Rating } from "@mui/material";
+import { Rating, Snackbar } from "@mui/material";
 import { job, jobApplication, review, skill, user } from "@prisma/client";
 import axios from "axios";
 import Link from "next/link";
@@ -17,6 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { boolean } from "zod";
+import { responseData } from "@/lib/types";
 
 type CustomJobApplication = jobApplication & {
   job: CustomJob;
@@ -40,10 +42,12 @@ export default function ProposalDetails() {
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(false);
+  const [alert, setAlert] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [statusValue, setStatusValue] = useState("");
   const [applicationId, setApplicationId] = useState("");
-
+  const [message, setMessage] = useState<responseData>();
+  const [requestValue, setRequestValue] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -82,8 +86,30 @@ export default function ProposalDetails() {
       if (response.data.success) {
         setRefresh(!refresh);
       }
+      setMessage(response.data);
+      setAlert(true);
     } catch (err) {
       console.error("Status Update Error:", err);
+    } finally {
+      setLoading2(false);
+    }
+  };
+
+  const changeRequestStatus = async () => {
+    if (!requestValue || !applicationId) return setLoading2(true);
+    try {
+      const response = await axios.patch("/api/jobApplication", {
+        requestValue,
+        applicationId,
+      });
+      if (response.data.success) {
+        setRefresh(!refresh);
+      }
+      setMessage(response.data);
+
+      setAlert(true);
+    } catch (err) {
+      console.log("Value change error", err);
     } finally {
       setLoading2(false);
     }
@@ -94,7 +120,14 @@ export default function ProposalDetails() {
     const totalRating = rating.reduce((prev, acc) => prev + acc.rating, 0);
     return Number((totalRating / rating.length / 20).toFixed(1));
   };
-
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setAlert(false);
+    }, 3000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [alert]);
   const renderStatusMessage = (application: CustomJobApplication) => {
     if (application.cancelled) {
       return role === "CLIENT"
@@ -149,6 +182,18 @@ export default function ProposalDetails() {
             key={application.id}
             className="bg-white rounded-xl shadow-md overflow-hidden"
           >
+            {alert && (
+              <div>
+                {message?.message && (
+                  <Snackbar
+                    sx={{ color: message.success ? "green" : "red" }}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    open={message.message ? true : false}
+                    message={message.message}
+                  />
+                )}
+              </div>
+            )}
             <div className="p-6 flex flex-col lg:flex-row gap-6">
               <div className="flex-1 space-y-6">
                 <div className="flex justify-between items-center">
@@ -188,7 +233,42 @@ export default function ProposalDetails() {
                           Хадгалах
                         </Button>
                       </div>
-                    ) : null}
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <Select
+                          // value={String(application.cancelled)}
+                          defaultValue={
+                            application.cancelled ? "true" : "false"
+                          }
+                          onValueChange={(value) => {
+                            setRequestValue(value);
+                            setApplicationId(application.id);
+                          }}
+                        >
+                          <SelectTrigger className="w-[180px] border-gray-300">
+                            <SelectValue placeholder="Төлөв сонгох" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="true">
+                                Хүсэлт буцаах
+                              </SelectItem>
+
+                              <SelectItem value="false">
+                                Дахин илгээх
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          className="bg-green-600 hover:bg-green-700"
+                          onClick={changeRequestStatus}
+                          disabled={loading2}
+                        >
+                          Хадгалах
+                        </Button>
+                      </div>
+                    )}
                     <p
                       className={cn(
                         "text-sm font-medium px-3 py-1 rounded-full",

@@ -6,7 +6,7 @@ import MailDetail from "@/app/account/_components/maildetailbutton";
 import { Textarea } from "@/components/ui/textarea";
 import { calculateTime } from "@/lib/helper";
 import { responseData } from "@/lib/types";
-import { Button, Rating } from "@mui/material";
+import { Button, Chip, Rating } from "@mui/material";
 import { job, jobApplication, review, skill, user } from "@prisma/client";
 import axios from "axios";
 import Link from "next/link";
@@ -15,15 +15,22 @@ import Snackbar from "@mui/material/Snackbar";
 import { useEffect, useState } from "react";
 import { GoDotFill } from "react-icons/go";
 import { ImSpinner10 } from "react-icons/im";
+import { ThemeProvider } from "@emotion/react";
+import { theme } from "@/lib/theme";
+import _ from "lodash";
 export type CustomJob = job & {
   poster: CustomUser;
   postedAt: string;
-  skill: skill[];
+  updatedAt: string;
+  skill: CustomSkill[];
   jobApplication: jobApplication[];
 };
 export type CustomUser = user & {
   reviewee: CustomReviewee[];
   reviewer: review[];
+};
+type CustomSkill = skill & {
+  job: job[];
 };
 type CustomReviewee = review & {
   reviewee: CustomUser;
@@ -37,6 +44,7 @@ export default function App() {
     return <div>Холбоос буруу байна!</div>;
   }
   const [post, setPost] = useState<CustomJob>();
+  const [similarPosts, setSimilarPosts] = useState<job[]>([]);
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(false);
   const [userApplied, setUserApplied] = useState(false);
@@ -47,6 +55,12 @@ export default function App() {
       const res = await axios.get(`/api/job/post?id=${id}`);
       if (res.data.success) {
         setPost(res.data.data.post);
+
+        const posts: CustomJob = res.data.data.post;
+        const test = posts.skill.flatMap((ski) => ski.job);
+        const test2 = _.uniqBy(test, "id");
+        const test3 = test2.filter((jobbb) => jobbb.id !== id);
+        setSimilarPosts(test3);
       }
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
@@ -94,7 +108,6 @@ export default function App() {
       setIsClicked(!isClicked);
     }
   };
-  // avgRating(post?.poster);
   return loading ? (
     <CustomSkeleton />
   ) : post ? (
@@ -166,14 +179,14 @@ export default function App() {
           <div className="border-b py-5">
             <div className="flex flex-col gap-3 justify-center">
               <h2 className="text-2xl font-extrabold text-[#129600]">
-                Зарын дэлгэрэнгүй
+                Саналын дэлгэрэнгүй
               </h2>
               <p>{post.description}</p>
             </div>
           </div>
           <div className="mt-4 flex gap-2 justify-evenly">
             <div>
-              Цалин -{" "}
+              Амласан цалин -{" "}
               <span className="text-xl font-bold">
                 {post.salary}/
                 {post.salaryRate === "MONTH"
@@ -193,6 +206,16 @@ export default function App() {
               Байршил -{" "}
               <span className="text-xl font-bold">{post.jobLocation}</span>
             </div>
+          </div>
+        </div>
+        <div className="flex flex-col  p-6">
+          <div>Шаардлага:</div>
+          <div className="flex gap-2.5 flex-wrap justify-center py-3">
+            {post.skill.map((ski) => (
+              <ThemeProvider theme={theme} key={ski.id}>
+                <Chip color="primary" label={ski.name} variant="outlined" />
+              </ThemeProvider>
+            ))}
           </div>
         </div>
         {post.status === "ACTIVE" ? (
@@ -237,7 +260,21 @@ export default function App() {
         )}
         <div className="mt-4 pb-4 border-b">
           <h3 className="font-semibold text-md mb-2">Бусад төстэй зарууд</h3>
-          <div className="flex flex-wrap gap-2"></div>
+          <div className="flex flex-wrap gap-2">
+            {similarPosts.length === 0 ? (
+              <div>Төстэй пост алга</div>
+            ) : (
+              similarPosts.map((j) => (
+                <Link
+                  key={j.id}
+                  href={`/job/${j.id}`}
+                  className=" bg-secondary px-2 rounded-2xl text-xs"
+                >
+                  <div className="">{j.title}</div>
+                </Link>
+              ))
+            )}
+          </div>
         </div>
         <div className="w-full">
           <div className=" flex gap-14 whitespace-nowrap overflow-scroll"></div>

@@ -7,6 +7,7 @@ import {
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
+import { clientStatus } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   try {
@@ -156,11 +157,70 @@ export async function PUT(req: NextRequest) {
         null
       );
     }
+
     const jobApplication = await prisma.jobApplication.update({
       where: {
         id: applicationId,
       },
       data: { clientStatus: statusValue },
+    });
+    if (jobApplication.cancelled) {
+      return CustomNextResponse(
+        false,
+        "REQUEST_FAILED",
+        "Ажил горилогч анкетийг буцаасан. Төлөв өөрчлөх боломжгүй!",
+        jobApplication
+      );
+    }
+    if (jobApplication) {
+      return CustomNextResponse(
+        true,
+        "REQUEST_SUCCESSFUL",
+        "Төлөв амжилттай өөрчлөгдлөө.",
+        jobApplication
+      );
+    }
+    return CustomNextResponse(
+      false,
+      "REQUEST FAILED",
+      "Төлөв өөрчилж чадсангүй.",
+      null
+    );
+  } catch (err) {
+    console.error(err, "Сервер дээр асуудал гарлаа!");
+    return NextResponse_CatchError(err);
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  const { requestValue, applicationId } = await req.json();
+  try {
+    if (!process.env.ACCESS_TOKEN) {
+      return NextResponse_NoEnv("ACCESS_TOKEN");
+    }
+
+    const accessToken = req.cookies.get("accessToken")?.value;
+    if (!accessToken) {
+      return NextResponse_NoCookie();
+    }
+
+    const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
+      id: string;
+      role: string;
+    };
+    if (verify.role === "CLIENT") {
+      return CustomNextResponse(
+        false,
+        "NOT_PERMITTED",
+        "Ажил олгогчид төлөв өөрчлөх эрх байхгүй",
+        null
+      );
+    }
+    const jobApplication = await prisma.jobApplication.update({
+      where: {
+        id: applicationId,
+      },
+      data: { cancelled: requestValue === `false` ? false : true },
     });
     if (jobApplication) {
       return CustomNextResponse(
