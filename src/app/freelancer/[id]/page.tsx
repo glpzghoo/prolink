@@ -19,6 +19,8 @@ import { FaCircleArrowLeft } from "react-icons/fa6";
 import { FaCircleArrowRight } from "react-icons/fa6";
 import z from "zod";
 import _ from "lodash";
+import { HiOutlineCheckBadge } from "react-icons/hi2";
+import { GoUnverified } from "react-icons/go";
 type CustomUser = user & {
   skill: CustomSkill[];
   reviewee: CustomReviewee[];
@@ -51,6 +53,8 @@ export default function Client() {
 
   const [loading, setLoading] = useState(true);
   const [loadingAddingReview, setloadingAddingReview] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [verifyMailResponse, setVerifyMailResponse] = useState<responseData>();
   const [change, setChange] = useState(false);
   const [isValidRatingForm, setisValidRatingForm] = useState(true);
   const [ratingResponse, setratingResponse] = useState<responseData>();
@@ -145,6 +149,13 @@ export default function Client() {
       setloadingAddingReview(false);
     }
   };
+  const sendmail = async () => {
+    setLoading2(true);
+    const res = await axios.get(`/api/account/verifyEmail`);
+    setVerifyMailResponse(res.data);
+
+    setLoading2(false);
+  };
   return (
     <>
       {/* Үндсэн Background */}
@@ -181,10 +192,23 @@ export default function Client() {
 
                   <div>
                     {/* Нэр, Байршил */}
-                    <div className="flex items-center space-x-2">
+                    <div className="flex space-x-2">
                       <h1 className="text-xl font-semibold">
                         {user.firstName}, {user.lastName}
                       </h1>
+                      {user.emailVerified ? (
+                        <HiOutlineCheckBadge
+                          title="Баталгаажсан"
+                          className="text-green-700 text-lg cursor-pointer"
+                          onMouseOver={() => "asdf"}
+                        />
+                      ) : (
+                        <GoUnverified
+                          title="Баталгаажаагүй"
+                          className="text-red-700 text-lg cursor-pointer"
+                          onMouseOver={() => "asdf"}
+                        />
+                      )}
                       {/* Badge жишээ */}
                       {((avgRating() > 4.5 && user.reviewee.length > 2) ||
                         (avgRating() > 4.0 && user.reviewee.length > 10)) && (
@@ -198,7 +222,19 @@ export default function Client() {
                     </p>
                   </div>
                 </div>
-
+                {owner && !user.emailVerified && (
+                  <Button
+                    disabled={loading2}
+                    onClick={sendmail}
+                    sx={{ fontSize: "11px", color: "red" }}
+                    className=" text-red-400 text-xs"
+                  >
+                    {loading2
+                      ? `Түр хүлээнэ үү!`
+                      : `Таны хаяг баталгаажаагүй байна. Энд дарж хаягаа баталгаажуулна
+                  уу!`}
+                  </Button>
+                )}
                 {/* Хуваалцах товч */}
                 <div className="flex gap-1">
                   {owner && (

@@ -3,6 +3,8 @@ import { CustomUser } from "../freelancer/page";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { HiOutlineCheckBadge } from "react-icons/hi2";
+import { GoUnverified } from "react-icons/go";
 
 export function ClientCard({ user }: { user: CustomUser }) {
   const avrRating = () => {
@@ -39,10 +41,27 @@ export function ClientCard({ user }: { user: CustomUser }) {
               height={100}
             />
           </div>
-          <p className="font-bold text-2xl">
-            {" "}
-            {user.companyName ? user.companyName : user.firstName}
-          </p>
+          <div className="flex">
+            <p className="font-bold text-2xl">
+              {" "}
+              {user.companyName ? user.companyName : user.firstName}
+            </p>
+            <div>
+              {user.emailVerified ? (
+                <HiOutlineCheckBadge
+                  title="Баталгаажсан"
+                  className="text-green-700 text-lg cursor-pointer"
+                  onMouseOver={() => "asdf"}
+                />
+              ) : (
+                <GoUnverified
+                  title="Баталгаажаагүй"
+                  className="text-red-700 text-lg cursor-pointer"
+                  onMouseOver={() => "asdf"}
+                />
+              )}
+            </div>
+          </div>
           <div className="flex items-center gap-1 text-[#676767] text-sm">
             <svg
               width="18"

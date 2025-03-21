@@ -1,16 +1,24 @@
 "use client";
 import Image from "next/image";
-import { IoIosSearch } from "react-icons/io";
+import {
+  IoIosSearch,
+  IoMdCheckmark,
+  IoMdCheckmarkCircle,
+  IoMdCheckmarkCircleOutline,
+} from "react-icons/io";
 import { BsList } from "react-icons/bs";
+import { HiOutlineCheckBadge } from "react-icons/hi2";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { RiLogoutBoxRFill } from "react-icons/ri";
+import { GoUnverified } from "react-icons/go";
 import { responseData } from "@/lib/types";
 import { usePathname, useRouter } from "next/navigation";
 import { Button, Input, ThemeProvider } from "@mui/material";
 import { userInfo } from "os";
 import { theme } from "@/lib/theme";
+import { ImCheckmark, ImCheckmark2 } from "react-icons/im";
 export function Navigation() {
   const [response, setUserInfo] = useState<responseData>();
   const [loading, setLoading] = useState(true);
@@ -121,6 +129,19 @@ export function Navigation() {
                         {response.data?.informations?.lastName}{" "}
                         {response.data?.informations?.firstName}
                       </div>
+                    )}
+                    {response.data.informations.emailVerified ? (
+                      <HiOutlineCheckBadge
+                        title="Баталгаажсан"
+                        className="text-green-700 text-2xl"
+                        onMouseOver={() => "asdf"}
+                      />
+                    ) : (
+                      <GoUnverified
+                        title="Баталгаажаагүй"
+                        className="text-red-700 text-2xl"
+                        onMouseOver={() => "asdf"}
+                      />
                     )}
                   </Link>
                   <button

@@ -12,6 +12,7 @@ model user {
   email                    String           @unique
   firstName                String
   lastName                 String
+  emailVerified Boolean @default(false)
   birthday                 DateTime
   role                     UserRole
   companyName              String
