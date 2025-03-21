@@ -62,11 +62,11 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
+    <div className="bg-gray-50 flex items-center justify-center">
       {loading ? (
         <Loading />
       ) : (
-        <div className="w-full max-w-6xl mx-auto">
+        <div className="w-full max-w-6xl mx-auto py-8">
           <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
               Ур чадварын тохиргоо
