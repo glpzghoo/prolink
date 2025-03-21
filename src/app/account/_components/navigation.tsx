@@ -122,27 +122,29 @@ export function Navigation() {
                         alt="pfp"
                       />
                     </div>
-                    {response.data?.informations?.companyName ? (
-                      <div>{response.data.informations.companyName}</div>
-                    ) : (
-                      <div className=" whitespace-nowrap">
-                        {response.data?.informations?.lastName}{" "}
-                        {response.data?.informations?.firstName}
-                      </div>
-                    )}
-                    {response.data.informations.emailVerified ? (
-                      <HiOutlineCheckBadge
-                        title="Баталгаажсан"
-                        className="text-green-700 text-2xl"
-                        onMouseOver={() => "asdf"}
-                      />
-                    ) : (
-                      <GoUnverified
-                        title="Баталгаажаагүй"
-                        className="text-red-700 text-2xl"
-                        onMouseOver={() => "asdf"}
-                      />
-                    )}
+                    <div className="flex">
+                      {response.data?.informations?.companyName ? (
+                        <div>{response.data.informations.companyName}</div>
+                      ) : (
+                        <div className=" whitespace-nowrap">
+                          {response.data?.informations?.lastName}{" "}
+                          {response.data?.informations?.firstName}
+                        </div>
+                      )}
+                      {response.data.informations.emailVerified ? (
+                        <HiOutlineCheckBadge
+                          title="Баталгаажсан"
+                          className="text-green-700 text-md"
+                          onMouseOver={() => "asdf"}
+                        />
+                      ) : (
+                        <GoUnverified
+                          title="Баталгаажаагүй"
+                          className="text-red-700 text-md"
+                          onMouseOver={() => "asdf"}
+                        />
+                      )}
+                    </div>
                   </Link>
                   <button
                     onClick={logout}
