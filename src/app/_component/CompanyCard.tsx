@@ -25,7 +25,7 @@ export default function CompanyCard({ post }: Props) {
                 <GoDotFill className="animate-ping duration-4000" />
               </div>
             ) : (
-              <div className=" text-red-600 text-xs flex items-center gap-1 whitespace-nowrap">
+              <div className=" text-pink-700/70 text-xs flex items-center gap-1 whitespace-nowrap">
                 <div>Идэвхигүй зар</div>{" "}
               </div>
             )}
@@ -53,14 +53,16 @@ export default function CompanyCard({ post }: Props) {
         <div className="flex gap-4">
           {post.skill.length === 0
             ? `Ур чадварын шаардлага алга`
-            : post.skill.map((ski) => (
-                <button
-                  key={ski.id}
-                  className="bg-gray-300 p-2 rounded-3xl text-sm text-gray-500"
-                >
-                  {ski.name}
-                </button>
-              ))}
+            : post.skill
+                .map((ski) => (
+                  <button
+                    key={ski.id}
+                    className="bg-gray-300 p-1 rounded-3xl text-xs text-gray-500"
+                  >
+                    {ski.name}
+                  </button>
+                ))
+                .slice(0, 3)}
         </div>
         <div className=" absolute bottom-0 right-0 p-5 flex items-center gap-1">
           {" "}

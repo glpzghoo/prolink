@@ -7,6 +7,16 @@ import {
 } from "@/lib/responses";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 export async function GET(req: NextRequest) {
   try {
     const id = req.nextUrl.searchParams.get("id");
@@ -47,7 +57,10 @@ export async function GET(req: NextRequest) {
         null
       );
     }
-    const job = await prisma.job.findUnique({ where: { id } });
+    const job = await prisma.job.findUnique({
+      where: { id },
+      include: { poster: true },
+    });
     if (!job) {
       return CustomNextResponse(
         false,
@@ -90,6 +103,17 @@ export async function GET(req: NextRequest) {
         null
       );
     }
+
+    await transporter.sendMail({
+      from: "Team HexaCode - Prolink", // sender address
+      to: job.poster.email, // list of receivers
+      subject: "ProLink - Таньд ажлын урилга ирлээ!", // Subject line
+      text: "Freelancing App / Team HexaCode", // plain text body
+      html: `<b>Сайн байна уу! ${job.poster.companyName}.</b><p>Таны "${
+        job.title
+      }" гарчигтай ажлын санал дээр хүсэлт ирлээ. Холбоосоор орон танилцана уу! ${`${process.env.BASE_URL}/account/settings/application`}</p>`, // html body
+    });
+
     return CustomNextResponse(
       true,
       "JOB_APPLICATION_SENT",

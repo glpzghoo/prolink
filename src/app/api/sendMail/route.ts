@@ -64,8 +64,8 @@ export async function POST(req: NextRequest) {
         profileOwner.firstName
       }.</b><p>Таньд ажлын урилга ирлээ. Холбоосоор орон холбогдоно уу! ${
         user.companyName
-          ? `http://localhost:3000/client/${user.id}`
-          : `http://localhost:3000/freelancer/${user.id}`
+          ? `${process.env.BASE_URL}/client/${user.id}`
+          : `${process.env.BASE_URL}/freelancer/${user.id}`
       }</p>`, // html body
     });
     return CustomNextResponse(

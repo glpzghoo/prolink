@@ -6,13 +6,22 @@ import {
   NextResponse_NoEnv,
 } from "@/lib/responses";
 import { NextRequest } from "next/server";
+import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
-
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 export async function POST(req: NextRequest) {
   try {
     const { message, revieweeId, rating } = await req.json();
-    if (!process.env.ACCESS_TOKEN) {
-      return NextResponse_NoEnv("ACCESS_TOKEN");
+    if (!process.env.ACCESS_TOKEN || !process.env.BASE_URL) {
+      return NextResponse_NoEnv("ACCESS_TOKEN or BASE_URL");
     }
     const accessToken = req.cookies.get("accessToken")?.value;
     if (!accessToken) {
@@ -36,7 +45,7 @@ export async function POST(req: NextRequest) {
     }
     const reviewee = await prisma.user.findUnique({
       where: { id: revieweeId },
-      omit: { password: true, phoneNumber: true, email: true },
+      omit: { password: true, phoneNumber: true },
     });
     if (!reviewee) {
       return CustomNextResponse(
@@ -54,7 +63,7 @@ export async function POST(req: NextRequest) {
     const reviewer = await prisma.user.findUnique({
       where: { id: verify.id },
       include: { reviewer: true },
-      omit: { password: true, phoneNumber: true, email: true },
+      omit: { password: true, phoneNumber: true },
     });
 
     if (!reviewer) {
@@ -65,7 +74,14 @@ export async function POST(req: NextRequest) {
         null
       );
     }
-
+    if (reviewee.role === reviewer.role) {
+      return CustomNextResponse(
+        false,
+        "NO_PERMISSION",
+        "Зөвхөн байгууллага мэрэгжилтэнд, мэргэжилтэн байгууллагад үнэлгээ өгөх эрхтэй!",
+        null
+      );
+    }
     if (revieweeId === reviewer.id) {
       return CustomNextResponse(
         false,
@@ -85,9 +101,49 @@ export async function POST(req: NextRequest) {
         null
       );
     }
+
+    const checkUsers1 = await prisma.jobApplication.findFirst({
+      where: {
+        clientId: reviewee.id,
+        freelancerId: reviewer.id,
+        clientStatus: { in: ["accepted", "denied"] },
+      },
+    });
+    const checkUsers2 = await prisma.jobApplication.findFirst({
+      where: {
+        clientId: reviewer.id,
+        freelancerId: reviewee.id,
+        clientStatus: { in: ["accepted", "denied"] },
+      },
+    });
+
+    if (!checkUsers1 && !checkUsers2) {
+      return CustomNextResponse(
+        false,
+        "NOT_PERMITTED",
+        "Уг хэрэглэгчтэй хамтарч ажиллаж байсан түүх олдсонгүй!",
+        null
+      );
+    }
+
     if (reviewer.companyName && !reviewee.companyName) {
       const newReview = await prisma.review.create({
         data: { rating, message, revieweeId, reviewerId: verify.id },
+      });
+      await transporter.sendMail({
+        from: "Team HexaCode - Prolink", // sender address
+        to: reviewee.email, // list of receivers
+        subject: "ProLink - Шинэ үнэлгээ!", // Subject line
+        text: "Freelancing App / Team HexaCode", // plain text body
+        html: `<b>Сайн байна уу! ${
+          reviewee.role === `CLIENT` ? reviewee.companyName : reviewee.firstName
+        }.</b><p>Таньд профайл дээр ${
+          reviewer.role === `CLIENT` ? reviewer.companyName : reviewer.firstName
+        } үнэлгээ үлдээлээ. Холбоосоор орж харна уу! ${
+          reviewee.role === `CLIENT`
+            ? `${process.env.BASE_URL}/client/${reviewee.id}`
+            : `${process.env.BASE_URL}/freelancer/${reviewee.id}`
+        }</p>`, // html body
       });
       return CustomNextResponse(
         true,
@@ -99,6 +155,21 @@ export async function POST(req: NextRequest) {
     if (!reviewer.companyName && reviewee.companyName) {
       const newReview = await prisma.review.create({
         data: { rating, message, revieweeId, reviewerId: verify.id },
+      });
+      await transporter.sendMail({
+        from: "Team HexaCode - Prolink", // sender address
+        to: reviewee.email, // list of receivers
+        subject: "ProLink - Шинэ үнэлгээ!", // Subject line
+        text: "Freelancing App / Team HexaCode", // plain text body
+        html: `<b>Сайн байна уу! ${
+          reviewee.role === `CLIENT` ? reviewee.companyName : reviewee.firstName
+        }.</b><p>Таньд профайл дээр ${
+          reviewer.role === `CLIENT` ? reviewer.companyName : reviewer.firstName
+        } үнэлгээ үлдээлээ. Холбоосоор орж харна уу! ${
+          reviewee.role === `CLIENT`
+            ? `${process.env.BASE_URL}/client/${reviewee.id}`
+            : `${process.env.BASE_URL}/freelancer/${reviewee.id}`
+        }</p>`, // html body
       });
       return CustomNextResponse(
         true,
