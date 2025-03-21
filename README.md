@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ProLink
 
-## Getting Started
+Hexacode багийн гишүүдийн санаачлан бүтээсэн уг төсөл нь ажил олгогч, ажил горилогч нар бие биенийгээ хялбар аргаар олох цэг болох юм.
 
-First, run the development server:
+## Бичиг баримт
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+[GITBOOK](https://torutora0415s-organization.gitbook.io/hexacode)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Гишүүд
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [@Solongooyaa](https://github.com/Solongooyaa)
+- [@Munkhtsolmon2222](https://github.com/Munkhtsolmon2222)
+- [@Khosbayar707](https://github.com/Khosbayar707)
+- [@Enkhsolongo10](https://github.com/Enkhsolongo10)
+- [@Boona06](https://github.com/Boona06)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Ашиглалт
 
-## Learn More
+- Pinecone academy сайн дурын төсөл
 
-To learn more about Next.js, take a look at the following resources:
+## Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Нэвтрээгүй үед:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Ажил горилогч/Freelancer -уудыг харах
+- Ажил олгогч/Client -уудыг харах
+- Ажил олгогчдын оруулсан ажлын саналуудаг харах
+- Ажил горилогч/Ажил олгогч нарын үнэлгээ харах
+- Мартсан нууц үгээ сэргээх
 
-## Deploy on Vercel
+Нэвтэрсэн үед:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Ажил горилогч/Freelancer -уудад ажлын хүсэлт илгээх (Client эрхээр бүртгүүлсэн тохиолдолд)
+- Ажил олгогч/Client -уудад ажлын хүсэлт илгээх (Freelancer эрхээр бүртгүүлсэн тохиолдолд)
+- Ажил олгогчдын оруулсан ажлын саналууд руу хүсэлт илгээх (Freelancer эрхээр бүртгүүлсэн тохиолдолд)
+- Ажил горилогчид илгээсэн ажиллах хүсэлтээ буцааж болно.
+- Ажил олгогчид буцаагдсан ажлын хүсэлтийн статусыг өөрчлөх боломжгүй.
+- Ажил горилогч/Ажил олгогч нар бие биедээ үнэлгээ өгөх (Зөвхөн хоёр тал хамт ажиллаж байсан түүхтэй үед)
+- Дээрх бүх хүсэлтүүд хүсэлт хүлээн авж байгаа хэрэглэгчид майл очно.
+- Ажил горилогчид ур чадвараа онцгойлох боломжтой
+- Онцгойлсон ур чадвар профайл дээр харагдана.
+- Ажил олгогч/Client -уудыг профайл руу хандсан тохиолдолд тэдний профайлын үзэлт нэмэгдэнэ.
+- Ажил олгогч/Client -уудыг дундаж үнэлгээ харагдана.
+- Ажил олгогчид ажлын санал оруулах эрхтэй.
+- Ажил олгогчид өөрсдийн оруулсан ажлын саналыг засах, устгах боломжтой.
+- Ажил горилогчид ажлын санал оруулах эрх байхгүй.
+- Хэрэглэгч өөрийн мэдээллээ өөрчлөх боломжтой.
+- Хэрэглэгч 4 цагийн дотор ахин хандсан бол нэврэх шаардлагагүй.

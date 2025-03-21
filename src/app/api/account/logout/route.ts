@@ -34,5 +34,11 @@ export async function GET() {
     sameSite: "strict",
     maxAge: 1,
   });
+  response.cookies.set("next-auth.session-token", refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    maxAge: 1,
+  });
   return response;
 }
