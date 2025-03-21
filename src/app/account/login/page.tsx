@@ -6,13 +6,13 @@ import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import z from "zod";
-import Link from "next/link";
 import { responseData } from "@/lib/types";
 import { Alert } from "@/components/ui/alert";
 import { motion } from "framer-motion";
 
 import { Button } from "@mui/material";
 import Loading from "@/app/_component/loading";
+import { SessionProvider } from "next-auth/react";
 const passwordSchema = z
   .string()
   .min(8)
@@ -253,9 +253,10 @@ export default function Login() {
                   <div></div>
                 </Button>
               </div>
-              <div>
+
+              <SessionProvider>
                 <GoogleSession />
-              </div>
+              </SessionProvider>
             </div>
           </motion.div>
         </div>

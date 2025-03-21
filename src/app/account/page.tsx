@@ -11,6 +11,7 @@ import GoogleSession from "./_components/google";
 import { motion } from "framer-motion";
 import { Button } from "@mui/material";
 import Loading from "../_component/loading";
+import { SessionProvider } from "next-auth/react";
 type LoginForm = {
   email: string;
   password: string;
@@ -144,7 +145,9 @@ export default function Account() {
                 </Button>
               </div>
               <div>
-                <GoogleSession />
+                <SessionProvider>
+                  <GoogleSession />
+                </SessionProvider>
               </div>
             </div>
           </div>
