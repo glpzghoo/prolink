@@ -10,6 +10,9 @@ export default function Loading() {
           <LinearProgress color="secondary" sx={{ color: "green" }} />
         </ThemeProvider>
       </div>
+      <div className="text-3xl font-extrabold text-green-600/40 animate-pulse fixed transform -translate-x-1/2 -translate-y-1/2 top-1/2 bottom-1/2 z-50">
+        ProLink
+      </div>
       {/* <div className="flex items-center gap-2">
         <div>Түр хүлээнэ үү!</div>
         <div>
