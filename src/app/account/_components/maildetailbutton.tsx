@@ -4,12 +4,13 @@ import { responseData } from "@/lib/types";
 import { Snackbar } from "@mui/material";
 import axios from "axios";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ImSpinner10 } from "react-icons/im";
 type Props = {
   id: string;
+  setChange: Dispatch<SetStateAction<boolean>>;
 };
-export default function MailDetail({ id }: Props) {
+export default function MailDetail({ id, setChange }: Props) {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(false);
   const [sentMail, setSentMail] = useState(false);
@@ -20,12 +21,15 @@ export default function MailDetail({ id }: Props) {
       const res = await axios.post("/api/sendMail", { id });
 
       setResponse(res.data);
+      if (res.data.success) {
+        localStorage.setItem("sendMailToUser", id);
+        setChange((p) => !p);
+      }
       setAlert(true);
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
-      localStorage.setItem("sendMailToUser", id);
     }
   };
   useEffect(() => {

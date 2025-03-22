@@ -300,7 +300,7 @@ export default function Client() {
                     </p>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <MailDetail id={id} />
+                    <MailDetail id={id} setChange={setChange} />
                   </div>
                 </div>
               )}
