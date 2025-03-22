@@ -47,16 +47,10 @@ export function ClientCard({ user }: { user: CustomUser }) {
               {user.companyName ? user.companyName : user.firstName}
             </p>
             <div>
-              {user.emailVerified ? (
+              {user.emailVerified && (
                 <HiOutlineCheckBadge
                   title="Баталгаажсан"
                   className="text-green-700 text-lg cursor-pointer"
-                  onMouseOver={() => "asdf"}
-                />
-              ) : (
-                <GoUnverified
-                  title="Баталгаажаагүй"
-                  className="text-red-700 text-lg cursor-pointer"
                   onMouseOver={() => "asdf"}
                 />
               )}
