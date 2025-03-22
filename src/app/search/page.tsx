@@ -2,7 +2,7 @@
 
 import { user } from "@prisma/client";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import Loading from "../_component/loading";
 import { ClientCard } from "../_component/ ClientPostCard";
@@ -10,6 +10,7 @@ import { CustomUser } from "../freelancer/page";
 
 export default function App() {
   const search = useSearchParams().get("search");
+  const router = useRouter();
   const [user, setUser] = useState<CustomUser[]>([]);
   const [clients, setClients] = useState<CustomUser[]>([]);
   const [freelancers, setFreelancers] = useState<CustomUser[]>([]);
@@ -39,6 +40,8 @@ export default function App() {
           setLoading(false);
           setLoading2(false);
         }
+      } else {
+        router.back();
       }
     };
     fetch();
