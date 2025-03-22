@@ -74,14 +74,6 @@ export async function POST(req: NextRequest) {
         null
       );
     }
-    if (reviewee.role === reviewer.role) {
-      return CustomNextResponse(
-        false,
-        "NO_PERMISSION",
-        "Зөвхөн байгууллага мэрэгжилтэнд, мэргэжилтэн байгууллагад үнэлгээ өгөх эрхтэй!",
-        null
-      );
-    }
     if (revieweeId === reviewer.id) {
       return CustomNextResponse(
         false,
@@ -90,6 +82,15 @@ export async function POST(req: NextRequest) {
         null
       );
     }
+    if (reviewee.role === reviewer.role) {
+      return CustomNextResponse(
+        false,
+        "NO_PERMISSION",
+        "Зөвхөн байгууллага мэрэгжилтэнд, мэргэжилтэн байгууллагад үнэлгээ өгөх эрхтэй!",
+        null
+      );
+    }
+
     const findreview = await prisma.review.findFirst({
       where: { revieweeId: revieweeId, reviewerId: reviewer.id },
     });
