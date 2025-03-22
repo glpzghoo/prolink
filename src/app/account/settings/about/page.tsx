@@ -92,11 +92,17 @@ export default function AboutSettings() {
       {userInfo.success ? (
         <div className="w-full max-w-4xl bg-white shadow-xl rounded-lg p-8 border border-gray-200">
           <h2 className="text-xl font-semibold text-center text-gray-800 border-b pb-4">
-            {userInfo.data.user.role === "CLIENT"
+            {userInfo.data.user.role !== "CLIENT"
               ? "Өөрийнхөө мэдээллийг энд засна уу!"
               : "Байгууллагынхаа талаарх мэдээллийг энд засна уу!"}
           </h2>
           <div className="mt-6 space-y-6">
+            <Snackbar
+              sx={{ color: response?.success ? "green" : "red" }}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              open={Boolean(response?.success)}
+              message={response?.message}
+            />
             <div>
               <Label
                 htmlFor="about"
@@ -116,7 +122,7 @@ export default function AboutSettings() {
                 name="about"
               />
               <p className="text-xs text-gray-500 mt-1">
-                {userInfo.data.user.companyName
+                {userInfo.data.user.role === "CLIENT"
                   ? "Байгууллагын тухай дэлгэрэнгүй мэдээллийг оруулна уу!"
                   : "Ажил олгогчдод өөрийгөө танилцуулаарай!"}
               </p>

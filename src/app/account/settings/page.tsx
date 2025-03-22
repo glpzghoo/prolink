@@ -113,7 +113,6 @@ export default function AccountSettings() {
         password,
       });
       setResponse(res.data);
-      console.log(res.data);
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     } finally {
@@ -142,7 +141,6 @@ export default function AccountSettings() {
         password,
       });
       setResponse(res.data);
-      console.log(res.data);
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     } finally {
@@ -158,14 +156,12 @@ export default function AccountSettings() {
         password,
       });
       setResponse(res.data);
-      console.log(res.data);
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     } finally {
       setLoading(false);
     }
   };
-  console.log(password);
   return (
     <div className="flex flex-col items-center justify-center">
       {response?.message && (

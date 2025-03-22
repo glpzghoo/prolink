@@ -9,15 +9,23 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { ImSpinner11, ImSpinner9 } from "react-icons/im";
 import { CustomUser } from "../freelancer/page";
+
+import _, { uniq } from "lodash";
+import { Badge } from "@mui/material";
 type CustomSkill = skill & {
   user: CustomUser[];
 };
-export default function Badge() {
+type uniqUsers = {
+  FREELANCER: CustomUser[];
+  CLIENT: CustomUser[];
+};
+export default function SkillBadge() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
   const divRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
+  // const [uniqUsers, setuniqUsers] = useState<uniqUsers>();
   const [skills, setSkills] = useState<CustomSkill[]>([]);
   const [response, setResponse] = useState<CustomSkill[]>([]);
   const fetchSkills = async () => {
@@ -50,17 +58,27 @@ export default function Badge() {
       divRef.current.scrollBy({ left: 800, behavior: "smooth" });
     }
   };
-  //   console.log(data);
+  if (skills.length > 0) {
+  }
 
   const filtered = () => {
     const find = skills.find((sk) => sk.id === filter);
     return find?.name ? find?.name : "";
   };
-  //   console.log(filtered());
+  const uniqUsers = (
+    data: CustomSkill
+  ): { freelancerLength: number; clientLength: number } => {
+    const users = data.user;
+    const uniqUsers = _.uniqBy(users, "id");
+    const group = _.groupBy(uniqUsers, "role");
+    const freelancerLength = group.FREELANCER ? group.FREELANCER.length : 0;
+    const clientLength = group.CLIENT ? group.CLIENT.length : 0;
+    return { freelancerLength, clientLength };
+  };
   return (
-    <div className=" pb-10">
+    <div className="">
       {loading ? (
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex items-center justify-center p-5 gap-3">
           <ImSpinner9 className="animate-spin" />
         </div>
       ) : skills.length > 0 ? (
@@ -75,23 +93,32 @@ export default function Badge() {
 
             <div
               ref={divRef}
-              className="flex w-3/4 overflow-hidden gap-3.5 text-background "
+              className="flex w-3/4 overflow-hidden gap-3.5  py-5 text-background "
             >
               {skills.map((skill) => (
                 <Link
-                  className="shadow-lg"
+                  className=""
                   key={skill.id}
                   href={`${pathname + `?filter=${skill.id}`}`}
                 >
-                  <Button
-                    className={`bg-background ${
-                      filter === skill.id
-                        ? `bg-[#199500] text-background`
-                        : `text-foreground`
-                    } border-green-500 border hover:text-background  hover:bg-[#199500] text-xs rounded-full whitespace-nowrap px-3 cursor-pointer`}
+                  <Badge
+                    badgeContent={
+                      pathname === "/client"
+                        ? uniqUsers(skill).clientLength
+                        : uniqUsers(skill).freelancerLength
+                    }
+                    color="success"
                   >
-                    {skill.name} ({skill.user.length})
-                  </Button>
+                    <Button
+                      className={`bg-background ${
+                        filter === skill.id
+                          ? `bg-[#199500] text-background`
+                          : `text-foreground`
+                      } border-green-500 border hover:text-background shadow-lg hover:bg-[#199500] text-xs rounded-full whitespace-nowrap px-3 cursor-pointer`}
+                    >
+                      {skill.name}
+                    </Button>
+                  </Badge>
                 </Link>
               ))}
             </div>

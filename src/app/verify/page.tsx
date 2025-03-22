@@ -3,7 +3,7 @@
 import { responseData } from "@/lib/types";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Loading from "../_component/loading";
 
 export default function App() {
@@ -35,14 +35,16 @@ export default function App() {
     }
   };
   return (
-    <div className="">
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className="flex min-h-screen items-center justify-center">
-          {response?.message}
-        </div>
-      )}
-    </div>
+    <Suspense fallback={<Loading />}>
+      <div className="">
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="flex min-h-screen items-center justify-center">
+            {response?.message}
+          </div>
+        )}
+      </div>
+    </Suspense>
   );
 }
