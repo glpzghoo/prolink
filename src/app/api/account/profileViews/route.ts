@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { CustomNextResponse } from "@/lib/responses";
-import { NextRequest } from "next/server";
-
+import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
 export async function POST(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   if (!id) {
@@ -19,6 +19,19 @@ export async function POST(req: NextRequest) {
         "Хэрэглэгч олдсонгүй!",
         null
       );
+    }
+    const accessToken = req.cookies.get("accessToken")?.value;
+    if (accessToken) {
+      try {
+        const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN!) as {
+          id: string;
+        };
+        if (user.id === verify.id) {
+          return NextResponse.json({ message: "nice try" });
+        }
+      } catch (err) {
+        console.error(err, "Токен хүчингүй!");
+      }
     }
     const view = await prisma.user.update({
       where: { id },

@@ -12,6 +12,7 @@ type Props = {
 export default function MailDetail({ id }: Props) {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(false);
+  const [sentMail, setSentMail] = useState(false);
   const [res, setResponse] = useState<responseData>();
   const sendDetails = async () => {
     setLoading(true);
@@ -24,8 +25,17 @@ export default function MailDetail({ id }: Props) {
       console.error(err);
     } finally {
       setLoading(false);
+      localStorage.setItem("sendMailToUser", id);
     }
   };
+  useEffect(() => {
+    const sendMailToUser = localStorage.getItem("sendMailToUser");
+    if (sendMailToUser === id) {
+      setSentMail(true);
+    } else {
+      setSentMail(false);
+    }
+  }, []);
   useEffect(() => {
     const timeout = setTimeout(() => {
       setAlert(false);
@@ -34,13 +44,12 @@ export default function MailDetail({ id }: Props) {
       clearTimeout(timeout);
     };
   }, [alert]);
-  console.log(res);
   return (
     <button
-      disabled={loading}
+      disabled={loading || sentMail}
       onClick={sendDetails}
       className={` ${
-        loading ? " bg-muted" : `bg-green-600 hover:bg-green-700`
+        loading || sentMail ? " bg-muted" : `bg-green-600 hover:bg-green-700`
       } cursor-pointer  px-4 py-2 rounded  text-sm`}
     >
       {alert && res && (
@@ -56,8 +65,12 @@ export default function MailDetail({ id }: Props) {
           <div>
             <ImSpinner10 className=" animate-spin" />
           </div>
-          <div>Урилга илгээж байна</div>
+          <div>
+            {sentMail ? `Урилга илгээсэн байна!` : `Урилга илгээж байна`}
+          </div>
         </div>
+      ) : sentMail ? (
+        `Урилга илгээсэн байна!`
       ) : (
         ` Холбоо барих хүсэлт илгээх!`
       )}

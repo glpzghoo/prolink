@@ -9,12 +9,12 @@ import {
 import { BsList } from "react-icons/bs";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import { GoUnverified } from "react-icons/go";
 import { responseData } from "@/lib/types";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button, Input, ThemeProvider } from "@mui/material";
 import { userInfo } from "os";
 import { theme } from "@/lib/theme";
@@ -22,8 +22,11 @@ import { ImCheckmark, ImCheckmark2 } from "react-icons/im";
 export function Navigation() {
   const [response, setUserInfo] = useState<responseData>();
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearch] = useState("");
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
   const router = useRouter();
   const pathname = usePathname();
+
   const getInfo = async () => {
     const res = await axios.get(`/api/account`);
     setUserInfo(res.data);
@@ -48,6 +51,21 @@ export function Navigation() {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (searchQuery) {
+      router.push(`/search` + `?search=${searchQuery}`);
+    }
+  }, [searchQuery]);
+  const debounce = useCallback((searchTerm: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      setSearch(searchTerm);
+    }, 1000);
+  }, []);
   return (
     <div className="flex justify-around items-center py-4">
       <div className="flex items-center gap-7">
@@ -93,13 +111,15 @@ export function Navigation() {
       {/* <div className="xl:flex items-center hidden"></div> */}
 
       <div className="hidden xl:flex items-center gap-1.5">
-        <div className="flex w-48 gap-2 items-center rounded-full px-2">
-          <div className="bg-[#14A800] rounded-full p-1">
+        <div className="flex w-48 gap-2 items-center justify-between rounded-full px-1.5 shadow-lg py-1 border-green-400 border">
+          <div className="bg-[#14A800] rounded-full ">
             <IoIosSearch className="text-2xl text-background" />
           </div>
-          <ThemeProvider theme={theme}>
-            <Input className="border-none shadow-none " placeholder="Хайх" />
-          </ThemeProvider>
+          <input
+            onChange={(e) => debounce(e.target.value)}
+            className="border-none shadow-none w-full focus:outline-0"
+            placeholder="Хайх"
+          />
         </div>
 
         <div className="flex items-center h-8 rounded-full justify-around gap-2 p-3">

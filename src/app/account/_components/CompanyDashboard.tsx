@@ -50,7 +50,6 @@ const ratingSchema = z.object({
 export default function Client() {
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
-  console.log(filter);
   const [user, setUser] = useState<CustomUser>();
   const [similarUsers, setSimilarUsers] = useState<CustomUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -299,16 +298,18 @@ export default function Client() {
             {/* /Профайл харах, статистик */}
 
             {/* Ажилд авах уриалга (Ready to Work) */}
-            <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-between">
-              <div className="mb-2 md:mb-0">
-                <p className="font-semibold text-green-800">
-                  {user.companyName} -тэй хамтран ажиллахад бэлэн үү?
-                </p>
+            {!owner && (
+              <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-between">
+                <div className="mb-2 md:mb-0">
+                  <p className="font-semibold text-green-800">
+                    {user.firstName} -тэй хамтран ажиллахад бэлэн үү?
+                  </p>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <MailDetail id={id} />
+                </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <MailDetail id={id} />
-              </div>
-            </div>
+            )}
             {/* /Ажилд авах уриалга */}
 
             {/* Профайл ерөнхий мэдээлэл */}
