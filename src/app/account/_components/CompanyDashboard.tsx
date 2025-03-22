@@ -111,7 +111,7 @@ export default function Client() {
       await axios.post(`/api/account/profileViews?id=${id}`);
     };
     getInfo();
-  }, []);
+  }, [change]);
   useEffect(() => {
     const timeout = setTimeout(() => {
       setVerifyMailResponse(undefined);
@@ -306,7 +306,7 @@ export default function Client() {
                   </p>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <MailDetail id={id} setChange={setChange} />
+                  <MailDetail id={id} setChange={setChange} change={change} />
                 </div>
               </div>
             )}
@@ -323,7 +323,9 @@ export default function Client() {
                     {user.salary}/{user.salaryType === "HOUR" ? `цаг` : `сар`}
                   </p> */}
                 </div>
-                <p className="text-gray-700 mt-2">{user.about}</p>
+                <p className="text-gray-700 mt-2 whitespace-pre-wrap">
+                  {user.about}
+                </p>
               </div>
             </div>
             {/* /Профайл ерөнхий мэдээлэл

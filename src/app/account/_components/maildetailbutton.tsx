@@ -9,8 +9,9 @@ import { ImSpinner10 } from "react-icons/im";
 type Props = {
   id: string;
   setChange: Dispatch<SetStateAction<boolean>>;
+  change: boolean;
 };
-export default function MailDetail({ id, setChange }: Props) {
+export default function MailDetail({ id, setChange, change }: Props) {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(false);
   const [sentMail, setSentMail] = useState(false);
@@ -39,7 +40,7 @@ export default function MailDetail({ id, setChange }: Props) {
     } else {
       setSentMail(false);
     }
-  }, []);
+  }, [change]);
   useEffect(() => {
     const timeout = setTimeout(() => {
       setAlert(false);

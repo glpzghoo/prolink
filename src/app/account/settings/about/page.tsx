@@ -88,22 +88,22 @@ export default function AboutSettings() {
   };
 
   return userInfo ? (
-    <div className="min-h-screen flex justify-center items-center bg-gray-50 p-6">
+    <div className="min-h-screen flex justify-center  bg-gray-50 p-6">
       {userInfo.success ? (
-        <div className="w-full max-w-4xl bg-white shadow-xl rounded-lg p-8 border border-gray-200">
+        <div className="w-full flex flex-col items-center bg-white shadow-xl rounded-lg p-8 border border-gray-200">
           <h2 className="text-xl font-semibold text-center text-gray-800 border-b pb-4">
             {userInfo.data.user.role !== "CLIENT"
               ? "Өөрийнхөө мэдээллийг энд засна уу!"
               : "Байгууллагынхаа талаарх мэдээллийг энд засна уу!"}
           </h2>
-          <div className="mt-6 space-y-6">
+          <div className="mt-6 space-y-6 flex w-8/10 gap-16">
             <Snackbar
               sx={{ color: response?.success ? "green" : "red" }}
               anchorOrigin={{ vertical: "top", horizontal: "center" }}
               open={Boolean(response?.success)}
               message={response?.message}
             />
-            <div>
+            <div className="w-1/2">
               <Label
                 htmlFor="about"
                 className="block text-sm font-medium text-gray-700"
@@ -117,8 +117,9 @@ export default function AboutSettings() {
                 onChange={(e) =>
                   setForm((prev) => ({ ...prev, about: e.target.value }))
                 }
+                rows={100}
                 id="about"
-                className="w-full mt-2 border border-gray-300 rounded-lg p-3 text-gray-800 focus:border-green-500 focus:ring-green-500"
+                className="w-full h-96 mt-2 border border-gray-300 rounded-lg p-3 text-gray-800 focus:border-green-500 focus:ring-green-500"
                 name="about"
               />
               <p className="text-xs text-gray-500 mt-1">
@@ -127,50 +128,50 @@ export default function AboutSettings() {
                   : "Ажил олгогчдод өөрийгөө танилцуулаарай!"}
               </p>
             </div>
+            <div className="w-1/2 h-96 overflow-scroll">
+              {userInfo.data.user.role === "CLIENT" && (
+                <p className="text-sm text-green-600">
+                  Нээлттэй ажлын байраа сонгоно уу!
+                </p>
+              )}
 
-            {userInfo.data.user.role === "CLIENT" && (
-              <p className="text-sm text-green-600">
-                Нээлттэй ажлын байраа сонгоно уу!
-              </p>
-            )}
-
-            <div className="flex flex-wrap gap-2">
-              {skills.map((skill) => (
-                <Button
-                  onClick={() => {
-                    setForm((prev) => {
-                      const skillExists = prev.skills.some(
-                        (skill1) => skill1.id === skill.id
-                      );
-                      return skillExists
-                        ? {
-                            ...prev,
-                            skills: prev.skills.filter(
-                              (skill1) => skill1.id !== skill.id
-                            ),
-                          }
-                        : { ...prev, skills: [...prev.skills, skill] };
-                    });
-                  }}
-                  key={skill.id}
-                  className={`border p-2 rounded-lg text-sm cursor-pointer transition-all duration-200 ${
-                    form.skills.some((skill1) => skill1?.id === skill.id)
-                      ? "bg-green-600 text-white"
-                      : "bg-gray-100 text-gray-800 hover:bg-gray-200"
-                  }`}
-                >
-                  {form.skills.some((skill1) => skill1?.id === skill.id) &&
-                    "✓ "}
-                  {skill.name}
-                </Button>
-              ))}
+              <div className="flex flex-wrap gap-2">
+                {skills.map((skill) => (
+                  <Button
+                    onClick={() => {
+                      setForm((prev) => {
+                        const skillExists = prev.skills.some(
+                          (skill1) => skill1.id === skill.id
+                        );
+                        return skillExists
+                          ? {
+                              ...prev,
+                              skills: prev.skills.filter(
+                                (skill1) => skill1.id !== skill.id
+                              ),
+                            }
+                          : { ...prev, skills: [...prev.skills, skill] };
+                      });
+                    }}
+                    key={skill.id}
+                    className={`border p-2 rounded-lg text-sm cursor-pointer transition-all duration-200 ${
+                      form.skills.some((skill1) => skill1?.id === skill.id)
+                        ? "bg-green-600 text-white"
+                        : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                    }`}
+                  >
+                    {form.skills.some((skill1) => skill1?.id === skill.id) &&
+                      "✓ "}
+                    {skill.name}
+                  </Button>
+                ))}
+              </div>
             </div>
           </div>
-
           <Button
             onClick={sendData}
             disabled={loading}
-            className="w-full mt-6 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
+            className="w-1/3 mt-6 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
           >
             {loading ? (
               <>
