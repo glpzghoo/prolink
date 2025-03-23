@@ -227,7 +227,8 @@ export default function Client() {
                       )}
                     </div>
                     <p className="text-gray-600 text-sm">
-                      {user.skill.length} мэргэжилтэй
+                      {user.skill.length} мэргэжилтэй -{" "}
+                      {user.gender == "MALE" ? "Эрэгтэй" : "Эмэгтэй"}
                     </p>
                   </div>
                 </div>

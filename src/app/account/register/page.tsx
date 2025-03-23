@@ -13,8 +13,10 @@ import { runInThisContext } from "node:vm";
 import { responseData } from "@/lib/types";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
-import { Button, Select } from "@mui/material";
+import { Button, Checkbox, Select } from "@mui/material";
 import Loading from "@/app/_component/loading";
+import { ThemeProvider } from "@emotion/react";
+import { theme } from "@/lib/theme";
 const RegisterFormSchema = z.object({
   email: z.string().email(),
   firstName: z.string().min(4),
@@ -52,6 +54,8 @@ export default function Login() {
   const [isValid, setIsValid] = useState(false);
   const [progress, setProgress] = useState(0);
   const [imageUploading, setImageUploading] = useState(false);
+  const [roles, setRoles] = useState("FREELANCER");
+  const [gender, setGender] = useState("MALE");
   const [response, setResponse] = useState<responseData>();
   const [form, setForm] = useState({
     email: "",
@@ -142,7 +146,11 @@ export default function Login() {
   const sendData = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(`/api/account/register`, form);
+      const res = await axios.post(`/api/account/register`, {
+        ...form,
+        gender,
+        role: roles,
+      });
       setLoading(false);
       localStorage.removeItem("form");
       localStorage.removeItem("email");
@@ -228,7 +236,7 @@ export default function Login() {
                   <div>
                     <div>
                       <div className="flex flex-col justify-center items-center ">
-                        <div className="text-xl font-semibold">
+                        <div className="text-lg font-semibold">
                           {!form.pfp && (
                             <div className={` text-red-600`}>
                               Profile зураг оруулна уу!
@@ -239,6 +247,7 @@ export default function Login() {
                           ref={imageDiv}
                           onChange={imageUpload}
                           type="file"
+                          accept="image/png, image/png image/jpeg"
                           className="hidden"
                         />
                         {imageUploading && (
@@ -256,7 +265,6 @@ export default function Login() {
                               className=" absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-25 h-25 text-[#108A00]"
                             />
                           )}
-
                           <Image
                             src={form.pfp ? form.pfp : `/images.jpeg`}
                             alt="pfp"
@@ -264,6 +272,9 @@ export default function Login() {
                             width={100}
                             height={100}
                           />
+                        </div>
+                        <div className="text-xs">
+                          Зурагны 4-н тал тэнцүү бол зохино.
                         </div>
                       </div>
                     </div>
@@ -364,30 +375,46 @@ export default function Login() {
                       </div>
                     </div>
                   </div>
-
-                  <div className="relative w-full">
-                    <Input
-                      id="companyName"
-                      type="text"
-                      className="rounded-none peer w-full border border-gray-300 px-3 pt-5 pb-2 text-lg focus:border-[#108A00] focus:outline-none"
-                      onChange={onChange}
-                      defaultValue={form.companyName || ""}
-                      name="companyName"
-                    />
-                    <Label
-                      htmlFor="companyName"
-                      className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
-        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
-        peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
-          form.companyName && "top-1 text-[10px] text-[#108A00]"
-        }`)}
-                    >
-                      Компаний нэр
-                    </Label>
-                    <div className=" text-[#717171] text-xs">
-                      Хувь хүн бол компаний нэр оруулах шаардлагагүй
+                  <ThemeProvider theme={theme}>
+                    <div>
+                      <div className="flex justify-start gap-12">
+                        {["FREELANCER", "CLIENT"].map((role) => (
+                          <div key={role} className="flex items-center gap-1">
+                            <Checkbox
+                              checked={roles === role}
+                              onChange={(e) => setRoles(role)}
+                              name={role}
+                              id={role}
+                              defaultValue={roles}
+                            />
+                            <Label htmlFor={role}>
+                              {role !== "CLIENT"
+                                ? "Хувь хүн"
+                                : "Байгууллага/Компани/Үйлчлүүлэгч"}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                      {roles === "FREELANCER" && (
+                        <div className="flex justify-start gap-12">
+                          {["MALE", "FEMALE"].map((gen) => (
+                            <div key={gen} className="flex items-center gap-1">
+                              <Checkbox
+                                checked={gender === gen}
+                                onChange={() => setGender(gen)}
+                                name={gen}
+                                id={gen}
+                                defaultValue={gender}
+                              />
+                              <Label htmlFor={gen}>
+                                {gen === "MALE" ? "Эрэгтэй" : "Эмэгтэй"}
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  </ThemeProvider>
                   <div className="relative w-full">
                     <Input
                       id="phoneNumber"
@@ -408,7 +435,9 @@ export default function Login() {
                       Утасны дугаар
                     </Label>
                     <div className=" text-[#717171] text-xs">
-                      Ажил олгогч тантай холбогдох болно.
+                      {roles === "FREELANCER"
+                        ? "Ажил олгогч тантай холбогдох болно."
+                        : "Ажил горилогч тантай холбогдох болно."}
                     </div>
                     {form.phoneNumber && (
                       <div>
@@ -420,52 +449,77 @@ export default function Login() {
                       </div>
                     )}
                   </div>
-                  <div className="relative w-full">
-                    <div className=" flex">
+                  {roles === "CLIENT" && (
+                    <div className="relative w-full">
                       <Input
-                        id="salary"
-                        type="number"
+                        id="companyName"
+                        type="text"
                         className="rounded-none peer w-full border border-gray-300 px-3 pt-5 pb-2 text-lg focus:border-[#108A00] focus:outline-none"
                         onChange={onChange}
-                        name="salary"
-                        value={form.salary || ""}
+                        defaultValue={form.companyName || ""}
+                        name="companyName"
                       />
-                      <select
-                        onChange={onChange}
-                        name="salaryType"
-                        defaultValue={form.salaryType}
-                        className=" border w-20"
+                      <Label
+                        htmlFor="companyName"
+                        className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
+        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
+        peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
+          form.companyName && "top-1 text-[10px] text-[#108A00]"
+        }`)}
                       >
-                        <option value={`HOUR`}>Цаг</option>
-                        <option value={`MONTH`}>Сар</option>
-                      </select>
+                        Компаний нэр
+                      </Label>
                     </div>
-                    <Label
-                      htmlFor="salary"
-                      className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
+                  )}
+
+                  {roles === "FREELANCER" && (
+                    <div className="relative w-full">
+                      <div className=" flex">
+                        <Input
+                          id="salary"
+                          type="number"
+                          className="rounded-none peer w-full border border-gray-300 px-3 pt-5 pb-2 text-lg focus:border-[#108A00] focus:outline-none"
+                          onChange={onChange}
+                          name="salary"
+                          value={form.salary || ""}
+                        />
+                        <select
+                          onChange={onChange}
+                          name="salaryType"
+                          defaultValue={form.salaryType}
+                          className=" border w-20"
+                        >
+                          <option value={`HOUR`}>Цаг</option>
+                          <option value={`MONTH`}>Сар</option>
+                        </select>
+                      </div>
+                      <Label
+                        htmlFor="salary"
+                        className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
         peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
           form.salary && "top-1 text-[10px] text-[#108A00]"
         }`)}
-                    >
-                      Таны цалингийн хүлээлт
-                    </Label>
-                    <div className=" text-[#717171] text-xs">
-                      <span className=" italic">оруулаагүй бол : </span>{" "}
-                      10000/цаг
-                    </div>
-                    {form.salary ? (
-                      <div>
-                        {error.salary && (
-                          <div className="text-xs text-red-400">
-                            Цалингийн хүлээлт заавал оруулна!
-                          </div>
-                        )}
+                      >
+                        Таны цалингийн хүлээлт
+                      </Label>
+                      <div className=" text-[#717171] text-xs">
+                        <span className=" italic">оруулаагүй бол : </span>{" "}
+                        10000/цаг
                       </div>
-                    ) : (
-                      <div></div>
-                    )}
-                  </div>
+                      {form.salary ? (
+                        <div>
+                          {error.salary && (
+                            <div className="text-xs text-red-400">
+                              Цалингийн хүлээлт заавал оруулна!
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div></div>
+                      )}
+                    </div>
+                  )}
 
                   <div className="relative w-full">
                     <Input
