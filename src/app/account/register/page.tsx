@@ -247,7 +247,7 @@ export default function Login() {
                           ref={imageDiv}
                           onChange={imageUpload}
                           type="file"
-                          accept="image/png, image/png image/jpeg"
+                          accept="image/png, image/jpg, image/jpeg"
                           className="hidden"
                         />
                         {imageUploading && (
@@ -266,7 +266,7 @@ export default function Login() {
                             />
                           )}
                           <Image
-                            src={form.pfp ? form.pfp : `/images.jpeg`}
+                            src={form.pfp ? form.pfp : `/placeholder.png`}
                             alt="pfp"
                             className=""
                             width={100}
