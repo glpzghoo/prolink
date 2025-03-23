@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material/styles";
+import { review } from "@prisma/client";
 
 export const calculateTime = (data: string) => {
   const timeago = (new Date().getTime() - new Date(data).getTime()) / 1000;
@@ -28,4 +29,10 @@ export const calculateTime = (data: string) => {
   } else {
     return "дөнгөж сая";
   }
+};
+
+export const avgRating = (rating: review[]): number => {
+  if (!rating.length) return 0;
+  const totalRating = rating.reduce((prev, acc) => prev + acc.rating, 0);
+  return Number((totalRating / rating.length / 20).toFixed(1));
 };

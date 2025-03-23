@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/select";
 import { boolean } from "zod";
 import { responseData } from "@/lib/types";
+import { ImNewTab } from "react-icons/im";
+import { avgRating } from "@/lib/helper";
 
 type CustomJobApplication = jobApplication & {
   job: CustomJob;
@@ -51,7 +53,7 @@ export default function ProposalDetails() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
+        setLoading2(true);
         const res = await axios.get("/api/jobApplication");
         if (res.data?.success && res.data?.data?.user) {
           const { user } = res.data.data;
@@ -70,6 +72,7 @@ export default function ProposalDetails() {
         console.error("API Error:", err);
       } finally {
         setLoading(false);
+        setLoading2(false);
       }
     };
     fetchData();
@@ -114,12 +117,8 @@ export default function ProposalDetails() {
       setLoading2(false);
     }
   };
+  // console.log(applicationData[0].freelancer.email);
 
-  const avgRating = (rating: review[]): number => {
-    if (!rating.length) return 0;
-    const totalRating = rating.reduce((prev, acc) => prev + acc.rating, 0);
-    return Number((totalRating / rating.length / 20).toFixed(1));
-  };
   useEffect(() => {
     const timeout = setTimeout(() => {
       setAlert(false);
@@ -142,7 +141,7 @@ export default function ProposalDetails() {
         : "Татгалзсан.";
     }
     return application.clientStatus === "waiting"
-      ? "Ажил олгогч таныг хүлээж байна."
+      ? "Ажил олгогчийн хариуг хүлээж байна."
       : application.clientStatus === "accepted"
       ? "Зөвшөөрсөн."
       : "Татгалзсан.";
@@ -180,7 +179,7 @@ export default function ProposalDetails() {
         {applicationData.map((application) => (
           <div
             key={application.id}
-            className="bg-white rounded-xl shadow-md overflow-hidden"
+            className="bg-white rounded-xl shadow-md overflow-hidden relative"
           >
             {alert && (
               <div>
@@ -200,86 +199,15 @@ export default function ProposalDetails() {
                   <h1 className="text-2xl font-bold text-gray-800">
                     {application.job.title}
                   </h1>
-                  <div className="flex items-center gap-4">
-                    {role === "CLIENT" ? (
-                      <div className="flex items-center gap-2">
-                        <Select
-                          defaultValue={application.clientStatus}
-                          onValueChange={(value) => {
-                            setStatusValue(value);
-                            setApplicationId(application.id);
-                          }}
-                        >
-                          <SelectTrigger className="w-[180px] border-gray-300">
-                            <SelectValue placeholder="Төлөв сонгох" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectItem value="accepted">
-                                Зөвшөөрөх
-                              </SelectItem>
-                              <SelectItem value="denied">Татгалзах</SelectItem>
-                              <SelectItem value="waiting">
-                                Хүлээгдэж байна
-                              </SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        <Button
-                          className="bg-green-600 hover:bg-green-700"
-                          onClick={changeApplicationStatus}
-                          disabled={loading2}
-                        >
-                          Хадгалах
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <Select
-                          // value={String(application.cancelled)}
-                          defaultValue={
-                            application.cancelled ? "true" : "false"
-                          }
-                          onValueChange={(value) => {
-                            setRequestValue(value);
-                            setApplicationId(application.id);
-                          }}
-                        >
-                          <SelectTrigger className="w-[180px] border-gray-300">
-                            <SelectValue placeholder="Төлөв сонгох" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectItem value="true">
-                                Хүсэлт буцаах
-                              </SelectItem>
-
-                              <SelectItem value="false">
-                                Дахин илгээх
-                              </SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        <Button
-                          className="bg-green-600 hover:bg-green-700"
-                          onClick={changeRequestStatus}
-                          disabled={loading2}
-                        >
-                          Хадгалах
-                        </Button>
-                      </div>
+                  <p
+                    className={cn(
+                      "text-sm font-medium px-3 py-1 rounded-full whitespace-nowrap",
+                      getStatusStyles(application)
                     )}
-                    <p
-                      className={cn(
-                        "text-sm font-medium px-3 py-1 rounded-full",
-                        getStatusStyles(application)
-                      )}
-                    >
-                      {renderStatusMessage(application)}
-                    </p>
-                  </div>
+                  >
+                    {renderStatusMessage(application)}
+                  </p>
                 </div>
-
                 <div className="space-y-4">
                   <h2 className="text-lg font-semibold text-gray-700">
                     Ажлын дэлгэрэнгүй
@@ -331,48 +259,168 @@ export default function ProposalDetails() {
                 </div>
               </div>
 
-              <div className="lg:w-80 bg-gray-50 p-6 rounded-lg">
-                <h2 className="text-lg font-semibold text-gray-700 mb-4">
-                  {role === "CLIENT"
-                    ? "Ажил горилогчийн тухай"
-                    : "Ажил олгогчийн тухай"}
-                </h2>
-                <div className="space-y-3 text-gray-700">
-                  <div className="flex items-center gap-2">
-                    <Rating
-                      name="half-rating-read"
-                      value={
-                        role === "CLIENT"
+              <div className="lg:w-80 bg-gray-50 p-6 flex flex-col items-center justify-between rounded-lg">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-700 mb-4">
+                    {role === "CLIENT"
+                      ? "Ажил горилогчийн тухай"
+                      : "Ажил олгогчийн тухай"}
+                  </h2>
+                  <div className="space-y-3 text-gray-700">
+                    <div className=" flex gap-2">
+                      <strong>Нэр:</strong>{" "}
+                      {role === "CLIENT" ? (
+                        <Link
+                          target="blank"
+                          href={`/freelancer/${application.freelancer.id}`}
+                        >
+                          <div className=" flex gap-1">
+                            <div>{application.freelancer.firstName}</div>
+                            <div>{application.freelancer.lastName}</div>
+                            <ImNewTab className="text-xs" />
+                          </div>
+                        </Link>
+                      ) : (
+                        <Link
+                          target="blank"
+                          href={`/client/${application.client.id}`}
+                        >
+                          <div className=" flex gap-1">
+                            <div>{application.client.companyName}</div>
+                            <ImNewTab className="text-xs" />
+                          </div>
+                        </Link>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <strong>Үнэлгээ:</strong>{" "}
+                      <Rating
+                        name="half-rating-read"
+                        value={
+                          role === "CLIENT"
+                            ? avgRating(application.freelancer.reviewee)
+                            : avgRating(application.client.reviewee)
+                        }
+                        precision={0.5}
+                        readOnly
+                      />
+                      <span>
+                        {role === "CLIENT"
                           ? avgRating(application.freelancer.reviewee)
-                          : avgRating(application.client.reviewee)
-                      }
-                      precision={0.5}
-                      readOnly
-                    />
-                    <span>
+                          : avgRating(application.client.reviewee)}{" "}
+                        / 5
+                      </span>
+                    </div>
+
+                    <p>
+                      <strong>Огноо:</strong>{" "}
+                      {application.createdAt.split("T")[0]}
+                    </p>
+                    <p>
+                      <strong>Холбоо барих:</strong>{" "}
                       {role === "CLIENT"
-                        ? avgRating(application.freelancer.reviewee)
-                        : avgRating(application.client.reviewee)}{" "}
-                      / 5
-                    </span>
+                        ? application.freelancer.email +
+                          ", " +
+                          application.freelancer.phoneNumber
+                        : application.client.email}
+                    </p>
                   </div>
-                  <p>
-                    <strong>Байршил:</strong>{" "}
-                    {role === "CLIENT"
-                      ? application.freelancer.companyLocation
-                      : application.client.companyLocation}
-                  </p>
-                  <p>
-                    <strong>Огноо:</strong>{" "}
-                    {application.createdAt.split("T")[0]}
-                  </p>
-                  <p>
-                    <strong>Холбоо барих:</strong>{" "}
-                    {role === "CLIENT"
-                      ? application.freelancer.email
-                      : application.client.email}
-                  </p>
                 </div>
+                <div className="flex items-center gap-4">
+                  {role === "CLIENT" ? (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <Select
+                          disabled={
+                            application.cancelled ||
+                            application.clientStatus === "accepted"
+                          }
+                          defaultValue={application.clientStatus}
+                          onValueChange={(value) => {
+                            setStatusValue(value);
+                            setApplicationId(application.id);
+                          }}
+                        >
+                          <SelectTrigger className="w-[180px] border-gray-300">
+                            <SelectValue placeholder="Төлөв сонгох" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="accepted">
+                                Зөвшөөрөх
+                              </SelectItem>
+                              <SelectItem value="denied">Татгалзах</SelectItem>
+                              <SelectItem value="waiting">
+                                Хүлээгдэж байна
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          className="bg-green-600 hover:bg-green-700"
+                          onClick={changeApplicationStatus}
+                          disabled={
+                            loading2 ||
+                            application.cancelled ||
+                            application.clientStatus === "accepted"
+                          }
+                        >
+                          Хадгалах
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Select
+                        disabled={
+                          application.cancelled ||
+                          application.clientStatus === "accepted"
+                        }
+                        // value={String(application.cancelled)}
+                        defaultValue={application.cancelled ? "true" : "false"}
+                        onValueChange={(value) => {
+                          setRequestValue(value);
+                          setApplicationId(application.id);
+                        }}
+                      >
+                        <SelectTrigger className="w-[180px] border-gray-300">
+                          <SelectValue placeholder="Төлөв сонгох" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="true">Хүсэлт буцаах</SelectItem>
+
+                            <SelectItem value="false">Дахин илгээх</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        className="bg-green-600 hover:bg-green-700"
+                        onClick={changeRequestStatus}
+                        disabled={
+                          loading2 ||
+                          application.cancelled ||
+                          application.clientStatus === "accepted"
+                        }
+                      >
+                        Хадгалах
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                {application.clientStatus === "accepted" ? (
+                  <div className=" absolute bottom-1 right-1 text-green-400 text-sm">
+                    Зөвшөөрөгдсөн анкетийн төлөвийг өөрчлөх боломжгүй таньд
+                    амжилт хүсье!
+                  </div>
+                ) : (
+                  statusValue === "accepted" && (
+                    <div className=" absolute bottom-1 right-1 text-red-400 text-sm">
+                      Зөвшөөрсөн анкетийн төлөвийг дараа өөрчлөх боломжгүйг
+                      анхаарна уу!
+                    </div>
+                  )
+                )}
               </div>
             </div>
           </div>
