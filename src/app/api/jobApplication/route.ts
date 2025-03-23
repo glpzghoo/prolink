@@ -7,8 +7,18 @@ import {
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
+import nodemailer from "nodemailer";
 import { clientStatus } from "@prisma/client";
-
+import { avgRating } from "@/lib/helper";
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 export async function GET(req: NextRequest) {
   try {
     if (!process.env.ACCESS_TOKEN) {
@@ -158,12 +168,29 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    const jobApplication = await prisma.jobApplication.update({
+    const jobApplication = await prisma.jobApplication.findUnique({
       where: {
         id: applicationId,
       },
-      data: { clientStatus: statusValue },
+      include: {
+        client: {
+          include: { clientJobApplication: true, reviewee: true },
+        },
+        freelancer: {
+          include: { freelancerJobApplication: true, reviewee: true },
+        },
+      },
     });
+
+    if (!jobApplication) {
+      return CustomNextResponse(
+        false,
+        "REQUEST_FAILED",
+        "Төлөв өөрчилж чадсангүй. Анкет олдсонгүй!",
+        null
+      );
+    }
+
     if (jobApplication.cancelled) {
       return CustomNextResponse(
         false,
@@ -172,19 +199,141 @@ export async function PUT(req: NextRequest) {
         jobApplication
       );
     }
-    if (jobApplication) {
+    if (
+      jobApplication.clientStatus === "accepted" &&
+      statusValue === "accepted"
+    ) {
       return CustomNextResponse(
-        true,
-        "REQUEST_SUCCESSFUL",
-        "Төлөв амжилттай өөрчлөгдлөө.",
+        false,
+        "REQUEST_FAILED",
+        "Юу ч өөрчлөгдөөгүй!",
         jobApplication
       );
     }
+    if (jobApplication.clientStatus === "accepted") {
+      return CustomNextResponse(
+        false,
+        "REQUEST_FAILED",
+        "Зөвшөөрсөн анкетийн төлөв өөрчлөх боломжгүй!",
+        jobApplication
+      );
+    }
+
+    const updateApplication = await prisma.jobApplication.update({
+      where: {
+        id: jobApplication.id,
+      },
+      data: { clientStatus: statusValue },
+    });
+
+    if (statusValue === "accepted") {
+      // ajil olgogch ruu
+      await transporter.sendMail({
+        from: "Team HexaCode - Prolink", // sender address
+        to: jobApplication.client.email, // list of receivers
+        subject: "ProLink - Freelancer -ийн дэлгэрэнгүй мэдээлэл!", // Subject line
+        text: "Freelancing App / Team HexaCode", // plain text body
+        html: `<b>Сайн байна уу! ${jobApplication.client.companyName}
+        <br>
+        <br>
+        
+        <h2>Freelancer -ын тухай дэлгэрэнгүй мэдээлэл!</h2>
+            <br> 
+             <br>
+            <strong>Овог</strong>: ${jobApplication.freelancer.lastName}
+            <br> 
+             <br>
+            <strong>Нэр</strong>: ${jobApplication.freelancer.firstName}
+            <br> 
+             <br>
+            <strong>Нас</strong>: ${
+              new Date().getFullYear() -
+              new Date(jobApplication.freelancer.birthday).getFullYear()
+            }
+             <br>
+              <br>
+             <strong>Утасны дугаар: </strong> ${
+               jobApplication.freelancer.phoneNumber
+             }
+            <br> 
+             <br>
+             <strong>Манайд гишүүн болоод: </strong> ${
+               new Date(jobApplication.freelancer.createdAt)
+                 .toISOString()
+                 .split("T")[0]
+             }
+            <br> 
+             <br>
+            <strong>Нийт ажлын тоо: </strong> ${
+              jobApplication.freelancer.freelancerJobApplication.length
+            }
+            <br> 
+             <br>
+            <strong>Манай сайт дээрх дундаж үнэлгээ: </strong> ${avgRating(
+              jobApplication.freelancer.reviewee
+            )}/5
+             <br> 
+             <br>
+            Холбоосоор орон профайлтай танилцаарай! ${`${process.env.BASE_URL}/freelancer/${jobApplication.freelancer.id}`}</p>`, // html body
+      });
+      // ajil gorilogch ruu
+      await transporter.sendMail({
+        from: "Team HexaCode - Prolink", // sender address
+        to: jobApplication.freelancer.email, // list of receivers
+        subject: "ProLink - Байгууллагын дэлгэрэнгүй мэдээлэл!", // Subject line
+        text: "Freelancing App / Team HexaCode", // plain text body
+        html: `<h1><b>Сайн байна уу! - ${
+          jobApplication.client.companyName
+        } таны ажлын саналыг хүлээн авлаа! <h1>
+            <br> <h2> Байгууллагын тухай дэлгэрэнгүй мэдээлэл!</h2>
+            <br>
+            <br>
+            <strong>Компаны нэр: </strong>
+             ${jobApplication.client.companyName}
+            <br>
+             <br>
+            <strong>Компаныг төлөөлж: </strong>
+             ${jobApplication.client.lastName} ${" "}
+           ${jobApplication.client.firstName}
+            <br> 
+             <br>
+             <strong>Утасны дугаар: </strong> ${
+               jobApplication.client.phoneNumber
+             }
+            <br> 
+             <br>
+             <strong>Манайд гишүүн болоод: </strong> ${
+               new Date(jobApplication.client.createdAt)
+                 .toISOString()
+                 .split("T")[0]
+             }
+            <br> 
+             <br>
+            <strong>Нийт анкетны тоо: </strong> ${
+              jobApplication.client.clientJobApplication.length
+            }
+            <br> 
+             <br>
+            <strong>Манай сайт дээрх дундаж үнэлгээ: </strong> ${avgRating(
+              jobApplication.client.reviewee
+            )}/5
+             <br> 
+             <br>
+            Холбоосоор орон профайлтай танилцаарай! ${`${process.env.BASE_URL}/client/${jobApplication.client.id}`}</p>`, // html body
+      });
+      return CustomNextResponse(
+        true,
+        "REQUEST_SUCCES",
+        "Төлөв амжилттай өөрчлөгдлөө.",
+        { jobApplication: { ...updateApplication } }
+      );
+    }
+
     return CustomNextResponse(
-      false,
-      "REQUEST FAILED",
-      "Төлөв өөрчилж чадсангүй.",
-      null
+      true,
+      "REQUEST_SUCCES",
+      "Төлөв амжилттай өөрчлөгдлөө.",
+      { jobApplication: { ...updateApplication } }
     );
   } catch (err) {
     console.error(err, "Сервер дээр асуудал гарлаа!");
@@ -216,6 +365,7 @@ export async function PATCH(req: NextRequest) {
         null
       );
     }
+
     const jobApplication = await prisma.jobApplication.update({
       where: {
         id: applicationId,
