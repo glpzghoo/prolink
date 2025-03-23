@@ -269,9 +269,9 @@ export async function PUT(req: NextRequest) {
             }
             <br> 
              <br>
-            <strong>Манай сайт дээрх дундаж үнэлгээ: </strong> ${
-              avgRating(jobApplication.freelancer.reviewee) / 5
-            }
+            <strong>Манай сайт дээрх дундаж үнэлгээ: </strong> ${avgRating(
+              jobApplication.freelancer.reviewee
+            )}/5
              <br> 
              <br>
             Холбоосоор орон профайлтай танилцаарай! ${`${process.env.BASE_URL}/freelancer/${jobApplication.freelancer.id}`}</p>`, // html body
@@ -314,9 +314,9 @@ export async function PUT(req: NextRequest) {
             }
             <br> 
              <br>
-            <strong>Манай сайт дээрх дундаж үнэлгээ: </strong> ${
-              avgRating(jobApplication.client.reviewee) / 5
-            }
+            <strong>Манай сайт дээрх дундаж үнэлгээ: </strong> ${avgRating(
+              jobApplication.client.reviewee
+            )}/5
              <br> 
              <br>
             Холбоосоор орон профайлтай танилцаарай! ${`${process.env.BASE_URL}/client/${jobApplication.client.id}`}</p>`, // html body
