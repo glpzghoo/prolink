@@ -14,6 +14,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user && token.email) {
         session.user.email = token.email as string;
       }
+      // console.log({ session, user, token });
       return session;
     },
     async redirect({ url, baseUrl }) {

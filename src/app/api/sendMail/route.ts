@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     };
     const user = await prisma.user.findUnique({
       where: { id: verify.id },
-      omit: { password: true, phoneNumber: true, email: true },
+      omit: { password: true, email: true },
     });
     const profileOwner = await prisma.user.findUnique({
       where: { id },
@@ -55,23 +55,42 @@ export async function POST(req: NextRequest) {
         null
       );
     }
+    if (user.role === profileOwner.role) {
+      return CustomNextResponse(
+        false,
+        "REQUEST_FAILED",
+        "Role адилхан байна!",
+        null
+      );
+    } else if (user.role === "FREELANCER") {
+      return CustomNextResponse(
+        false,
+        "REQUEST_FAILED",
+        "Freelancer холбоо барих хүсэлт илгээх боломжгүй!",
+        null
+      );
+    }
     await transporter.sendMail({
       from: "Team HexaCode - Prolink", // sender address
       to: profileOwner.email, // list of receivers
-      subject: "ProLink - Таньд ажлын урилга ирлээ!", // Subject line
+      subject: "ProLink - Холбоо барих хүсэлт ирлээ!", // Subject line
       text: "Freelancing App / Team HexaCode", // plain text body
-      html: `<b>Сайн байна уу! ${
-        profileOwner.firstName
-      }.</b><p>Таньд ажлын урилга ирлээ. Холбоосоор орон холбогдоно уу! ${
-        user.companyName
-          ? `${process.env.BASE_URL}/client/${user.id}`
-          : `${process.env.BASE_URL}/freelancer/${user.id}`
-      }</p>`, // html body
+      html: `<b>  Сайн байна уу! ${profileOwner.firstName}.
+      </b>
+      <h3>Таньд холбоо барих хүсэлт ирлээ. Холбоосоор орон холбогдоно уу!</h3>
+      <br>
+      <strong>
+      <a href="${`${process.env.BASE_URL}/client/${user.id}`}" target="_blank">${
+        profileOwner.companyName
+      }</a>
+      <p>Утасны дугаар: ${user.phoneNumber}</p>
+      </strong>`, // html body
     });
+
     return CustomNextResponse(
       true,
       "REQUEST_SUCCESS",
-      "Урилга амжилттай илгээлээ",
+      "Урилга амжилттай илгээлээ.",
       { user }
     );
   } catch (err) {

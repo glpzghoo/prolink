@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
       return CustomNextResponse(
         false,
         "CAN_NOT_RATE_YOURSELF",
-        "Та өөртөө үнэлгээ өгч болохгүй!",
+        "Өөртөө үнэлгээ өгч болохгүй!",
         null
       );
     }
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
       return CustomNextResponse(
         false,
         "ALREADY_REVIEWED_USER",
-        "Та аль хэдийн үнэлгээ үзүүлсэн байна!",
+        "Аль хэдийн үнэлгээ үзүүлсэн байна!",
         null
       );
     }

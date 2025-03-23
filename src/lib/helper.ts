@@ -1,4 +1,3 @@
-import { createTheme } from "@mui/material/styles";
 import { review } from "@prisma/client";
 
 export const calculateTime = (data: string) => {
@@ -9,8 +8,8 @@ export const calculateTime = (data: string) => {
   const hours = 60 * minutes;
   const days = 24 * hours;
   const weeks = 7 * days;
-  const months = 30 * days; // Approximate month
-  const years = 365 * days; // Approximate year
+  const months = 30 * days;
+  const years = 365 * days;
 
   if (timeago >= years) {
     return Math.floor(timeago / years) + " жилийн өмнө";

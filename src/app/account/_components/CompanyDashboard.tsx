@@ -5,8 +5,15 @@ import MailDetail from "@/app/account/_components/maildetailbutton";
 import { CustomJob } from "@/app/job/[id]/page";
 import { Textarea } from "@/components/ui/textarea";
 import { calculateTime } from "@/lib/helper";
+import { theme } from "@/lib/theme";
 import { responseData } from "@/lib/types";
-import { Box, Button, Snackbar, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Snackbar,
+  ThemeProvider,
+  Typography,
+} from "@mui/material";
 import Rating from "@mui/material/Rating";
 import { featuredSkills, job, review, skill, user } from "@prisma/client";
 import axios from "axios";
@@ -299,15 +306,17 @@ export default function Client() {
             {/* /Профайл харах, статистик */}
 
             {/* Ажилд авах уриалга (Ready to Work) */}
-            {!owner && (
-              <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-between">
-                <div className="mb-2 md:mb-0">
-                  <p className="font-semibold text-green-800">
-                    {user.firstName} -тэй хамтран ажиллахад бэлэн үү?
-                  </p>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <MailDetail id={id} setChange={setChange} change={change} />
+            {!owner && user.role === "FREELANCER" && (
+              <div className="border-b pb-7">
+                <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-between">
+                  <div className="mb-2 md:mb-0">
+                    <p className="font-semibold text-green-800">
+                      {user.firstName} -тэй хамтран ажиллахад бэлэн үү?
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <MailDetail id={id} setChange={setChange} change={change} />
+                  </div>
                 </div>
               </div>
             )}
@@ -483,25 +492,27 @@ export default function Client() {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Button
-                  onClick={sendRating}
-                  disabled={!isValidRatingForm || loadingAddingReview}
-                  className={` ${
-                    loadingAddingReview ? ` text-accent` : `text-[#129600]`
-                  }`}
-                  type="submit"
-                >
-                  {loadingAddingReview ? (
-                    <div className="flex items-center gap-2">
-                      <div>
-                        <ImSpinner10 className=" animate-spin" />
+                <ThemeProvider theme={theme}>
+                  <Button
+                    onClick={sendRating}
+                    disabled={!isValidRatingForm || loadingAddingReview}
+                    className={` ${
+                      loadingAddingReview ? ` text-accent` : `text-[#129600]`
+                    }`}
+                    type="submit"
+                  >
+                    {loadingAddingReview ? (
+                      <div className="flex items-center gap-2">
+                        <div>
+                          <ImSpinner10 className=" animate-spin" />
+                        </div>
+                        <div>Үнэлгээг оруулж байна!</div>
                       </div>
-                      <div>Үнэлгээг оруулж байна!</div>
-                    </div>
-                  ) : (
-                    `Илгээх`
-                  )}
-                </Button>
+                    ) : (
+                      `Илгээх`
+                    )}
+                  </Button>
+                </ThemeProvider>
                 {ratingResponse && (
                   <div>
                     {ratingResponse?.success ? (

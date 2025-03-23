@@ -205,7 +205,7 @@ export default function AccountSettings() {
                 <Image
                   onClick={clickInput}
                   src={`${
-                    pfp ? pfp : user?.pfp ? user.pfp : `/img/facebook.svg`
+                    pfp ? pfp : user?.pfp ? user.pfp : `/placeholder.png`
                   }`}
                   width={100}
                   height={100}
