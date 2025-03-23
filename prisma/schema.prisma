@@ -16,6 +16,7 @@ model user {
   birthday                 DateTime
   role                     UserRole
   companyName              String
+  gender                   UserGender? @default(MALE)
   companyLocation          String           @default("Улаанбаатар")
   phoneNumber              String           @unique
   password                 String
@@ -137,4 +138,8 @@ enum JobStatus {
 enum UserRole {
   CLIENT
   FREELANCER
+}
+enum UserGender {
+  MALE
+  FEMALE
 }

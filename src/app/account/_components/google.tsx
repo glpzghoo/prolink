@@ -13,14 +13,14 @@ export default function GoogleSession() {
             signOut();
           }}
           sx={{ color: "green" }}
-          className="w-full border bg-background text-foreground hover:bg-secondary flex justify-around"
+          className="w-full border bg-background text-foreground gap-2 hover:bg-secondary flex justify-around"
         >
-          <Image
+          {/* <Image
             src={`/img/foogle.svg`}
             alt="google logo"
             width={20}
             height={20}
-          />
+          /> */}
           <div>{session.user?.name}</div>
         </Button>
       ) : (
@@ -29,14 +29,14 @@ export default function GoogleSession() {
           onClick={() => {
             signIn("google");
           }}
-          className="w-full border bg-background text-foreground hover:bg-secondary flex justify-around"
+          className="w-full border bg-background text-foreground gap-2 hover:bg-secondary flex justify-around"
         >
-          <Image
+          {/* <Image
             src={`/img/foogle.svg`}
             alt="google logo"
             width={20}
             height={20}
-          />
+          /> */}
           <div>Google -р нэвтрэх</div>
         </Button>
       )}
