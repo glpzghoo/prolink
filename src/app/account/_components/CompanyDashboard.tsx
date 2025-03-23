@@ -92,6 +92,7 @@ export default function Client() {
             (s) => s.id !== id && s.role === "CLIENT"
           );
           setSimilarUsers(filter);
+          document.title = userr.companyName + " - ProLink";
         }
         setLoading(false);
       } catch (err) {

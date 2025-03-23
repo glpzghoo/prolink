@@ -89,6 +89,8 @@ export default function Client() {
             (s) => s.id !== id && s.role === "FREELANCER"
           );
           setSimilarUsers(filter);
+          document.title =
+            userr.lastName + " " + userr.firstName + " - ProLink";
         }
         setLoading(false);
       } catch (err) {

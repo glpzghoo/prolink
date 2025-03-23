@@ -62,6 +62,7 @@ export default function App() {
         const test2 = _.uniqBy(test, "id");
         const test3 = test2.filter((jobbb) => jobbb.id !== id);
         setSimilarPosts(test3);
+        document.title = posts.title;
 
         if (!res.data.data.post.poster.emailVerified) {
           setAlert(true);
