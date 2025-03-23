@@ -19,6 +19,7 @@ import { Button, Input, ThemeProvider } from "@mui/material";
 import { userInfo } from "os";
 import { theme } from "@/lib/theme";
 import { ImCheckmark, ImCheckmark2 } from "react-icons/im";
+import { signOut } from "next-auth/react";
 export function Navigation() {
   const [response, setUserInfo] = useState<responseData>();
   const [loading, setLoading] = useState(true);
@@ -45,6 +46,7 @@ export function Navigation() {
     setLoading(true);
     setUserInfo(undefined);
     const res = await axios.get(`/api/account/logout`);
+    signOut();
     setUserInfo(res.data);
     if (res.data.success) {
       router.refresh();
