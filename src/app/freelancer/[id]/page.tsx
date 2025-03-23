@@ -26,6 +26,7 @@ type CustomUser = user & {
   reviewee: CustomReviewee[];
   reviewer: review[];
   featuredSkills: CustomFeaturedSkill[];
+  birthday: string;
 };
 type CustomReviewee = review & {
   reviewee: CustomUser;

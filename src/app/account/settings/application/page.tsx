@@ -137,14 +137,14 @@ export default function ProposalDetails() {
       return application.clientStatus === "waiting"
         ? "Хүлээгдэж байна!"
         : application.clientStatus === "accepted"
-        ? "Зөвшөөрсөн."
-        : "Татгалзсан.";
+        ? "Зөвшөөрсөн"
+        : "Татгалзсан";
     }
     return application.clientStatus === "waiting"
       ? "Ажил олгогчийн хариуг хүлээж байна."
       : application.clientStatus === "accepted"
-      ? "Зөвшөөрсөн."
-      : "Татгалзсан.";
+      ? "Зөвшөөрсөн"
+      : "Татгалзсан";
   };
 
   const getStatusStyles = (application: CustomJobApplication) => {
@@ -292,6 +292,51 @@ export default function ProposalDetails() {
                         </Link>
                       )}
                     </div>
+                    <div className=" flex gap-2">
+                      <div className=" flex gap-2">
+                        {role === "CLIENT" && (
+                          <>
+                            <strong>Хүйс:</strong>{" "}
+                            <div className=" flex gap-1">
+                              <div>
+                                {application.freelancer.gender === "MALE"
+                                  ? "Эрэгтэй"
+                                  : "Эмэгтэй"}
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                      {role === "CLIENT" && (
+                        <div className=" flex gap-2">
+                          <>
+                            <strong>Нас:</strong>{" "}
+                            <div className="flex gap-1">
+                              <div>
+                                {(() => {
+                                  const birthDate = new Date(
+                                    application.freelancer.birthday
+                                  );
+                                  const today = new Date();
+                                  let age =
+                                    today.getFullYear() -
+                                    birthDate.getFullYear();
+                                  const birthdayThisYear = new Date(
+                                    today.getFullYear(),
+                                    birthDate.getMonth(),
+                                    birthDate.getDate()
+                                  );
+                                  if (today < birthdayThisYear) {
+                                    age--;
+                                  }
+                                  return age;
+                                })()}
+                              </div>
+                            </div>
+                          </>
+                        </div>
+                      )}
+                    </div>
                     <div className="flex items-center gap-2">
                       <strong>Үнэлгээ:</strong>{" "}
                       <Rating
@@ -372,10 +417,7 @@ export default function ProposalDetails() {
                   ) : (
                     <div className="flex items-center gap-2">
                       <Select
-                        disabled={
-                          application.cancelled ||
-                          application.clientStatus === "accepted"
-                        }
+                        disabled={application.clientStatus === "accepted"}
                         // value={String(application.cancelled)}
                         defaultValue={application.cancelled ? "true" : "false"}
                         onValueChange={(value) => {
@@ -398,9 +440,7 @@ export default function ProposalDetails() {
                         className="bg-green-600 hover:bg-green-700"
                         onClick={changeRequestStatus}
                         disabled={
-                          loading2 ||
-                          application.cancelled ||
-                          application.clientStatus === "accepted"
+                          loading2 || application.clientStatus === "accepted"
                         }
                       >
                         Хадгалах
@@ -410,7 +450,7 @@ export default function ProposalDetails() {
                 </div>
                 {application.clientStatus === "accepted" ? (
                   <div className=" absolute bottom-1 right-1 text-green-400 text-sm">
-                    Зөвшөөрөгдсөн анкетийн төлөвийг өөрчлөх боломжгүй таньд
+                    Зөвшөөрөгдсөн анкетийн төлөвийг өөрчлөх боломжгүй. Таньд
                     амжилт хүсье!
                   </div>
                 ) : (
