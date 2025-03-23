@@ -123,7 +123,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse_NoCookie();
     }
 
-    const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
+    jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
       id: string;
     };
 
@@ -159,14 +159,6 @@ export async function PUT(req: NextRequest) {
       id: string;
       role: string;
     };
-    if (verify.role === "FREELANCER") {
-      return CustomNextResponse(
-        false,
-        "NOT_PERMITTED",
-        "Ажил горилогчид төлөв өөрчлөх эрх байхгүй",
-        null
-      );
-    }
 
     const jobApplication = await prisma.jobApplication.findUnique({
       where: {
@@ -181,6 +173,21 @@ export async function PUT(req: NextRequest) {
         },
       },
     });
+    if (verify.role === "FREELANCER") {
+      return CustomNextResponse(
+        false,
+        "NOT_PERMITTED",
+        "Ажил горилогчид төлөв өөрчлөх эрх байхгүй",
+        null
+      );
+    } else if (verify.id !== jobApplication?.clientId) {
+      return CustomNextResponse(
+        false,
+        "NOT_PERMITTED",
+        "Таньд төлөв өөрчлөх эрх байхгүй байна!",
+        null
+      );
+    }
 
     if (!jobApplication) {
       return CustomNextResponse(
@@ -284,7 +291,7 @@ export async function PUT(req: NextRequest) {
         text: "Freelancing App / Team HexaCode", // plain text body
         html: `<h1><b>Сайн байна уу! - ${
           jobApplication.client.companyName
-        } таны ажлын саналыг хүлээн авлаа! <h1>
+        } таны ажлын саналыг хүлээн авлаа! </h1>
             <br> <h2> Байгууллагын тухай дэлгэрэнгүй мэдээлэл!</h2>
             <br>
             <br>
@@ -327,6 +334,22 @@ export async function PUT(req: NextRequest) {
         "Төлөв амжилттай өөрчлөгдлөө.",
         { jobApplication: { ...updateApplication } }
       );
+    } else if (statusValue === "denied") {
+      // ajil gorilogch ruu
+      await transporter.sendMail({
+        from: "Team HexaCode - Prolink", // sender address
+        to: jobApplication.freelancer.email, // list of receivers
+        subject: "ProLink - Харамсалтай мэдээ!", // Subject line
+        text: "Freelancing App / Team HexaCode", // plain text body
+        html: `<h1><b>Сайн байна уу! - ${jobApplication.client.companyName} таны ажлын саналыг зөвшөөрсөнгүй! </h1>
+     <p>Та өөр ажил сонирхон хүсэлт илгээж болно! ${process.env.BASE_URL}/job </p> <br> Амжилт хүсье.`, // html body
+      });
+      return CustomNextResponse(
+        true,
+        "REQUEST_SUCCES",
+        "Төлөв амжилттай өөрчлөгдлөө.",
+        { jobApplication: { ...updateApplication } }
+      );
     }
 
     return CustomNextResponse(
@@ -352,7 +375,15 @@ export async function PATCH(req: NextRequest) {
     if (!accessToken) {
       return NextResponse_NoCookie();
     }
+    const jobapplication = await prisma.jobApplication.findUnique({
+      where: {
+        id: applicationId,
+      },
+    });
 
+    if (!jobapplication) {
+      return CustomNextResponse(false, "NOT_FOUND", "Анкет олдсонгүй", null);
+    }
     const verify = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
       id: string;
       role: string;
@@ -362,6 +393,13 @@ export async function PATCH(req: NextRequest) {
         false,
         "NOT_PERMITTED",
         "Ажил олгогчид төлөв өөрчлөх эрх байхгүй",
+        null
+      );
+    } else if (jobapplication.freelancerId !== verify.id) {
+      return CustomNextResponse(
+        false,
+        "NOT_PERMITTED",
+        "Таньд уг төлөвийг өөрчлөх эрх байхгүй байна!",
         null
       );
     }

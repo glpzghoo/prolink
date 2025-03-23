@@ -26,6 +26,7 @@ type CustomUser = user & {
   reviewee: CustomReviewee[];
   reviewer: review[];
   featuredSkills: CustomFeaturedSkill[];
+  birthday: string;
 };
 type CustomReviewee = review & {
   reviewee: CustomUser;
@@ -89,6 +90,8 @@ export default function Client() {
             (s) => s.id !== id && s.role === "FREELANCER"
           );
           setSimilarUsers(filter);
+          document.title =
+            userr.lastName + " " + userr.firstName + " - ProLink";
         }
         setLoading(false);
       } catch (err) {

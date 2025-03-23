@@ -10,6 +10,7 @@ import Badge from "../_component/skillBadge";
 export type CustomUser = user & {
   skill: skill[];
   reviewee: review[];
+  birthday: string;
 };
 export default function Freelance() {
   const searchParams = useSearchParams();

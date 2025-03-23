@@ -137,14 +137,14 @@ export default function ProposalDetails() {
       return application.clientStatus === "waiting"
         ? "Хүлээгдэж байна!"
         : application.clientStatus === "accepted"
-        ? "Зөвшөөрсөн."
-        : "Татгалзсан.";
+        ? "Зөвшөөрсөн"
+        : "Татгалзсан";
     }
     return application.clientStatus === "waiting"
       ? "Ажил олгогчийн хариуг хүлээж байна."
       : application.clientStatus === "accepted"
-      ? "Зөвшөөрсөн."
-      : "Татгалзсан.";
+      ? "Зөвшөөрсөн"
+      : "Татгалзсан";
   };
 
   const getStatusStyles = (application: CustomJobApplication) => {
@@ -292,6 +292,51 @@ export default function ProposalDetails() {
                         </Link>
                       )}
                     </div>
+                    <div className=" flex gap-2">
+                      <div className=" flex gap-2">
+                        {role === "CLIENT" && (
+                          <>
+                            <strong>Хүйс:</strong>{" "}
+                            <div className=" flex gap-1">
+                              <div>
+                                {application.freelancer.gender === "MALE"
+                                  ? "Эрэгтэй"
+                                  : "Эмэгтэй"}
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                      {role === "CLIENT" && (
+                        <div className=" flex gap-2">
+                          <>
+                            <strong>Нас:</strong>{" "}
+                            <div className="flex gap-1">
+                              <div>
+                                {(() => {
+                                  const birthDate = new Date(
+                                    application.freelancer.birthday
+                                  );
+                                  const today = new Date();
+                                  let age =
+                                    today.getFullYear() -
+                                    birthDate.getFullYear();
+                                  const birthdayThisYear = new Date(
+                                    today.getFullYear(),
+                                    birthDate.getMonth(),
+                                    birthDate.getDate()
+                                  );
+                                  if (today < birthdayThisYear) {
+                                    age--;
+                                  }
+                                  return age;
+                                })()}
+                              </div>
+                            </div>
+                          </>
+                        </div>
+                      )}
+                    </div>
                     <div className="flex items-center gap-2">
                       <strong>Үнэлгээ:</strong>{" "}
                       <Rating
@@ -346,11 +391,26 @@ export default function ProposalDetails() {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectItem value="accepted">
+                              <SelectItem
+                                value="accepted"
+                                disabled={
+                                  application.clientStatus === "accepted"
+                                }
+                              >
                                 Зөвшөөрөх
                               </SelectItem>
-                              <SelectItem value="denied">Татгалзах</SelectItem>
-                              <SelectItem value="waiting">
+                              <SelectItem
+                                value="denied"
+                                disabled={application.clientStatus === "denied"}
+                              >
+                                Татгалзах
+                              </SelectItem>
+                              <SelectItem
+                                value="waiting"
+                                disabled={
+                                  application.clientStatus === "waiting"
+                                }
+                              >
                                 Хүлээгдэж байна
                               </SelectItem>
                             </SelectGroup>
@@ -373,8 +433,8 @@ export default function ProposalDetails() {
                     <div className="flex items-center gap-2">
                       <Select
                         disabled={
-                          application.cancelled ||
-                          application.clientStatus === "accepted"
+                          application.clientStatus === "accepted" ||
+                          application.clientStatus === "denied"
                         }
                         // value={String(application.cancelled)}
                         defaultValue={application.cancelled ? "true" : "false"}
@@ -388,9 +448,19 @@ export default function ProposalDetails() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                            <SelectItem value="true">Хүсэлт буцаах</SelectItem>
+                            <SelectItem
+                              value="true"
+                              disabled={application.cancelled}
+                            >
+                              Хүсэлт буцаах
+                            </SelectItem>
 
-                            <SelectItem value="false">Дахин илгээх</SelectItem>
+                            <SelectItem
+                              value="false"
+                              disabled={!application.cancelled}
+                            >
+                              Дахин илгээх
+                            </SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -399,8 +469,8 @@ export default function ProposalDetails() {
                         onClick={changeRequestStatus}
                         disabled={
                           loading2 ||
-                          application.cancelled ||
-                          application.clientStatus === "accepted"
+                          application.clientStatus === "accepted" ||
+                          application.clientStatus === "denied"
                         }
                       >
                         Хадгалах
@@ -410,8 +480,13 @@ export default function ProposalDetails() {
                 </div>
                 {application.clientStatus === "accepted" ? (
                   <div className=" absolute bottom-1 right-1 text-green-400 text-sm">
-                    Зөвшөөрөгдсөн анкетийн төлөвийг өөрчлөх боломжгүй таньд
+                    Зөвшөөрөгдсөн анкетийн төлөвийг өөрчлөх боломжгүй. Таньд
                     амжилт хүсье!
+                  </div>
+                ) : application.clientStatus === "denied" &&
+                  role === "FREELANCER" ? (
+                  <div className=" absolute bottom-1 right-1 text-red-400 text-sm">
+                    Таны анкетанд татгалзсан хариу илгээжээ {":("}
                   </div>
                 ) : (
                   statusValue === "accepted" && (
