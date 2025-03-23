@@ -391,11 +391,26 @@ export default function ProposalDetails() {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectItem value="accepted">
+                              <SelectItem
+                                value="accepted"
+                                disabled={
+                                  application.clientStatus === "accepted"
+                                }
+                              >
                                 Зөвшөөрөх
                               </SelectItem>
-                              <SelectItem value="denied">Татгалзах</SelectItem>
-                              <SelectItem value="waiting">
+                              <SelectItem
+                                value="denied"
+                                disabled={application.clientStatus === "denied"}
+                              >
+                                Татгалзах
+                              </SelectItem>
+                              <SelectItem
+                                value="waiting"
+                                disabled={
+                                  application.clientStatus === "waiting"
+                                }
+                              >
                                 Хүлээгдэж байна
                               </SelectItem>
                             </SelectGroup>
@@ -417,7 +432,10 @@ export default function ProposalDetails() {
                   ) : (
                     <div className="flex items-center gap-2">
                       <Select
-                        disabled={application.clientStatus === "accepted"}
+                        disabled={
+                          application.clientStatus === "accepted" ||
+                          application.clientStatus === "denied"
+                        }
                         // value={String(application.cancelled)}
                         defaultValue={application.cancelled ? "true" : "false"}
                         onValueChange={(value) => {
@@ -430,9 +448,19 @@ export default function ProposalDetails() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                            <SelectItem value="true">Хүсэлт буцаах</SelectItem>
+                            <SelectItem
+                              value="true"
+                              disabled={application.cancelled}
+                            >
+                              Хүсэлт буцаах
+                            </SelectItem>
 
-                            <SelectItem value="false">Дахин илгээх</SelectItem>
+                            <SelectItem
+                              value="false"
+                              disabled={!application.cancelled}
+                            >
+                              Дахин илгээх
+                            </SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -440,7 +468,9 @@ export default function ProposalDetails() {
                         className="bg-green-600 hover:bg-green-700"
                         onClick={changeRequestStatus}
                         disabled={
-                          loading2 || application.clientStatus === "accepted"
+                          loading2 ||
+                          application.clientStatus === "accepted" ||
+                          application.clientStatus === "denied"
                         }
                       >
                         Хадгалах
@@ -452,6 +482,11 @@ export default function ProposalDetails() {
                   <div className=" absolute bottom-1 right-1 text-green-400 text-sm">
                     Зөвшөөрөгдсөн анкетийн төлөвийг өөрчлөх боломжгүй. Таньд
                     амжилт хүсье!
+                  </div>
+                ) : application.clientStatus === "denied" &&
+                  role === "FREELANCER" ? (
+                  <div className=" absolute bottom-1 right-1 text-red-400 text-sm">
+                    Таны анкетанд татгалзсан хариу илгээжээ {":("}
                   </div>
                 ) : (
                   statusValue === "accepted" && (
