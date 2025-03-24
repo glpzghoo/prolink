@@ -12,12 +12,8 @@ model user {
   email                    String           @unique
   firstName                String
   lastName                 String
-  emailVerified Boolean @default(false)
   birthday                 DateTime
-  role                     UserRole
   companyName              String
-  gender                   UserGender? @default(MALE)
-  companyLocation          String           @default("Улаанбаатар")
   phoneNumber              String           @unique
   password                 String
   salary                   Int              @default(10000)
@@ -25,7 +21,11 @@ model user {
   pfp                      String
   about                    String?
   profileViews             Int              @default(0)
+  companyLocation          String           @default("Улаанбаатар")
   createdAt                DateTime         @default(now())
+  emailVerified            Boolean          @default(false)
+  role                     UserRole
+  gender                   UserGender       @default(MALE)
   featuredSkills           featuredSkills[]
   jobpost                  job[]
   clientJobApplication     jobApplication[] @relation("clientJobApplication")
@@ -71,8 +71,8 @@ model review {
   rating     Int
   reviewerId String
   revieweeId String
-  message    String
   createdAt  DateTime @default(now())
+  message    String
   reviewee   user     @relation("reviewee_", fields: [revieweeId], references: [id])
   reviewer   user     @relation("reviewer_", fields: [reviewerId], references: [id])
 }
@@ -139,6 +139,7 @@ enum UserRole {
   CLIENT
   FREELANCER
 }
+
 enum UserGender {
   MALE
   FEMALE
