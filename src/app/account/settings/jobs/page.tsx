@@ -168,6 +168,11 @@ export default function AboutSettings() {
                     <ThemeProvider theme={theme}>
                       <React.Fragment>
                         <Button
+                          sx={{
+                            justifyContent: "start",
+                            textTransform: "none",
+                          }}
+                          className="flex justify-start text-start"
                           color="inherit"
                           onClick={() => handleClickOpen(post.id)}
                         >
@@ -192,7 +197,10 @@ export default function AboutSettings() {
                             />
                           </DialogTitle>
                           <DialogContent>
-                            <DialogContentText id="alert-dialog-slide-description">
+                            <DialogContentText
+                              className="text-start"
+                              id="alert-dialog-slide-description"
+                            >
                               Дэлгэрэнгүй
                               <Textarea
                                 onChange={(e) => setDescription(e.target.value)}

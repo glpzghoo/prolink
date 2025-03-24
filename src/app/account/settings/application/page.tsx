@@ -21,6 +21,7 @@ import { boolean } from "zod";
 import { responseData } from "@/lib/types";
 import { ImNewTab } from "react-icons/im";
 import { avgRating } from "@/lib/helper";
+import { CircleX, Verified } from "lucide-react";
 
 type CustomJobApplication = jobApplication & {
   job: CustomJob;
@@ -47,6 +48,7 @@ export default function ProposalDetails() {
   const [alert, setAlert] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [statusValue, setStatusValue] = useState("");
+  const [acceptedAlert, setAcceptedAlert] = useState(false);
   const [applicationId, setApplicationId] = useState("");
   const [message, setMessage] = useState<responseData>();
   const [requestValue, setRequestValue] = useState("");
@@ -118,7 +120,16 @@ export default function ProposalDetails() {
     }
   };
   // console.log(applicationData[0].freelancer.email);
+  useEffect(() => {
+    setAcceptedAlert(true);
+    const timeout = setTimeout(() => {
+      setAcceptedAlert(false);
+    }, 3000);
 
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [statusValue]);
   useEffect(() => {
     const timeout = setTimeout(() => {
       setAlert(false);
@@ -230,7 +241,7 @@ export default function ProposalDetails() {
                       Нийтлэсэн: {application.job.postedAt.split("T")[0]}
                     </span>
                   </div>
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap max-h-40 overflow-hidden">
                     {application.job.description}
                   </p>
                   <Link
@@ -241,7 +252,15 @@ export default function ProposalDetails() {
                     Ажлын саналтай танилцах
                   </Link>
                 </div>
-
+                {acceptedAlert && (
+                  <Snackbar
+                    sx={{ color: "red" }}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                    open={statusValue === "accepted" ? true : false}
+                    message={`Зөвшөөрсөн анкетийн төлөвийг, дараа өөрчлөх боломжгүйг
+                      анхаарна уу!`}
+                  />
+                )}
                 <div>
                   <h2 className="text-lg font-semibold text-gray-700">
                     Шаардлага
@@ -276,8 +295,17 @@ export default function ProposalDetails() {
                         >
                           <div className=" flex gap-1">
                             <div>{application.freelancer.firstName}</div>
-                            <div>{application.freelancer.lastName}</div>
+                            <div>{application.freelancer.lastName}</div>{" "}
                             <ImNewTab className="text-xs" />
+                            {application.freelancer.emailVerified ? (
+                              <span title="Баталгаажсан">
+                                <Verified className="inline ml-1 text-[#14A800] text-lg" />
+                              </span>
+                            ) : (
+                              <span title="Баталгаажаагүй">
+                                <CircleX className="inline ml-1 text-red-600 text-lg" />
+                              </span>
+                            )}
                           </div>
                         </Link>
                       ) : (
@@ -286,11 +314,20 @@ export default function ProposalDetails() {
                           href={`/client/${application.client.id}`}
                         >
                           <div className=" flex gap-1">
-                            <div>{application.client.companyName}</div>
+                            <div>{application.client.companyName}</div>{" "}
                             <ImNewTab className="text-xs" />
+                            {application.client.emailVerified ? (
+                              <span title="Баталгаажсан">
+                                <Verified className="inline ml-1 text-[#14A800] text-lg" />
+                              </span>
+                            ) : (
+                              <span title="Баталгаажаагүй">
+                                <CircleX className="inline ml-1 text-red-600 text-lg" />
+                              </span>
+                            )}
                           </div>
                         </Link>
-                      )}
+                      )}{" "}
                     </div>
                     <div className=" flex gap-2">
                       <div className=" flex gap-2">
@@ -307,6 +344,7 @@ export default function ProposalDetails() {
                           </>
                         )}
                       </div>
+
                       {role === "CLIENT" && (
                         <div className=" flex gap-2">
                           <>
@@ -337,6 +375,7 @@ export default function ProposalDetails() {
                         </div>
                       )}
                     </div>
+
                     <div className="flex items-center gap-2">
                       <strong>Үнэлгээ:</strong>{" "}
                       <Rating
@@ -483,16 +522,11 @@ export default function ProposalDetails() {
                     Зөвшөөрөгдсөн анкетийн төлөвийг өөрчлөх боломжгүй. Таньд
                     амжилт хүсье!
                   </div>
-                ) : application.clientStatus === "denied" &&
-                  role === "FREELANCER" ? (
-                  <div className=" absolute bottom-1 right-1 text-red-400 text-sm">
-                    Таны анкетанд татгалзсан хариу илгээжээ {":("}
-                  </div>
                 ) : (
-                  statusValue === "accepted" && (
+                  application.clientStatus === "denied" &&
+                  role === "FREELANCER" && (
                     <div className=" absolute bottom-1 right-1 text-red-400 text-sm">
-                      Зөвшөөрсөн анкетийн төлөвийг дараа өөрчлөх боломжгүйг
-                      анхаарна уу!
+                      Таны анкетанд татгалзсан хариу илгээжээ {":("}
                     </div>
                   )
                 )}
