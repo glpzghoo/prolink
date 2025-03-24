@@ -69,13 +69,14 @@ export function Navigation() {
     }, 1000);
   }, []);
   return (
-    <div className="flex justify-around items-center py-4">
+    <div className="flex justify-around items-center py-4 px-auto">
       <div className="flex items-center gap-7">
         <Link href={`/`}>
-          <div className="flex items-center text-[#14A800] font-extrabold text-xl">
+          <div className="flex justify-between items-center text-[#14A800] font-extrabold text-xl ">
             ProLink
           </div>
         </Link>
+
         <div className=" hidden xl:flex gap-6 text-sm font-medium">
           <Link href={`/freelancer`}>
             <div
@@ -112,9 +113,10 @@ export function Navigation() {
       </div>
       {/* <div className="xl:flex items-center hidden"></div> */}
 
-      <div className="hidden xl:flex items-center gap-1.5">
-        <div className="flex w-48 gap-2 items-center justify-between rounded-full px-1.5 shadow-lg py-1 border-green-400 border">
-          <div className="bg-[#14A800] rounded-full ">
+      <div className="flex items-center gap-1.5">
+        <div className="hidden lg:flex  w-48 gap-2 justify-between items-center rounded-full px-2">
+          <div className="bg-[#14A800] rounded-full p-1">
+
             <IoIosSearch className="text-2xl text-background" />
           </div>
           <input
@@ -124,11 +126,11 @@ export function Navigation() {
           />
         </div>
 
-        <div className="flex items-center h-8 rounded-full justify-around gap-2 p-3">
+        <div className="flex items-center h-8 rounded-full justify-between gap-2 p-2.5">
           {loading ? (
             <div>Түр хүлээнэ үү...</div>
           ) : (
-            <div>
+            <div className=" items-center gap-4">
               {response?.code === "SUCCESS" ? (
                 <div className="flex items-center gap-4 whitespace-nowrap">
                   <Link
