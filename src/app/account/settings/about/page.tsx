@@ -88,22 +88,23 @@ export default function AboutSettings() {
   };
 
   return userInfo ? (
-    <div className="min-h-screen flex justify-center  bg-gray-50 p-6">
-      {userInfo.success ? (
-        <div className="w-full flex flex-col items-center bg-white shadow-xl rounded-lg p-8 border border-gray-200">
-          <h2 className="text-xl font-semibold text-center text-gray-800 border-b pb-4">
-            {userInfo.data.user.role !== "CLIENT"
-              ? "Өөрийнхөө мэдээллийг энд засна уу!"
-              : "Байгууллагынхаа талаарх мэдээллийг энд засна уу!"}
-          </h2>
-          <div className="mt-6 space-y-6 flex w-8/10 gap-16">
+    <div className="min-h-screen justify-center  bg-gray-50 p-6">
             <Snackbar
               sx={{ color: response?.success ? "green" : "red" }}
               anchorOrigin={{ vertical: "top", horizontal: "center" }}
               open={Boolean(response?.success)}
               message={response?.message}
             />
-            <div className="w-1/2">
+      {userInfo.success ? (
+        <div className="w-full">
+          <h2 className="text-xl font-semibold text-center text-gray-800 border-b pb-4">
+            {userInfo.data.user.role !== "CLIENT"
+              ? "Өөрийнхөө мэдээллийг энд засна уу!"
+              : "Байгууллагынхаа талаарх мэдээллийг энд засна уу!"}
+          </h2>
+          <div className="flex sm:flex flex-col sm:flex-row mt-6 items-center space-y-6 w-8/10 gap-16">
+      
+            <div className="w-3/4 sm:w-1/2">
               <Label
                 htmlFor="about"
                 className="block text-sm font-medium text-gray-700"
@@ -128,14 +129,15 @@ export default function AboutSettings() {
                   : "Ажил олгогчдод өөрийгөө танилцуулаарай!"}
               </p>
             </div>
-            <div className="w-1/2 h-96 overflow-scroll">
+
+            <div className="w-3/4 sm:w-1/2 h-96 overflow-scroll">
               {userInfo.data.user.role === "CLIENT" && (
                 <p className="text-sm text-green-600">
                   Нээлттэй ажлын байраа сонгоно уу!
                 </p>
               )}
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap w-full gap-2">
                 {skills.map((skill) => (
                   <Button
                     onClick={() => {
