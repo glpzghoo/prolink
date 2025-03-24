@@ -21,12 +21,7 @@ export async function GET(req: NextRequest) {
 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    return CustomNextResponse(
-      false,
-      "USER_NOT_FOUND",
-      "Хэрэглэгч олдсонгүй~!",
-      null
-    );
+    return NextResponse.redirect(new URL("/account/user_not_found", req.url));
   }
   const accessToken = jwt.sign(
     { id: user.id, companyName: user.companyName, role: user.role },
@@ -36,11 +31,14 @@ export async function GET(req: NextRequest) {
   const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_TOKEN, {
     expiresIn: "4h",
   });
-  const { password, ...userInfo } = user;
   const response = NextResponse.redirect(
-    new URL("/account/settings/application", req.url)
+    new URL(
+      `${
+        user.role === `CLIENT` ? `/client/${user.id}` : `/freelancer/${user.id}`
+      }`,
+      req.url
+    )
   );
-  const response2 = response.json();
   response.cookies.set("accessToken", accessToken, {
     httpOnly: true,
     secure: true,
@@ -53,6 +51,12 @@ export async function GET(req: NextRequest) {
     sameSite: "strict",
     maxAge: 60 * 60 * 4,
   });
-
+  if (!user.emailVerified) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { emailVerified: true },
+    });
+    return response;
+  }
   return response;
 }

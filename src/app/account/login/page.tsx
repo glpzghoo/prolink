@@ -239,7 +239,7 @@ export default function Login() {
                 <div className="border-b w-1/3"></div>
               </div>
               <div>
-                <Button
+                {/* <Button
                   sx={{ color: "green" }}
                   className="w-full border bg-background text-foreground hover:bg-secondary  flex justify-around"
                 >
@@ -251,12 +251,12 @@ export default function Login() {
                   />
                   <div>Facebook -ээр нэвтрэх</div>
                   <div></div>
-                </Button>
-              </div>
+                  </Button> */}
 
-              <SessionProvider>
-                <GoogleSession />
-              </SessionProvider>
+                <SessionProvider>
+                  <GoogleSession />
+                </SessionProvider>
+              </div>
             </div>
           </motion.div>
         </div>

@@ -21,7 +21,6 @@ export default function Settings() {
       try {
         setLoading(true);
         const res = await axios.get(`/api/skills/featured`);
-        console.log("Featured Skills Response:", res.data);
         if (res.data.success && res.data.data?.user?.featuredSkills) {
           setFeatured(res.data.data.user.featuredSkills);
         } else {

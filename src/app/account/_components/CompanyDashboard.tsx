@@ -5,8 +5,15 @@ import MailDetail from "@/app/account/_components/maildetailbutton";
 import { CustomJob } from "@/app/job/[id]/page";
 import { Textarea } from "@/components/ui/textarea";
 import { calculateTime } from "@/lib/helper";
+import { theme } from "@/lib/theme";
 import { responseData } from "@/lib/types";
-import { Box, Button, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Snackbar,
+  ThemeProvider,
+  Typography,
+} from "@mui/material";
 import Rating from "@mui/material/Rating";
 import { featuredSkills, job, review, skill, user } from "@prisma/client";
 import axios from "axios";
@@ -18,7 +25,8 @@ import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { FaCircleArrowLeft, FaCircleArrowRight } from "react-icons/fa6";
-import { GoDotFill } from "react-icons/go";
+import { GoDotFill, GoUnverified } from "react-icons/go";
+import { HiOutlineCheckBadge } from "react-icons/hi2";
 import { ImNewTab, ImSpinner10 } from "react-icons/im";
 import z from "zod";
 type CustomUser = user & {
@@ -50,14 +58,15 @@ const ratingSchema = z.object({
 export default function Client() {
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
-  console.log(filter);
   const [user, setUser] = useState<CustomUser>();
   const [similarUsers, setSimilarUsers] = useState<CustomUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(false);
   const [loadingAddingReview, setloadingAddingReview] = useState(false);
   const [change, setChange] = useState(false);
   const [isValidRatingForm, setisValidRatingForm] = useState(true);
   const [ratingResponse, setratingResponse] = useState<responseData>();
+  const [verifyMailResponse, setVerifyMailResponse] = useState<responseData>();
   const [showFullReview, setshowFullReview] = useState<number | undefined>();
   const div = useRef<HTMLDivElement>(null);
   const handleLeftScroll = () => {
@@ -91,6 +100,7 @@ export default function Client() {
             (s) => s.id !== id && s.role === "CLIENT"
           );
           setSimilarUsers(filter);
+          document.title = userr.companyName + " - ProLink";
         }
         setLoading(false);
       } catch (err) {
@@ -110,7 +120,15 @@ export default function Client() {
       await axios.post(`/api/account/profileViews?id=${id}`);
     };
     getInfo();
-  }, []);
+  }, [change]);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setVerifyMailResponse(undefined);
+    }, 3000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [verifyMailResponse]);
   useEffect(() => {
     const result = ratingSchema.safeParse(ratingForm);
     if (result.success) {
@@ -148,7 +166,13 @@ export default function Client() {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     }
   };
+  const sendmail = async () => {
+    setLoading2(true);
+    const res = await axios.get(`/api/account/verifyEmail`);
+    setVerifyMailResponse(res.data);
 
+    setLoading2(false);
+  };
   return (
     <>
       {/* Үндсэн Background */}
@@ -157,6 +181,7 @@ export default function Client() {
       ) : user ? (
         <div className="bg-gray-100 min-h-screen ">
           {/* Цагаан блок (main container) */}
+          {loading2 && <Loading />}
           <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg ">
             {/* Дээд хэсэг */}
             <div className="flex items-center justify-between mb-6">
@@ -171,10 +196,17 @@ export default function Client() {
                     className="rounded-full w-14 h-14 object-cover"
                   />
                 )}
-
+                {verifyMailResponse?.message && (
+                  <Snackbar
+                    sx={{ color: verifyMailResponse.success ? "green" : "red" }}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    open={Boolean(verifyMailResponse.message)}
+                    message={verifyMailResponse.message}
+                  />
+                )}
                 <div>
                   {/* Нэр, Байршил */}
-                  <div className="flex items-center space-x-2">
+                  <div className="flex space-x-2">
                     {user.companyName ? (
                       <h1 className="text-xl font-semibold">
                         {user.companyName}
@@ -183,6 +215,19 @@ export default function Client() {
                       <h1 className="text-xl font-semibold">
                         {user.firstName}, {user.lastName}
                       </h1>
+                    )}{" "}
+                    {user.emailVerified ? (
+                      <HiOutlineCheckBadge
+                        title="Баталгаажсан"
+                        className="text-green-700 text-lg cursor-pointer"
+                        onMouseOver={() => "asdf"}
+                      />
+                    ) : (
+                      <GoUnverified
+                        title="Баталгаажаагүй"
+                        className="text-red-700 text-lg cursor-pointer"
+                        onMouseOver={() => "asdf"}
+                      />
                     )}
                     {/* Badge жишээ */}
                     {((avgRating() > 4.5 && user.reviewee.length > 2) ||
@@ -197,7 +242,19 @@ export default function Client() {
                   </p> */}
                 </div>
               </div>
-
+              {owner && !user.emailVerified && (
+                <Button
+                  disabled={loading2}
+                  onClick={sendmail}
+                  sx={{ fontSize: "11px", color: "red" }}
+                  className=" text-red-400 text-xs"
+                >
+                  {loading2
+                    ? `Түр хүлээнэ үү!`
+                    : `Таны хаяг баталгаажаагүй байна. Энд дарж хаягаа баталгаажуулна
+                  уу!`}
+                </Button>
+              )}
               {/* Хуваалцах товч */}
               <div className="flex gap-1">
                 {owner && (
@@ -283,16 +340,20 @@ export default function Client() {
             {/* /Профайл харах, статистик */}
 
             {/* Ажилд авах уриалга (Ready to Work) */}
-            <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-between">
-              <div className="mb-2 md:mb-0">
-                <p className="font-semibold text-green-800">
-                  {user.companyName} -тэй хамтран ажиллахад бэлэн үү?
-                </p>
+            {!owner && user.role === "FREELANCER" && (
+              <div className="border-b pb-7">
+                <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-between">
+                  <div className="mb-2 md:mb-0">
+                    <p className="font-semibold text-green-800">
+                      {user.firstName} -тэй хамтран ажиллахад бэлэн үү?
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <MailDetail id={id} setChange={setChange} change={change} />
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <MailDetail id={id} />
-              </div>
-            </div>
+            )}
             {/* /Ажилд авах уриалга */}
 
             {/* Профайл ерөнхий мэдээлэл */}
@@ -306,7 +367,9 @@ export default function Client() {
                     {user.salary}/{user.salaryType === "HOUR" ? `цаг` : `сар`}
                   </p> */}
                 </div>
-                <p className="text-gray-700 mt-2">{user.about}</p>
+                <p className="text-gray-700 mt-2 whitespace-pre-wrap">
+                  {user.about}
+                </p>
               </div>
             </div>
             {/* /Профайл ерөнхий мэдээлэл
@@ -463,25 +526,27 @@ export default function Client() {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Button
-                  onClick={sendRating}
-                  disabled={!isValidRatingForm || loadingAddingReview}
-                  className={` ${
-                    loadingAddingReview ? ` text-accent` : `text-[#129600]`
-                  }`}
-                  type="submit"
-                >
-                  {loadingAddingReview ? (
-                    <div className="flex items-center gap-2">
-                      <div>
-                        <ImSpinner10 className=" animate-spin" />
+                <ThemeProvider theme={theme}>
+                  <Button
+                    onClick={sendRating}
+                    disabled={!isValidRatingForm || loadingAddingReview}
+                    className={` ${
+                      loadingAddingReview ? ` text-accent` : `text-[#129600]`
+                    }`}
+                    type="submit"
+                  >
+                    {loadingAddingReview ? (
+                      <div className="flex items-center gap-2">
+                        <div>
+                          <ImSpinner10 className=" animate-spin" />
+                        </div>
+                        <div>Үнэлгээг оруулж байна!</div>
                       </div>
-                      <div>Үнэлгээг оруулж байна!</div>
-                    </div>
-                  ) : (
-                    `Илгээх`
-                  )}
-                </Button>
+                    ) : (
+                      `Илгээх`
+                    )}
+                  </Button>
+                </ThemeProvider>
                 {ratingResponse && (
                   <div>
                     {ratingResponse?.success ? (

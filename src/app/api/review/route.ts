@@ -74,6 +74,14 @@ export async function POST(req: NextRequest) {
         null
       );
     }
+    if (revieweeId === reviewer.id) {
+      return CustomNextResponse(
+        false,
+        "CAN_NOT_RATE_YOURSELF",
+        "Өөртөө үнэлгээ өгч болохгүй!",
+        null
+      );
+    }
     if (reviewee.role === reviewer.role) {
       return CustomNextResponse(
         false,
@@ -82,14 +90,7 @@ export async function POST(req: NextRequest) {
         null
       );
     }
-    if (revieweeId === reviewer.id) {
-      return CustomNextResponse(
-        false,
-        "CAN_NOT_RATE_YOURSELF",
-        "Та өөртөө үнэлгээ өгч болохгүй!",
-        null
-      );
-    }
+
     const findreview = await prisma.review.findFirst({
       where: { revieweeId: revieweeId, reviewerId: reviewer.id },
     });
@@ -97,7 +98,7 @@ export async function POST(req: NextRequest) {
       return CustomNextResponse(
         false,
         "ALREADY_REVIEWED_USER",
-        "Та аль хэдийн үнэлгээ үзүүлсэн байна!",
+        "Аль хэдийн үнэлгээ үзүүлсэн байна!",
         null
       );
     }

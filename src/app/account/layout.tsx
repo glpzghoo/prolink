@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter, Montserrat } from "next/font/google";
 import "../globals.css";
 import { Navigation } from "./_components/navigation";
 import Footer from "./_components/footer";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,5 +24,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div className={` min-h-screen bg-secondary`}>{children}</div>;
+  return (
+    <div className={` min-h-screen bg-secondary`}>
+      <Suspense>{children}</Suspense>
+    </div>
+  );
 }

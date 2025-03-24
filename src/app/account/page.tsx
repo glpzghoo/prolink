@@ -129,10 +129,10 @@ export default function Account() {
                 <div className="flex text-xs">Эсвэл</div>
                 <div className="border-b w-1/3"></div>
               </div>
-              <div>
+              {/* <div>
                 <Button
                   sx={{ color: "green" }}
-                  className="w-full border bg-background text-foreground hover:bg-secondary  flex justify-around"
+                  className="w-full border bg-background text-foreground hover:bg-secondary gap-5 flex justify-around"
                 >
                   <Image
                     src={`/img/facebook.svg`}
@@ -141,9 +141,8 @@ export default function Account() {
                     height={20}
                   />
                   <div>Facebook -ээр нэвтрэх</div>
-                  <div></div>
                 </Button>
-              </div>
+              </div> */}
               <div>
                 <SessionProvider>
                   <GoogleSession />

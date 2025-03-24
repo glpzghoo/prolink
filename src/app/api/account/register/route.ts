@@ -45,7 +45,6 @@ export async function POST(req: NextRequest) {
       data: {
         ...body,
         password: encryptedPass,
-        role: body.companyName ? "CLIENT" : "FREELANCER",
       },
       omit: { password: true, phoneNumber: true, email: true },
     });

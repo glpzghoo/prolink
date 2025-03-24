@@ -10,6 +10,7 @@ import "../../globals.css";
 import { Button } from "@mui/material";
 import Link from "next/link";
 import NavigationSettings from "./_component/navigation_settings";
+import { Suspense } from "react";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -38,7 +39,7 @@ export default function RootLayout({
         <Button>Профайл тохиргоо</Button> */}
       </div>
       <div className={`${inter.className} min-h-screen  bg-secondary`}>
-        {children}
+        <Suspense>{children}</Suspense>
       </div>
     </div>
   );

@@ -1,21 +1,33 @@
 "use client";
 import Image from "next/image";
-import { IoIosSearch } from "react-icons/io";
+import {
+  IoIosSearch,
+  IoMdCheckmark,
+  IoMdCheckmarkCircle,
+  IoMdCheckmarkCircleOutline,
+} from "react-icons/io";
 import { BsList } from "react-icons/bs";
+import { HiOutlineCheckBadge } from "react-icons/hi2";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { RiLogoutBoxRFill } from "react-icons/ri";
+import { GoUnverified } from "react-icons/go";
 import { responseData } from "@/lib/types";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button, Input, ThemeProvider } from "@mui/material";
 import { userInfo } from "os";
 import { theme } from "@/lib/theme";
+import { ImCheckmark, ImCheckmark2 } from "react-icons/im";
+import { signOut } from "next-auth/react";
 export function Navigation() {
   const [response, setUserInfo] = useState<responseData>();
   const [loading, setLoading] = useState(true);
-
+  const [searchQuery, setSearch] = useState("");
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
+  const router = useRouter();
   const pathname = usePathname();
+
   const getInfo = async () => {
     const res = await axios.get(`/api/account`);
     setUserInfo(res.data);
@@ -34,9 +46,28 @@ export function Navigation() {
     setLoading(true);
     setUserInfo(undefined);
     const res = await axios.get(`/api/account/logout`);
+    signOut();
     setUserInfo(res.data);
+    if (res.data.success) {
+      router.refresh();
+    }
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (searchQuery) {
+      router.push(`/search` + `?search=${searchQuery}`);
+    }
+  }, [searchQuery]);
+  const debounce = useCallback((searchTerm: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      setSearch(searchTerm);
+    }, 1000);
+  }, []);
   return (
     <div className="flex justify-around items-center py-4 px-auto">
       <div className="flex items-center gap-7">
@@ -85,11 +116,14 @@ export function Navigation() {
       <div className="flex items-center gap-1.5">
         <div className="hidden lg:flex  w-48 gap-2 justify-between items-center rounded-full px-2">
           <div className="bg-[#14A800] rounded-full p-1">
+
             <IoIosSearch className="text-2xl text-background" />
           </div>
-          <ThemeProvider theme={theme}>
-            <Input className="border-none shadow-none " placeholder="Хайх" />
-          </ThemeProvider>
+          <input
+            onChange={(e) => debounce(e.target.value)}
+            className="border-none shadow-none w-full focus:outline-0"
+            placeholder="Хайх"
+          />
         </div>
 
         <div className="flex items-center h-8 rounded-full justify-between gap-2 p-2.5">
@@ -115,14 +149,29 @@ export function Navigation() {
                         alt="pfp"
                       />
                     </div>
-                    {response.data?.informations?.companyName ? (
-                      <div>{response.data.informations.companyName}</div>
-                    ) : (
-                      <div className=" whitespace-nowrap">
-                        {response.data?.informations?.lastName}{" "}
-                        {response.data?.informations?.firstName}
-                      </div>
-                    )}
+                    <div className="flex">
+                      {response.data?.informations?.companyName ? (
+                        <div>{response.data.informations.companyName}</div>
+                      ) : (
+                        <div className=" whitespace-nowrap">
+                          {response.data?.informations?.lastName}{" "}
+                          {response.data?.informations?.firstName}
+                        </div>
+                      )}
+                      {response.data.informations.emailVerified ? (
+                        <HiOutlineCheckBadge
+                          title="Баталгаажсан"
+                          className="text-green-700 text-md"
+                          onMouseOver={() => "asdf"}
+                        />
+                      ) : (
+                        <GoUnverified
+                          title="Баталгаажаагүй"
+                          className="text-red-700 text-md"
+                          onMouseOver={() => "asdf"}
+                        />
+                      )}
+                    </div>
                   </Link>
                   <button
                     onClick={logout}

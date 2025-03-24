@@ -46,6 +46,7 @@ export default function App() {
   const [post, setPost] = useState<CustomJob>();
   const [similarPosts, setSimilarPosts] = useState<job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [alert, setAlert] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [userApplied, setUserApplied] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
@@ -61,6 +62,11 @@ export default function App() {
         const test2 = _.uniqBy(test, "id");
         const test3 = test2.filter((jobbb) => jobbb.id !== id);
         setSimilarPosts(test3);
+        document.title = posts.title;
+
+        if (!res.data.data.post.poster.emailVerified) {
+          setAlert(true);
+        }
       }
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
@@ -71,6 +77,14 @@ export default function App() {
   useEffect(() => {
     fetchData();
   }, [isClicked]);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setAlert(false);
+    }, 5000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [alert]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -135,7 +149,18 @@ export default function App() {
                 <div className="text-gray-400">
                   нийтэлсэн байгууллага:{" "}
                   <Link target="blank" href={`/client/${post.poster.id}`}>
-                    <span className="text-black font-bold">
+                    <span
+                      title={`${
+                        post.poster.emailVerified
+                          ? `Баталгаажсан хэрэглэгч`
+                          : `Баталгаажуулаагүй хэрэглэгч`
+                      }`}
+                      className={` ${
+                        post.poster.emailVerified
+                          ? `text-black`
+                          : `text-red-600`
+                      } font-bold`}
+                    >
                       {post.poster.companyName}
                     </span>
                   </Link>
@@ -181,7 +206,7 @@ export default function App() {
               <h2 className="text-2xl font-extrabold text-[#129600]">
                 Саналын дэлгэрэнгүй
               </h2>
-              <p>{post.description}</p>
+              <p className=" whitespace-pre-wrap">{post.description}</p>
             </div>
           </div>
           <div className="mt-4 flex gap-2 justify-evenly">
@@ -258,6 +283,14 @@ export default function App() {
             message={response.message}
           />
         )}
+
+        <Snackbar
+          sx={{ color: "red" }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={alert}
+          message={"Сануулга: Уг ажил олгогч хаягаа баталгаажаагүй байна!"}
+        />
+
         <div className="mt-4 pb-4 border-b">
           <h3 className="font-semibold text-md mb-2">Бусад төстэй зарууд</h3>
           <div className="flex flex-wrap gap-2">
