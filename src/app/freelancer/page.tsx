@@ -85,7 +85,7 @@ export default function Freelance() {
                 Дундаж үнэлгээ:{" "}
                 {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
               </div>
-              <div className="max-w-[1280px] mx-auto flex flex-wrap ">
+              <div className="max-w-[1280px] mx-auto flex flex-wrap justify-between gap-4 mt-6">
                 {filteredUsers.map((user) => (
                   <ClientCard key={user.id} user={user} />
                 ))}
@@ -98,7 +98,7 @@ export default function Freelance() {
                 Дундаж үнэлгээ:{" "}
                 {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
               </div>
-              <div className="max-w-[1280px] mx-auto flex flex-wrap ">
+              <div className="max-w-[1280px] mx-auto flex flex-wrap justify-between gap-4 mt-6">
                 {users.map((user) => (
                   <ClientCard key={user.id} user={user} />
                 ))}

@@ -12,6 +12,7 @@ import { featuredSkills, job, review, skill, user } from "@prisma/client";
 import axios from "axios";
 import { motion } from "framer-motion";
 import _ from "lodash";
+import { EyeIcon, StarIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
@@ -222,30 +223,63 @@ export default function Client() {
             {/* /Дээд хэсэг */}
 
             {/* Профайл харах, статистик */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between border-b pb-4">
-              <div className="flex items-center space-x-3">
+            <div className="flex  sm:flex-row items-start sm:items-center justify-between border-b pb-4">
+              <div className="flex items-center gap-3">
                 {/* Шаардлагатай бол нэмэлт значок, тэмдэглэгээ оруулж болно */}
               </div>
-              {/* Статистик */}
-              <div className="mt-2 md:mt-0 flex items-center space-x-4 text-sm text-gray-500">
+
+              {/* ✅ Том дэлгэц дээр харагдах статистик */}
+              <div className="hidden lg:flex items-center gap-4 text-sm text-gray-500">
                 <div>
                   Энэ profile нийт{" "}
-                  <span className=" font-bold">{user.profileViews} </span>
+                  <span className="font-bold">{user.profileViews}</span>{" "}
                   үзэлттэй байна!
                 </div>
                 <div>-</div>
                 <div>
-                  <span className=" font-bold">{user.reviewee.length} </span>
-                  удаа үнэлгээ авсан байна.
+                  <span className="font-bold">{user.reviewee.length}</span> удаа
+                  үнэлгээ авсан байна.
                 </div>
                 <div>-</div>
                 <div>
-                  Дундаж үнэлгээ:
-                  <span className=" font-bold"> {avgRating()} </span>
-                  /5
+                  Дундаж үнэлгээ:{" "}
+                  <span className="font-bold">{avgRating()}</span> /5
+                </div>
+              </div>
+
+              {/* ✅ Mobile болон Medium дэлгэц дээр харагдах статистик */}
+              <div className="flex lg:hidden items-center gap-6 text-sm text-gray-500 mt-2">
+                <div className="flex items-center gap-2">
+                  <EyeIcon />
+                  <span className="font-bold">{user.profileViews}</span>
+                </div>
+                <div className="flex items-center gap-2 ">
+                  <svg
+                    width="18"
+                    height="19"
+                    viewBox="0 0 18 19"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M9.85636 3.35986L11.1929 6.96136L14.8881 7.16761C15.0704 7.17736 15.2459 7.24561 15.3921 7.36261C15.5376 7.47961 15.6456 7.64011 15.7034 7.82386C15.7611 8.00761 15.7649 8.20486 15.7146 8.39086C15.6657 8.57451 15.5637 8.73966 15.4214 8.86561L12.5444 11.3001L13.5059 15.0449C13.5509 15.2339 13.5411 15.4326 13.4774 15.6149C13.4155 15.7955 13.3015 15.9537 13.1496 16.0694C12.9996 16.1819 12.8204 16.2449 12.6366 16.2494C12.4511 16.2529 12.2692 16.1978 12.1169 16.0919L8.99986 13.9821L5.89036 16.0776C5.739 16.1841 5.55794 16.2403 5.37286 16.2381C5.18778 16.235 5.00833 16.1739 4.85986 16.0634C4.70767 15.9496 4.59258 15.7932 4.52911 15.6141C4.46376 15.432 4.45154 15.2351 4.49386 15.0464L5.44786 11.3174L2.57836 8.86636C2.43604 8.74041 2.33403 8.57526 2.28511 8.39161C2.23473 8.2054 2.23864 8.00867 2.29636 7.82461C2.3523 7.64351 2.4606 7.48301 2.60761 7.36336C2.75386 7.24636 2.92936 7.17811 3.11161 7.16836L6.80686 6.96211L8.14336 3.36061C8.21236 3.18061 8.33086 3.02611 8.48386 2.91811C8.63406 2.80974 8.81453 2.75136 8.99974 2.75122C9.18495 2.75109 9.36551 2.80921 9.51586 2.91736C9.66886 3.02611 9.78661 3.17986 9.85636 3.35986Z"
+                      fill="#14A800"
+                      stroke="#14A800"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span className="font-bold">{user.reviewee.length}</span>{" "}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold">{avgRating()}</span> /5
                 </div>
               </div>
             </div>
+
             {/* /Профайл харах, статистик */}
 
             {/* Ажилд авах уриалга (Ready to Work) */}
@@ -489,7 +523,7 @@ export default function Client() {
                   {user.jobpost.map((ski) => (
                     <div
                       key={ski.id}
-                      className="border border-gray-200 p-4 rounded-3xl shadow-md"
+                      className="border border-gray-200 p-4 mb-4 rounded-3xl shadow-md"
                     >
                       <div className="flex justify-between">
                         <h3 className="font-semibold text-md items-center flex gap-2">
