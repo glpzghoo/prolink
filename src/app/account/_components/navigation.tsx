@@ -69,7 +69,7 @@ export function Navigation() {
     }, 1000);
   }, []);
   return (
-    <div className="flex justify-around items-center py-4 px-auto">
+    <div className="flex justify-around items-center py-6 pt-8 px-auto">
       <div className="flex items-center gap-7">
         <Link href={`/`}>
           <div className="flex justify-between items-center text-[#14A800] font-extrabold text-xl ">
@@ -116,7 +116,6 @@ export function Navigation() {
       <div className="flex items-center gap-1.5">
         <div className="hidden lg:flex  w-48 gap-2 justify-between items-center rounded-full px-2">
           <div className="bg-[#14A800] rounded-full p-1">
-
             <IoIosSearch className="text-2xl text-background" />
           </div>
           <input
@@ -192,10 +191,9 @@ export function Navigation() {
                   <Button
                     sx={{
                       color: "green",
-                      border: "1px,  solid",
-                      borderRadius: "15px",
+                      fontSize: "14px",
                     }}
-                    className=" cursor-pointer p-2 rounded-2xl px-5 text-background"
+                    className=" cursor-pointer p-2 rounded-2xl px-5"
                   >
                     Нэвтрэх эсвэл бүртгүүлэх
                   </Button>
