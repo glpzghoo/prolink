@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { StepOne } from "../_components/StepOne";
 import { StepTwo } from "../_components/StepTwo";
 import { StepThree } from "../_components/StepThree";
 import { StepFour } from "../_components/StepFour";
@@ -25,14 +24,14 @@ const Post = ({ currentStep, setCurrentStep }: PostProps) => {
 
 	const [budgetType, setBudgetType] = useState("hourly");
 	const [hourlyRate, setHourlyRate] = useState({ from: 10, to: 25 });
-	const [salary, setSalary] = useState(0);
+	const [salary, setSalary] = useState();
 
 	const [requirements, setRequirements] = useState<string>("");
 	if (currentStep === 1) {
 		return (
-			<StepOne
-				setSelectedOption={setSelectedOption}
-				selectedOption={selectedOption}
+			<StepTwo
+				setTitle={setTitle}
+				title={title}
 				setCurrentStep={setCurrentStep}
 			/>
 		);
@@ -109,7 +108,13 @@ const Post = ({ currentStep, setCurrentStep }: PostProps) => {
 		);
 	}
 
-	return <div> Success </div>;
+	return (
+		<div className="flex items-center justify-center min-h-screen">
+			<div className="bg-green-100 text-green-700 border border-green-400 px-6 py-4 rounded-lg shadow-md text-lg font-semibold">
+				Зар амжилттай нийтлэгдлээ
+			</div>
+		</div>
+	);
 };
 
 export default function NewJob() {
