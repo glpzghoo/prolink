@@ -55,10 +55,12 @@ export default function AboutSettings() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const router = useRouter();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [postId, setPostId] = useState("");
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (id: string) => {
     setOpen(true);
+    setPostId(id);
   };
   const handleClickClose = () => {
     setOpen(false);
@@ -165,14 +167,17 @@ export default function AboutSettings() {
                     </div>
                     <ThemeProvider theme={theme}>
                       <React.Fragment>
-                        <Button color="inherit" onClick={handleClickOpen}>
+                        <Button
+                          color="inherit"
+                          onClick={() => handleClickOpen(post.id)}
+                        >
                           <div className=" whitespace-pre-wrap">
                             {" "}
                             {post.description}
                           </div>
                         </Button>
                         <Dialog
-                          open={open}
+                          open={open && post.id === postId}
                           TransitionComponent={Transition}
                           keepMounted
                           onClose={handleClickClose}
