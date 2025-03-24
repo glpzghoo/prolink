@@ -1,3 +1,5 @@
+"use client";
+
 import { IoLogoFacebook, IoLogoInstagram, IoLogoTwitter } from "react-icons/io";
 import {
   Accordion,
@@ -5,99 +7,190 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { motion } from "framer-motion";
+
+const socialIcons = [
+  { Icon: IoLogoFacebook, hoverColor: "hover:text-blue-500" },
+  { Icon: IoLogoTwitter, hoverColor: "hover:text-blue-400" },
+  { Icon: IoLogoInstagram, hoverColor: "hover:text-pink-500" },
+];
+
+const footerLinks = [
+  {
+    title: "Ажил горилогчдод",
+    items: [
+      {
+        trigger: "Хэрхэн байгууллагатай хамтран ажиллах вэ?",
+        content:
+          "Та манай платформыг ашиглан ажилд орох боломжтой. Бүртгүүлээд, өөрийн ур чадвар, туршлагаа оруулснаар тохирох ажлын байрыг хялбархан олоорой.",
+      },
+      {
+        trigger: "Цалингийн баталгаа, уян хатан байдал",
+        content:
+          "Манай систем цалингийн уян хатан баталгааг хангана. Та ажлын цагийг өөрийн хэрэгцээнд тохируулан сонгох боломжтой бөгөөд тогтмол орлоготой байх болно.",
+      },
+      {
+        trigger: "Ажил хайх үйл явц хэрхэн явагддаг вэ?",
+        content:
+          "Ажил хайгчид манай сайтад бүртгүүлж, профайлаа бөглөсний дараа ажил олгогчдын саналыг хүлээн авна. Та хүссэн ажлаа сонгон, шууд холбогдох боломжтой.",
+      },
+    ],
+  },
+  {
+    title: "Компаниудад",
+    items: [
+      {
+        trigger: "Ажил санал болгох",
+        content:
+          "Та өөрийн ажил санал болгож, өндөр чанартай ажиллах хүчин олох боломжтой. Манай платформ танд хамгийн тохиромжтой ажилчдыг хурдан холбох болно.",
+      },
+      {
+        trigger: "Хэрхэн чанартай үйлчилгээ авах вэ?",
+        content:
+          "Манай платформоор дамжуулан хамгийн тохиромжтой ажилчдыг олоорой. Ажилчдын ур чадвар, туршлагыг шалгаж, таны шаардлагад нийцүүлэн сонгоно уу.",
+      },
+      {
+        trigger: "Яагаад манай платформыг сонгох вэ?",
+        content:
+          "Бид танд цаг хэмнэх, найдвартай ажиллах хүчийг олоход тусална. Манай систем нь ажил олгогч болон ажил горилогчдыг үр дүнтэй холбодог.",
+      },
+    ],
+  },
+  {
+    title: "Бидэнтэй холбогдох",
+    items: [
+      {
+        trigger: "Шинэ боломжуудын талаар мэдэх",
+        content:
+          "Манай платформын шинэ боломжууд, ажлын байрны талаарх мэдээллийг тогтмол хүлээн авч, ажил хайх болон санал болгох үйл явцыг сайжруулаарай.",
+      },
+      {
+        trigger: "Манай үүсгэн байгуулагчдын захиас",
+        content:
+          "Бид ажил олгогч болон ажил горилогчдыг холбох найдвартай гүүр байхыг зорьдог. Манай платформ таны амжилтын төлөө ажиллана.",
+      },
+      {
+        trigger: "Тусламж, дэмжлэг",
+        content:
+          "Хэрэв танд асуулт байвал бидэнтэй имэйл, утас эсвэл чатаар холбогдоорой. Бид 24/7 танд туслахад бэлэн байна.",
+      },
+    ],
+  },
+];
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+const hoverVariants = {
+  hover: { scale: 1.05, transition: { duration: 0.3 } },
+};
 
 export default function Footer() {
   return (
-    <footer className="mx-auto w-full p-6 lg:p-10 bg-secondary">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-5">
-        {/* Section 1 */}
-        <div className="text-sm">
-          <h1 className="font-semibold text-lg mb-3">Ажил горилогч</h1>
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1">
-              <AccordionTrigger>
-                Хэрхэн байгууллагатай хамтран ажиллах вэ?
-              </AccordionTrigger>
-              <AccordionContent>
-                Та манай платформыг ашиглан ажилд орох боломжтой.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger>
-                Цалингийн баталгаа, уян хатан байдал
-              </AccordionTrigger>
-              <AccordionContent>
-                Манай систем цалингийн уян хатан баталгааг хангана.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+    <footer className="w-full bg-secondary text-black transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-6 py-10 lg:px-10 lg:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {footerLinks.map((section, index) => (
+            <motion.div
+              key={index}
+              className="space-y-4"
+              variants={sectionVariants}
+              initial="hidden"
+              animate="visible"
+              viewport={{ once: true }}
+            >
+              <h1 className="font-semibold text-xl tracking-tight">
+                {section.title}
+              </h1>
+              <Accordion type="single" collapsible className="w-full space-y-2">
+                {section.items.map((item, idx) => (
+                  <AccordionItem
+                    key={idx}
+                    value={`item-${idx}`}
+                    className="border-b border-gray-400"
+                  >
+                    <AccordionTrigger className="text-sm hover:text-gray-700 py-3 transition-colors duration-200">
+                      {item.trigger}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-sm text-gray-800 pb-4">
+                      {item.content}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Section 2 */}
-        <div className="text-sm">
-          <h1 className="font-semibold text-lg mb-3">Компани</h1>
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1">
-              <AccordionTrigger>Ажил санал болгох</AccordionTrigger>
-              <AccordionContent>
-                Та өөрийн ажил санал болгож, өндөр чанартай ажиллах хүчин олох
-                боломжтой.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger>
-                Хэрхэн чанартай үйлчилгээ авах вэ?
-              </AccordionTrigger>
-              <AccordionContent>
-                Манай платформоор дамжуулан хамгийн тохиромжтой ажилчдыг
-                олоорой.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
+        <motion.div
+          className="mt-10 pt-6 border-t border-gray-400"
+          variants={sectionVariants}
+          initial="hidden"
+          animate="visible"
+          viewport={{ once: true }}
+        >
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div className="flex flex-wrap items-center gap-3 text-sm">
+              <span>© 2025 ProLink, Inc.</span>
+              <span className="text-gray-400">·</span>
+              <motion.a
+                href="#"
+                className="hover:text-gray-700 transition-colors duration-200"
+                variants={hoverVariants}
+                whileHover="hover"
+              >
+                Хувийн нууцлалын бодлого
+              </motion.a>
+              <span className="text-gray-400">·</span>
+              <motion.a
+                href="#"
+                className="hover:text-gray-700 transition-colors duration-200"
+                variants={hoverVariants}
+                whileHover="hover"
+              >
+                Үйлчилгээний нөхцөл
+              </motion.a>
+              <span className="text-gray-400">·</span>
+              <motion.a
+                href="#"
+                className="hover:text-gray-700 transition-colors duration-200"
+                variants={hoverVariants}
+                whileHover="hover"
+              >
+                Холбоо барих
+              </motion.a>
+            </div>
 
-        {/* Section 3 */}
-        <div className="text-sm">
-          <h1 className="font-semibold text-lg mb-3">Бидэнтэй холбогдох</h1>
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1">
-              <AccordionTrigger>Learn about new features</AccordionTrigger>
-              <AccordionContent>
-                Та өөрийн ажил санал болгож, өндөр чанартай ажиллах хүчин олох
-                боломжтой.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger>Letter from our founders</AccordionTrigger>
-              <AccordionContent>
-                Манай платформоор дамжуулан хамгийн тохиромжтой ажилчдыг
-                олоорой.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
-      </div>
-
-      {/* Footer Bottom */}
-      <div className="border-t border-gray-500 w-[85%] mx-auto py-5 flex flex-col sm:flex-row justify-between items-center text-sm">
-        <div className="flex gap-3">
-          <span>© 2025 ProLink, Inc.</span>
-          <span>·</span>
-          <span className="hover:text-white cursor-pointer">Хувийн нууц</span>
-          <span>·</span>
-          <span className="hover:text-white cursor-pointer">
-            Үйлчилгээний нөхцөл
-          </span>
-        </div>
-
-        <div className="flex items-center gap-5 mt-4 sm:mt-0">
-          <div className="cursor-pointer hover:text-white">Dark/Light</div>
-          <div className="flex gap-4 text-lg">
-            <IoLogoFacebook className="hover:text-blue-500 cursor-pointer" />
-            <IoLogoTwitter className="hover:text-blue-400 cursor-pointer" />
-            <IoLogoInstagram className="hover:text-pink-500 cursor-pointer" />
+            <div className="flex items-center gap-6">
+              <motion.button
+                className="text-sm hover:text-gray-700 transition-colors duration-200"
+                variants={hoverVariants}
+                whileHover="hover"
+              >
+                Харанхуй/Гэрэлтэй
+              </motion.button>
+              <div className="flex items-center gap-4">
+                {socialIcons.map(({ Icon, hoverColor }, index) => (
+                  <motion.div
+                    key={index}
+                    variants={hoverVariants}
+                    whileHover="hover"
+                  >
+                    <Icon
+                      className={`text-lg cursor-pointer ${hoverColor} transition-colors duration-200`}
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </footer>
   );
