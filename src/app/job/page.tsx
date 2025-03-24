@@ -28,10 +28,12 @@ export default function Company() {
   return loading ? (
     <CustomSkeleton />
   ) : (
-    <div className="flex flex-wrap gap-5 justify-center">
-      {posts.length !== 0
-        ? posts.map((post) => <CompanyCard key={post.id} post={post} />)
-        : `Одоогоор пост алга байна`}
+    <div className="flex justify-center">
+      <div className="flex flex-wrap gap-10 w-4/5 justify-center">
+        {posts.length !== 0
+          ? posts.map((post) => <CompanyCard key={post.id} post={post} />)
+          : `Одоогоор пост алга байна`}
+      </div>
     </div>
   );
 }
