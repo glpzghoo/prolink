@@ -5,7 +5,7 @@ import { NextRequest } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     const allposts = await prisma.job.findMany({
-      where: { status: { in: ["ACTIVE", "CLOSED"] } },
+      where: { status: "ACTIVE" },
       include: {
         skill: true,
         poster: {

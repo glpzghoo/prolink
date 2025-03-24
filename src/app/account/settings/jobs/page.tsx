@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { calculateTime } from "@/lib/helper";
 import { responseData } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Button, Snackbar } from "@mui/material";
+import { Button, Input, Snackbar, ThemeProvider } from "@mui/material";
 import { job, skill, user } from "@prisma/client";
 import axios from "axios";
 import Link from "next/link";
@@ -20,7 +20,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import { TransitionProps } from "@mui/material/transitions";
+import { theme } from "@/lib/theme";
 
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 type CustomJob = job & {
   postedAt: string;
 };
@@ -32,11 +48,43 @@ type CustomUser = {
 
 export default function AboutSettings() {
   const [user, setUser] = useState<CustomUser | null>(null);
+  const [response, setResponse] = useState<responseData>();
   const [loading, setLoading] = useState(true);
   const [waiting, setWaiting] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const router = useRouter();
+  const [open, setOpen] = React.useState(false);
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClickClose = () => {
+    setOpen(false);
+  };
+
+  const sendChanges = async (id: string) => {
+    if (!title || !description) return;
+
+    try {
+      setWaiting(true);
+      const res = await axios.post(`/api/job/post?id=${id}`, {
+        description,
+        title,
+      });
+      setResponse(res.data);
+      if (res.data.success) {
+        setRefresh(!refresh);
+      }
+      console.log(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setWaiting(false);
+      setOpen(false);
+    }
+  };
   useEffect(() => {
     const getInfo = async () => {
       try {
@@ -53,60 +101,41 @@ export default function AboutSettings() {
     getInfo();
   }, [refresh]);
 
-  const deleteJob = async (jobId: string) => {
-    if (!confirm("Та уг ажлын саналыг устгах гэж байгаадаа итгэлтэй байна уу?"))
-      return (
-        <Card>
-          <CardHeader>
-            <CardTitle>Card Title</CardTitle>
-            <CardDescription>Card Description</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card Content</p>
-          </CardContent>
-          <CardFooter>
-            <p>Card Footer</p>
-          </CardFooter>
-        </Card>
-      );
+  const deActivate = async (id: string) => {
     try {
       setWaiting(true);
-      const response = await axios.delete(`/api/job/post?id=${jobId}`);
-      if (response.data.success) {
-        alert("Ажлын санал амжилттай устгагдлаа!");
+
+      const res = await axios.delete(`/api/job/post?id=${id}`);
+      setResponse(res.data);
+
+      if (res.data.success) {
         setRefresh(!refresh);
-      } else {
-        alert(`Алдаа гарлаа: ${response.data.message}`);
       }
-    } catch (error) {
-      console.error("Устгах явцад алдаа гарлаа:", error);
-      alert("Алдаа гарлаа!");
+    } catch (err) {
+      console.error(err, "Сервертэй холбогдож чадсангүй!");
     } finally {
       setWaiting(false);
     }
   };
-
-  const updateJob = async (jobId: string) => {
-    if (!confirm("Энэ ажлын саналыг шинэчлэхдээ итгэлтэй байна уу?")) return;
-
-    try {
-      const response = await axios.put(`/api/job/post?id=${jobId}`);
-      if (response.data.success) {
-        alert("Ажлын санал амжилттай шинэчлэгдлээ!");
-        router.refresh();
-      } else {
-        alert(`Алдаа гарлаа: ${response.data.message}`);
-      }
-    } catch (error) {
-      console.error("Шинэчлэх явцад алдаа гарлаа:", error);
-      alert("Шинэчлэх явцад алдаа гарлаа!");
-    }
-  };
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setResponse(undefined);
+    }, 3000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [response]);
 
   return !loading && user ? (
     <div className="bg-secondary flex flex-col items-center">
       {user?.role === "CLIENT" ? (
         <>
+          <Snackbar
+            sx={{ color: response?.success ? "green" : "red" }}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={Boolean(response?.message)}
+            message={response?.message}
+          />
           {waiting && <Loading />}
           <div className="bg-background w-1/2 shadow-lg p-4">
             <h2 className="font-bold mb-4">Таны оруулсан ажлын саналууд:</h2>
@@ -134,8 +163,49 @@ export default function AboutSettings() {
                         </div>
                       </div>
                     </div>
+                    <ThemeProvider theme={theme}>
+                      <React.Fragment>
+                        <Button color="inherit" onClick={handleClickOpen}>
+                          <div className=" whitespace-pre-wrap">
+                            {" "}
+                            {post.description}
+                          </div>
+                        </Button>
+                        <Dialog
+                          open={open}
+                          TransitionComponent={Transition}
+                          keepMounted
+                          onClose={handleClickClose}
+                          aria-describedby="alert-dialog-slide-description"
+                        >
+                          <DialogTitle>
+                            Гарчиг
+                            <Input
+                              className="w-full"
+                              defaultValue={post.title}
+                              onChange={(e) => setTitle(e.target.value)}
+                            />
+                          </DialogTitle>
+                          <DialogContent>
+                            <DialogContentText id="alert-dialog-slide-description">
+                              Дэлгэрэнгүй
+                              <Textarea
+                                onChange={(e) => setDescription(e.target.value)}
+                                rows={100}
+                                defaultValue={post.description}
+                              />
+                            </DialogContentText>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button onClick={handleClickClose}>Болих</Button>
+                            <Button onClick={() => sendChanges(post.id)}>
+                              Засах
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+                      </React.Fragment>
+                    </ThemeProvider>
 
-                    <div> {post.description}</div>
                     <div>Байршил: {post.jobLocation}</div>
                     <div className="flex justify-between">
                       <div className="text-gray-400/70 text-xs absolute bottom-2 left-0">
@@ -150,27 +220,36 @@ export default function AboutSettings() {
                     <div>{post.experienced}</div>
                     <div>
                       {post.status === "ACTIVE" ? (
-                        <div className=" text-[#14A800] text-xs absolute top-0 left-0 flex items-center gap-1">
+                        <div className=" text-[#14A800] text-sm font-semibold absolute top-0 left-0 flex items-center gap-1">
                           <GoDotFill className="animate-ping duration-4000" />
                           <p>идэвхитэй пост</p>
                         </div>
                       ) : post.status === "CLOSED" ? (
-                        <div className=" text-pink-400/70 text-xs absolute top-0 left-0 flex items-center gap-1">
+                        <div className=" text-pink-400/70 text-sm font-semibold absolute top-0 left-0 flex items-center gap-1">
                           <p>идэвхигүй пост</p>
                         </div>
                       ) : (
-                        <div className=" text-gray-400/70 text-xs absolute top-0 left-0 flex items-center gap-1">
+                        <div className=" text-gray-400/70 text-sm font-semibold absolute top-0 left-0 flex items-center gap-1">
                           <p>Ноорог пост</p>
                         </div>
                       )}
                     </div>
                     <Button
                       onClick={() => {
-                        deleteJob(post.id);
+                        deActivate(post.id);
                       }}
-                      sx={{ color: "#14A800" }}
+                      sx={{
+                        color: post.status === "CLOSED" ? "green" : "red",
+                      }}
+                      className={` ${
+                        post.status === "ACTIVE"
+                          ? " text-green-500"
+                          : "text-red-500"
+                      }`}
                     >
-                      Устгах
+                      {post.status == "ACTIVE"
+                        ? "Идэвхигүй болгох"
+                        : "Идэвхитэй болгох"}
                     </Button>
                   </div>
                 ))}

@@ -14,11 +14,6 @@ export default function Company() {
     try {
       const res = await axios.get(`/api/job/allposts`);
       if (res.data.success) {
-        // const sortedPosts = res.data.data.posts.sort(
-        //   (post1: CustomJob, post2: CustomJob) => {
-        //     return post2.jobPostView - post1.jobPostView;
-        //   }
-        // );
         setPosts(res.data.data.posts);
       }
     } catch (err) {
@@ -33,10 +28,12 @@ export default function Company() {
   return loading ? (
     <CustomSkeleton />
   ) : (
-    <div className="flex flex-wrap gap-5 justify-center">
-      {posts.length !== 0
-        ? posts.map((post) => <CompanyCard key={post.id} post={post} />)
-        : `Одоогоор пост алга байна`}
+    <div className="flex justify-center">
+      <div className="flex flex-wrap gap-10 w-4/5 justify-center">
+        {posts.length !== 0
+          ? posts.map((post) => <CompanyCard key={post.id} post={post} />)
+          : `Одоогоор пост алга байна`}
+      </div>
     </div>
   );
 }
