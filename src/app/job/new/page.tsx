@@ -5,6 +5,10 @@ import { StepThree } from "../_components/StepThree";
 import { StepFour } from "../_components/StepFour";
 import { StepFive } from "../_components/StepFive";
 import { StepSix } from "../_components/StepSix";
+import axios from "axios";
+import { responseData } from "@/lib/types";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 type PostProps = {
 	currentStep: number;
@@ -27,6 +31,21 @@ const Post = ({ currentStep, setCurrentStep }: PostProps) => {
 	const [salary, setSalary] = useState();
 
 	const [requirements, setRequirements] = useState<string>("");
+	const [response, setUserInfo] = useState<responseData>();
+	const pathname = usePathname();
+
+	const getInfo = async () => {
+		const res = await axios.get(`/api/account`);
+		setUserInfo(res.data);
+		await axios.get(`/api/account/refreshToken`);
+	};
+	useEffect(() => {
+		try {
+			getInfo();
+		} catch (err) {
+			console.error(err, "Сервертэй холбогдож чадсангүй!");
+		}
+	}, [pathname]);
 	if (currentStep === 1) {
 		return (
 			<StepTwo
@@ -109,10 +128,21 @@ const Post = ({ currentStep, setCurrentStep }: PostProps) => {
 	}
 
 	return (
-		<div className="flex items-center justify-center min-h-screen">
+		<div className="flex items-center justify-center min-h-screen flex-col">
 			<div className="bg-green-100 text-green-700 border border-green-400 px-6 py-4 rounded-lg shadow-md text-lg font-semibold">
 				Зар амжилттай нийтлэгдлээ
 			</div>
+			<Link
+				className="flex items-center gap-4 whitespace-nowrap"
+				href={
+					response?.data?.informations?.companyName
+						? `/client/${response?.data?.informations?.id}`
+						: `/freelancer/${response?.data?.informations?.id}`
+				}
+			>
+				{" "}
+				<p className="underline mt-3">Профайл хэсэг рүү очих</p>
+			</Link>
 		</div>
 	);
 };
