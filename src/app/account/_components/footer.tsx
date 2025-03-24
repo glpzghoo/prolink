@@ -78,6 +78,7 @@ const footerLinks = [
   },
 ];
 
+// Animation variants
 const sectionVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
@@ -94,31 +95,35 @@ const hoverVariants = {
 export default function Footer() {
   return (
     <footer className="w-full bg-secondary text-black transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-6 py-10 lg:px-10 lg:py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3 lg:gap-10">
           {footerLinks.map((section, index) => (
             <motion.div
               key={index}
-              className="space-y-4"
+              className="space-y-3 sm:space-y-4"
               variants={sectionVariants}
               initial="hidden"
               animate="visible"
               viewport={{ once: true }}
             >
-              <h1 className="font-semibold text-xl tracking-tight">
+              <h1 className="font-semibold text-lg sm:text-xl tracking-tight">
                 {section.title}
               </h1>
-              <Accordion type="single" collapsible className="w-full space-y-2">
+              <Accordion
+                type="single"
+                collapsible
+                className="w-full space-y-1 sm:space-y-2"
+              >
                 {section.items.map((item, idx) => (
                   <AccordionItem
                     key={idx}
                     value={`item-${idx}`}
                     className="border-b border-gray-400"
                   >
-                    <AccordionTrigger className="text-sm hover:text-gray-700 py-3 transition-colors duration-200">
+                    <AccordionTrigger className="text-sm sm:text-base hover:text-gray-700 py-2 sm:py-3 transition-colors duration-200">
                       {item.trigger}
                     </AccordionTrigger>
-                    <AccordionContent className="text-sm text-gray-800 pb-4">
+                    <AccordionContent className="text-xs sm:text-sm text-gray-800 pb-3 sm:pb-4">
                       {item.content}
                     </AccordionContent>
                   </AccordionItem>
@@ -129,14 +134,14 @@ export default function Footer() {
         </div>
 
         <motion.div
-          className="mt-10 pt-6 border-t border-gray-400"
+          className="mt-6 sm:mt-8 lg:mt-10 pt-4 sm:pt-6 border-t border-gray-400"
           variants={sectionVariants}
           initial="hidden"
           animate="visible"
           viewport={{ once: true }}
         >
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
-            <div className="flex flex-wrap items-center gap-3 text-sm">
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between sm:gap-6">
+            <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 text-xs sm:text-sm">
               <span>© 2025 ProLink, Inc.</span>
               <span className="text-gray-400">·</span>
               <motion.a
@@ -167,15 +172,15 @@ export default function Footer() {
               </motion.a>
             </div>
 
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 sm:gap-6">
               <motion.button
-                className="text-sm hover:text-gray-700 transition-colors duration-200"
+                className="text-xs sm:text-sm hover:text-gray-700 transition-colors duration-200"
                 variants={hoverVariants}
                 whileHover="hover"
               >
                 Харанхуй/Гэрэлтэй
               </motion.button>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 {socialIcons.map(({ Icon, hoverColor }, index) => (
                   <motion.div
                     key={index}
@@ -183,7 +188,7 @@ export default function Footer() {
                     whileHover="hover"
                   >
                     <Icon
-                      className={`text-lg cursor-pointer ${hoverColor} transition-colors duration-200`}
+                      className={`text-base sm:text-lg cursor-pointer ${hoverColor} transition-colors duration-200`}
                     />
                   </motion.div>
                 ))}
