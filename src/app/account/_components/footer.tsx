@@ -43,7 +43,6 @@ export default function Footer() {
           <div>Үйлчилгээний нөхцөл</div>
         </div>
         <div className="flex gap-4">
-          <div>Dark/Light</div>
           <div className="flex gap-3">
             <IoLogoFacebook />
             <IoLogoTwitter />
