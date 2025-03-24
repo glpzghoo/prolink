@@ -84,12 +84,12 @@ export default function Freelance() {
           {filter ? (
             <>
               <Badge />
-              <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto ">
+              <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto">
                 Дундаж үнэлгээ:{" "}
                 {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
               </div>
               <div className="flex justify-center"></div>
-              <div className="max-w-[1280px] mx-auto flex  flex-wrap ">
+              <div className="max-w-[1280px] mx-auto flex flex-wrap justify-between gap-4 mb-4">
                 {filteredUsers.map((user) => (
                   <ClientCard key={user.id} user={user} />
                 ))}
@@ -98,11 +98,11 @@ export default function Freelance() {
           ) : (
             <>
               <Badge />
-              <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto ">
+              <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto">
                 Дундаж үнэлгээ:{" "}
                 {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
               </div>
-              <div className="max-w-[1280px] mx-auto flex  flex-wrap ">
+              <div className="max-w-[1280px] mx-auto flex justify-between flex-wrap gap-4 mt-4">
                 {users.map((user) => (
                   <ClientCard key={user.id} user={user} />
                 ))}

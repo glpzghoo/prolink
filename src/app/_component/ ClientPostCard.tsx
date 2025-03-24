@@ -78,7 +78,7 @@ export function ClientCard({ user }: { user: CustomUser }) {
             {avrRating()}/5
             <p>({user.reviewee.length} үнэлгээ өгсөн)</p>
           </div>
-          <div className=" flex flex-wrap justify-center gap-2">
+          <div className=" flex flex-wrap justify-center gap-2 mt-2">
             {user.skill
               .map((skills) => (
                 <Button

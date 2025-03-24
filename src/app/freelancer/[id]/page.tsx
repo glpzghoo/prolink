@@ -172,7 +172,7 @@ export default function Client() {
       {loading ? (
         <CustomSkeleton />
       ) : user ? (
-        <div className="bg-gray-100 min-h-screen ">
+        <div className="bg-gray-100 min-h-screen">
           {/* Цагаан блок (main container) */}
 
           {user.companyName ? (
