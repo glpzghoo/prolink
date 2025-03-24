@@ -1,5 +1,10 @@
 import { prisma } from "@/lib/prisma";
-import { CustomNextResponse, NextResponse_CatchError } from "@/lib/responses";
+import {
+  CustomNextResponse,
+  NextResponse_CatchError,
+  NextResponse_NoCookie,
+  NextResponse_NoEnv,
+} from "@/lib/responses";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 export async function GET(req: NextRequest) {
@@ -48,167 +53,132 @@ export async function GET(req: NextRequest) {
     return NextResponse_CatchError(err);
   }
 }
-
 export async function DELETE(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get("id");
-  if (!id) {
-    return CustomNextResponse(
-      false,
-      "NO_ID_PROVIDED",
-      "Таних тэмдэг байхгүй байна!",
-      null
-    );
-  }
   try {
-    if (!process.env.ACCESS_TOKEN || !process.env.REFRESH_TOKEN) {
-      return NextResponse.json({
-        success: false,
-        message: "Сервэрийн тохиргооны алдаа (ENV)",
-        code: "NO_ENV",
-        data: {},
-      });
+    const id = req.nextUrl.searchParams.get("id");
+    // console.log(id);
+    if (!id) {
+      return CustomNextResponse(false, "NO_ID", "Таних тэмдэг алга", null);
     }
+    // return NextResponse.json({ id });
+    if (!process.env.ACCESS_TOKEN) {
+      return NextResponse_NoEnv("ACCESS_TOKEN");
+    }
+
     const accessToken = req.cookies.get("accessToken")?.value;
     if (!accessToken) {
-      return NextResponse.json({
-        success: false,
-        message: "Хэрэглэгч нэвтрээгүй байна!",
-        code: "USER_NOT_SIGNED",
-        data: {},
-      });
+      return NextResponse_NoCookie();
     }
     const verified = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
       id: string;
     };
-    if (!verified) {
-      return NextResponse.json({
-        success: false,
-        message: "Ахин нэвтэрнэ үү!",
-        code: "TOKEN_EXPIRED",
-        data: {},
-      });
+
+    const user = await prisma.user.findUnique({ where: { id: verified.id } });
+    const job = await prisma.job.findUnique({ where: { id } });
+    if (!user) {
+      return CustomNextResponse(
+        false,
+        "USER_NOT_FOUND",
+        "Хэрэглэгч олдсонгүй!",
+        null
+      );
     }
-
-    const post = await prisma.job.findUnique({
-      where: { id },
-    });
-
-    if (post?.posterId !== verified.id) {
+    if (!job) {
+      return CustomNextResponse(false, "JOB_NOT_FOUND", "Зар олдсонгүй!", null);
+    }
+    if (user.role === "FREELANCER") {
       return CustomNextResponse(
         false,
         "NOT_PERMITTED",
-        "Таньд уг үйлдлийг хийх эрх байхгүй байна!",
-        null
-      );
-    }
-    if (post) {
-      const deleteJob = await prisma.job.delete({
-        where: { id },
-      });
-
-      return CustomNextResponse(
-        true,
-        "REQUEST_SUCESS",
-        "Ажлын санал амжилттай устгагдлаа!",
-        {
-          deleteJob,
-        }
-      );
-    }
-    return CustomNextResponse(
-      false,
-      "REQUEST_FAILED",
-      "Хүсэлт амжилтгүй! Ажлын санал устгагдсангүй!",
-      null
-    );
-  } catch (err) {
-    console.error(err, "Сервер дээр асуудал гарлаа");
-    return NextResponse_CatchError(err);
-  }
-}
-
-export async function PUT(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get("id");
-  if (!id) {
-    return CustomNextResponse(
-      false,
-      "NO_ID_PROVIDED",
-      "Таних тэмдэг байхгүй байна!",
-      null
-    );
-  }
-
-  try {
-    if (!process.env.ACCESS_TOKEN || !process.env.REFRESH_TOKEN) {
-      return NextResponse.json({
-        success: false,
-        message: "Серверийн тохиргооны алдаа (ENV)",
-        code: "NO_ENV",
-        data: {},
-      });
-    }
-
-    const accessToken = req.cookies.get("accessToken")?.value;
-    if (!accessToken) {
-      return NextResponse.json({
-        success: false,
-        message: "Хэрэглэгч нэвтрээгүй байна!",
-        code: "USER_NOT_SIGNED",
-        data: {},
-      });
-    }
-
-    let verified;
-    try {
-      verified = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
-        id: string;
-      };
-    } catch (err) {
-      return NextResponse.json({
-        success: false,
-        message: "Ахин нэвтэрнэ үү!",
-        code: "TOKEN_EXPIRED",
-        data: {},
-      });
-    }
-
-    const post = await prisma.job.findUnique({
-      where: { id },
-    });
-
-    if (!post) {
-      return CustomNextResponse(
-        false,
-        "NOT_FOUND",
-        "Ажлын санал олдсонгүй!",
+        "Зөвшөөрөлгүй үйлдэл!",
         null
       );
     }
 
-    if (post.posterId !== verified.id) {
+    if (user.id !== job.posterId) {
       return CustomNextResponse(
         false,
         "NOT_PERMITTED",
-        "Таньд уг үйлдлийг хийх эрх байхгүй байна!",
+        "Зөвшөөрөлгүй үйлдэл!",
         null
       );
     }
 
-    const updateJob = await prisma.job.update({
-      where: { id },
-      data: {
-        updatedAt: new Date(),
-      },
+    const updateJobStatus = await prisma.job.update({
+      where: { id: job.id },
+      data: { status: job.status === "ACTIVE" ? "CLOSED" : "ACTIVE" },
     });
 
     return CustomNextResponse(
       true,
       "REQUEST_SUCCESS",
-      "Ажлын санал амжилттай update хийгдлээ!",
-      { updateJob }
+      "Төлөв амжилттай өөрчлөгдлөө!",
+      { job: updateJobStatus }
     );
   } catch (err) {
-    console.error("Сервер дээр асуудал гарлаа:", err);
-    return NextResponse_CatchError(err);
+    console.error(err, "Сервер дээр алдаа гарлаа!");
+    NextResponse_CatchError(err);
+  }
+}
+export async function POST(req: NextRequest) {
+  try {
+    const id = req.nextUrl.searchParams.get("id");
+    const { description, title } = await req.json();
+    if (!id) {
+      return CustomNextResponse(false, "NO_ID", "Таних тэмдэг алга", null);
+    }
+    // return NextResponse.json({ id });
+    if (!process.env.ACCESS_TOKEN) {
+      return NextResponse_NoEnv("ACCESS_TOKEN");
+    }
+
+    const accessToken = req.cookies.get("accessToken")?.value;
+    if (!accessToken) {
+      return NextResponse_NoCookie();
+    }
+    const verified = jwt.verify(accessToken, process.env.ACCESS_TOKEN) as {
+      id: string;
+    };
+
+    const user = await prisma.user.findUnique({ where: { id: verified.id } });
+    const job = await prisma.job.findUnique({ where: { id } });
+    if (!user) {
+      return CustomNextResponse(
+        false,
+        "USER_NOT_FOUND",
+        "Хэрэглэгч олдсонгүй!",
+        null
+      );
+    }
+    if (!job) {
+      return CustomNextResponse(false, "JOB_NOT_FOUND", "Зар олдсонгүй!", null);
+    }
+    if (user.role === "FREELANCER") {
+      return CustomNextResponse(
+        false,
+        "NOT_PERMITTED",
+        "Зөвшөөрөлгүй үйлдэл!",
+        null
+      );
+    }
+
+    if (user.id !== job.posterId) {
+      return CustomNextResponse(
+        false,
+        "NOT_PERMITTED",
+        "Зөвшөөрөлгүй үйлдэл!",
+        null
+      );
+    }
+
+    const updateJob = await prisma.job.update({
+      where: { id: job.id },
+      data: { title, description },
+    });
+    return CustomNextResponse(true, "REQUEST_SUCCESS", "Амжилттай засагдлаа!", {
+      job: updateJob,
+    });
+  } catch (err) {
+    console.error(err);
   }
 }

@@ -14,11 +14,6 @@ export default function Company() {
     try {
       const res = await axios.get(`/api/job/allposts`);
       if (res.data.success) {
-        // const sortedPosts = res.data.data.posts.sort(
-        //   (post1: CustomJob, post2: CustomJob) => {
-        //     return post2.jobPostView - post1.jobPostView;
-        //   }
-        // );
         setPosts(res.data.data.posts);
       }
     } catch (err) {
