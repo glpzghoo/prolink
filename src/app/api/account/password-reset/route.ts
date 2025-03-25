@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp.zoho.com",
   port: 465,
   secure: true,
   auth: {
@@ -14,6 +14,7 @@ const transporter = nodemailer.createTransport({
 });
 export async function POST(req: NextRequest) {
   const { email } = await req.json();
+
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
     });
     const otp = Math.floor(Math.random() * 899999 + 100000);
     await transporter.sendMail({
-      from: "Team HexaCode", // sender address
+      from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
       to: email, // list of receivers
       subject: "Нууц үгээ солих 1 удаагийн код", // Subject line
       text: "Freelancing App / Team HexaCode", // plain text body
