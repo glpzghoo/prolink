@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type JobTitleStepProps = {
 	setCurrentStep: (step: number) => void;
@@ -62,9 +63,9 @@ export function StepTwo({
 
 				{/* Үйлдлийн товчнууд */}
 				<div className="flex justify-between items-center mt-10">
-					<Button variant="outline" onClick={() => setCurrentStep(1)}>
-						Буцах
-					</Button>
+					<Link href={"/freelancer"}>
+						<Button variant="outline">Цуцлах</Button>
+					</Link>
 					<Button
 						onClick={() => setCurrentStep(3)}
 						disabled={!title.trim()}

@@ -56,8 +56,7 @@ export function StepFive({
 					<div className="flex items-center gap-2">
 						<input
 							type="number"
-							value={salary}
-							onChange={(e) => setSalary(Number(e.target.value))}
+							onChange={(e: any) => setSalary(Number(e.target.value))}
 							className="border p-2 rounded-md w-32"
 						/>
 						<span>₮</span>

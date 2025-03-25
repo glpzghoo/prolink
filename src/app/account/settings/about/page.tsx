@@ -138,7 +138,7 @@ export default function AboutSettings() {
               )}
 
               <div className="flex flex-wrap w-full gap-2">
-                {skills.map((skill) => (
+``                {skills.map((skill) => (
                   <Button
                     onClick={() => {
                       setForm((prev) => {
