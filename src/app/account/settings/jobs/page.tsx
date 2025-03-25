@@ -67,8 +67,10 @@ export default function AboutSettings() {
   };
 
   const sendChanges = async (id: string) => {
-    if (!title || !description) return;
-
+    setOpen(false);
+    if (!title && !description) {
+      return;
+    }
     try {
       setWaiting(true);
       const res = await axios.post(`/api/job/post?id=${id}`, {
@@ -84,7 +86,6 @@ export default function AboutSettings() {
       console.error(err);
     } finally {
       setWaiting(false);
-      setOpen(false);
     }
   };
   useEffect(() => {

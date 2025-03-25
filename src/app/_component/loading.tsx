@@ -23,7 +23,7 @@ const pulseVariants = {
 
 export default function Loading() {
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center w-full h-screen bg-gray-100/50 backdrop-blur-sm z-50">
+    <div className="fixed inset-0 flex flex-col items-center justify-center w-full h-screen bg-gray-100/50 backdrop-blur-sm z-[99]">
       <div className="w-full max-w-md px-4 mb-6">
         <ThemeProvider theme={theme}>
           <LinearProgress

@@ -140,7 +140,10 @@ export async function POST(req: NextRequest) {
       id: string;
     };
 
-    const user = await prisma.user.findUnique({ where: { id: verified.id } });
+    const user = await prisma.user.findUnique({
+      where: { id: verified.id },
+      omit: { password: true },
+    });
     const job = await prisma.job.findUnique({ where: { id } });
     if (!user) {
       return CustomNextResponse(
@@ -173,7 +176,10 @@ export async function POST(req: NextRequest) {
 
     const updateJob = await prisma.job.update({
       where: { id: job.id },
-      data: { title, description },
+      data: {
+        ...(title ? { title } : {}),
+        ...(description ? { description } : {}),
+      },
     });
     return CustomNextResponse(true, "REQUEST_SUCCESS", "Амжилттай засагдлаа!", {
       job: updateJob,
