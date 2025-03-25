@@ -161,7 +161,7 @@ export function Navigation() {
                     variants={hoverVariants}
                     whileHover="hover"
                   >
-                    <div className="rounded-full overflow-hidden border-2 border-[#14A800]">
+                    <div className="rounded-full w-8 h-8 items-center flex overflow-hidden border-2 border-[#14A800]">
                       <Image
                         src={`${response.data?.informations?.pfp}`}
                         width={32}
