@@ -28,6 +28,7 @@ import _ from "lodash";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
 import { GoUnverified } from "react-icons/go";
 import { theme } from "@/lib/theme";
+import { useReactToPrint } from "react-to-print";
 type CustomUser = user & {
   skill: CustomSkill[];
   reviewee: CustomReviewee[];
@@ -166,6 +167,9 @@ export default function Client() {
 
     setLoading2(false);
   };
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
   return (
     <>
       {/* Үндсэн Background */}
@@ -180,7 +184,10 @@ export default function Client() {
               Холбоос буруу байна!
             </div>
           ) : (
-            <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg">
+            <div
+              className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background shadow-lg"
+              ref={contentRef}
+            >
               {/* Дээд хэсэг */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
@@ -270,6 +277,12 @@ export default function Client() {
                     className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
                   >
                     Хуваалцах
+                  </button>
+                  <button
+                    onClick={() => reactToPrintFn()}
+                    className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
+                  >
+                    Татах
                   </button>
                 </div>
               </div>

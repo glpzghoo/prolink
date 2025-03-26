@@ -29,6 +29,7 @@ import { GoDotFill, GoUnverified } from "react-icons/go";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
 import { ImNewTab, ImSpinner10 } from "react-icons/im";
 import z from "zod";
+import { useReactToPrint } from "react-to-print";
 type CustomUser = user & {
   skill: CustomSkill[];
   reviewee: CustomReviewee[];
@@ -69,6 +70,10 @@ export default function Client() {
   const [verifyMailResponse, setVerifyMailResponse] = useState<responseData>();
   const [showFullReview, setshowFullReview] = useState<number | undefined>();
   const div = useRef<HTMLDivElement>(null);
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
+
   const handleLeftScroll = () => {
     if (div.current) {
       div.current.scrollBy({ left: -400, behavior: "smooth" });
@@ -179,10 +184,13 @@ export default function Client() {
       {loading ? (
         <CustomSkeleton />
       ) : user ? (
-        <div className="bg-gray-100 min-h-screen ">
+        <div className="bg-gray-100 min-h-screen">
           {/* Цагаан блок (main container) */}
           {loading2 && <Loading />}
-          <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg ">
+          <div
+            className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg"
+            ref={contentRef}
+          >
             {/* Дээд хэсэг */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
@@ -255,6 +263,7 @@ export default function Client() {
                   уу!`}
                 </Button>
               )}
+
               {/* Хуваалцах товч */}
               <div className="flex gap-1">
                 {owner && (
@@ -274,6 +283,12 @@ export default function Client() {
                   className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
                 >
                   Хуваалцах
+                </button>
+                <button
+                  onClick={() => reactToPrintFn()}
+                  className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
+                >
+                  Татах
                 </button>
               </div>
             </div>
