@@ -12,12 +12,17 @@ export type CustomUser = user & {
   reviewee: review[];
   birthday: string;
 };
+type favorite = {
+  id: string;
+  role: string;
+};
 export default function Freelance() {
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
   const [users, setUsers] = useState<CustomUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [filteredUsers, setFilteredUsers] = useState<CustomUser[]>([]);
+  const [favorites, setFavorites] = useState<favorite[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +31,7 @@ export default function Freelance() {
         if (res.data.success) {
           const filteredUsers = res.data.data.users.filter(
             (user: CustomUser) => {
-              return user.companyName;
+              return user.role === "CLIENT";
             }
           );
 
@@ -77,6 +82,12 @@ export default function Freelance() {
     const result = total / length / 20;
     return Number(result.toFixed(1));
   };
+
+  useEffect(() => {
+    const fav = localStorage.getItem("favorites");
+    const favoritesL = fav ? JSON.parse(fav) : [];
+    setFavorites(favoritesL);
+  }, []);
   return (
     <div>
       {!loading ? (
@@ -91,7 +102,7 @@ export default function Freelance() {
               <div className="flex justify-center"></div>
               <div className="max-w-[1280px] mx-auto flex flex-wrap justify-between gap-4 mb-4">
                 {filteredUsers.map((user) => (
-                  <ClientCard key={user.id} user={user} />
+                  <ClientCard favorites={favorites} key={user.id} user={user} />
                 ))}
               </div>
             </>
@@ -104,7 +115,7 @@ export default function Freelance() {
               </div>
               <div className="max-w-[1280px] mx-auto flex justify-between flex-wrap gap-4 mt-4">
                 {users.map((user) => (
-                  <ClientCard key={user.id} user={user} />
+                  <ClientCard favorites={favorites} key={user.id} user={user} />
                 ))}
               </div>
             </>

@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       return CustomNextResponse(
         false,
         "NOT_ALLOWED",
-        "Freelancer -ууд пост оруулах эрхгүй!",
+        "Талент -ууд пост оруулах эрхгүй!",
         null
       );
     }

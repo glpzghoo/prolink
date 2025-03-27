@@ -87,7 +87,7 @@ export async function GET(req: NextRequest) {
       return CustomNextResponse(
         false,
         "JOB_APPLICATION_EXIST",
-        "Та алв хэдийн хүсэлт гаргасан байна. Компань зөвшөөрөх хүртэл хүлээнэ үү!",
+        "Та аль хэдийн хүсэлт гаргасан байна. Компань зөвшөөрөх хүртэл хүлээнэ үү!",
         null
       );
     }

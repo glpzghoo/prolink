@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       return CustomNextResponse(
         false,
         "REQUEST_FAILED",
-        "Freelancer холбоо барих хүсэлт илгээх боломжгүй!",
+        "Талентууд холбоо барих хүсэлт илгээх боломжгүй!",
         null
       );
     }

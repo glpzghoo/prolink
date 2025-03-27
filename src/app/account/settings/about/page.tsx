@@ -125,7 +125,7 @@ export default function AboutSettings() {
               <p className="text-xs text-gray-500 mt-1">
                 {userInfo.data.user.role === "CLIENT"
                   ? "Байгууллагын тухай дэлгэрэнгүй мэдээллийг оруулна уу!"
-                  : "Ажил олгогчдод өөрийгөө танилцуулаарай!"}
+                  : "Компаниудад өөрийгөө танилцуулаарай!"}
               </p>
             </div>
             <div className="w-1/2 h-96 overflow-scroll">

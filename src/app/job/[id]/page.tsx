@@ -47,6 +47,7 @@ export default function App() {
   const [similarPosts, setSimilarPosts] = useState<job[]>([]);
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState(false);
+  const [alert2, setAlert2] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [userApplied, setUserApplied] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
@@ -80,11 +81,12 @@ export default function App() {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setAlert(false);
+      setAlert2(false);
     }, 5000);
     return () => {
       clearTimeout(timeout);
     };
-  }, [alert]);
+  }, [alert, alert2]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -122,6 +124,13 @@ export default function App() {
       setIsClicked(!isClicked);
     }
   };
+  const copyURL = () => {
+    navigator.clipboard
+      .writeText(window.location.href)
+      .then(() => console.log("url copied!"))
+      .catch((err) => console.error("fail: ", err));
+    setAlert2(true);
+  };
   return loading ? (
     <CustomSkeleton />
   ) : post ? (
@@ -129,6 +138,11 @@ export default function App() {
       <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
+            <Snackbar
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              open={alert2}
+              message={"Линк амжилттай хууллаа!"}
+            />
             <div>
               <span className="text-ыт text-green-700">
                 {post.status === "ACTIVE" ? (
@@ -172,7 +186,11 @@ export default function App() {
             </div>
           </div>
 
-          <Button sx={{ color: "green" }} className="flex gap-1">
+          <Button
+            onClick={copyURL}
+            sx={{ color: "green" }}
+            className="flex gap-1"
+          >
             <div className="text-green-600 hover:text-green-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2">
               Хуваалцах
             </div>
@@ -194,7 +212,7 @@ export default function App() {
             </div>
             <div>-</div>
             <div>
-              Ажил олгогчийн дундаж үнэлгээ:{" "}
+              Компаний дундаж үнэлгээ:{" "}
               <span className=" font-bold">{avgRating(post.poster)}/5</span>
             </div>
           </div>
@@ -288,7 +306,7 @@ export default function App() {
           sx={{ color: "red" }}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
           open={alert}
-          message={"Сануулга: Уг ажил олгогч хаягаа баталгаажаагүй байна!"}
+          message={"Сануулга: Уг байгууллага хаягаа баталгаажаагүй байна!"}
         />
 
         <div className="mt-4 pb-4 border-b">
