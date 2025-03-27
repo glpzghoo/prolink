@@ -15,11 +15,13 @@ import axios from "axios";
 import { responseData } from "@/lib/types";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { signOut } from "next-auth/react";
 
 const navLinks = [
   { href: "/freelancer", label: "Талентууд" },
   { href: "/job", label: "Ажлын санал" },
   { href: "/client", label: "Манайд бүртгэлтэй байгууллагууд" },
+  { href: "/saved", label: "Хадгалсан" },
 ];
 
 const navVariants = {
@@ -64,6 +66,7 @@ export function Navigation() {
   const logout = async () => {
     setLoading(true);
     setUserInfo(undefined);
+    signOut();
     const res = await axios.get(`/api/account/logout`);
     setUserInfo(res.data);
     if (res.data.success) {
@@ -84,7 +87,7 @@ export function Navigation() {
     }
     timeoutRef.current = setTimeout(() => {
       setSearch(searchTerm);
-    }, 1000);
+    }, 500);
   }, []);
 
   return (
@@ -105,7 +108,7 @@ export function Navigation() {
               ProLink
             </motion.div>
           </Link>
-          <div className="hidden lg:flex gap-6 text-sm font-medium">
+          <div className="hidden xl:flex gap-6 text-sm font-medium">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
                 <motion.div
@@ -126,7 +129,7 @@ export function Navigation() {
 
         <div className="flex items-center gap-4">
           <button
-            className="lg:hidden text-[#14A800] text-2xl"
+            className="xl:hidden text-[#14A800] text-2xl"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <Menu />
@@ -151,7 +154,7 @@ export function Navigation() {
               <div className="flex items-center gap-3">
                 <Link
                   href={
-                    response.data?.informations?.companyName
+                    response.data?.informations?.role === "CLIENT"
                       ? `/client/${response.data?.informations?.id}`
                       : `/freelancer/${response.data?.informations?.id}`
                   }

@@ -28,6 +28,7 @@ import { FaCircleArrowLeft, FaCircleArrowRight } from "react-icons/fa6";
 import { GoDotFill, GoUnverified } from "react-icons/go";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
 import { ImNewTab, ImSpinner10 } from "react-icons/im";
+import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import z from "zod";
 type CustomUser = user & {
   skill: CustomSkill[];
@@ -51,6 +52,10 @@ export type CustomFeaturedSkill = featuredSkills & {
   endedAt: string;
   user: CustomUser;
 };
+type favorite = {
+  id: string;
+  role: string;
+};
 const ratingSchema = z.object({
   message: z.string().min(5),
   rating: z.number().min(1),
@@ -68,7 +73,7 @@ export default function Client() {
   const [ratingResponse, setratingResponse] = useState<responseData>();
   const [verifyMailResponse, setVerifyMailResponse] = useState<responseData>();
   const [showFullReview, setshowFullReview] = useState<number | undefined>();
-  const [favorite, setFavorites] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<favorite[]>([]);
   const [isItFavorite, setIsFavorite] = useState(false);
   const [alert, setAlert] = useState(false);
   const div = useRef<HTMLDivElement>(null);
@@ -179,16 +184,45 @@ export default function Client() {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     }
   };
+
+  // fav
   useEffect(() => {
     const favoritesString = localStorage.getItem("favorites");
-    const favorites = favoritesString ? JSON.parse(favoritesString) : [];
-    setFavorites(favorites);
-
-    const fav = favorites.some((a: { id: string }) => a.id === id);
+    const storedFavorites = favoritesString ? JSON.parse(favoritesString) : [];
+    setFavorites(storedFavorites);
+    const fav = storedFavorites.some((a: { id: string }) => a.id === id);
     if (fav) {
       setIsFavorite(true);
     }
-  }, []);
+  }, [id]);
+  const saveFavorite = () => {
+    const fav = favorites.some((a: { id: string }) => a.id === id);
+    if (fav) {
+      const updated = favorites.filter((fav) => fav.id !== id);
+      localStorage.setItem("favorites", JSON.stringify(updated));
+
+      setFavorites(updated);
+
+      return;
+    }
+
+    if (user) {
+      const updated = [...favorites, { id, role: user.role }];
+      localStorage.setItem("favorites", JSON.stringify(updated));
+
+      setFavorites(updated);
+    }
+  };
+  useEffect(() => {
+    const fav = favorites.some((a: { id: string }) => a.id === id);
+    if (!fav) {
+      setIsFavorite(false);
+    } else {
+      setIsFavorite(true);
+    }
+  }, [favorites]);
+  // fav end
+
   const sendmail = async () => {
     setLoading2(true);
     const res = await axios.get(`/api/account/verifyEmail`);
@@ -201,20 +235,17 @@ export default function Client() {
       setExpand(textDiv.current.scrollHeight > textDiv.current.clientHeight);
     }
   }, [user]);
-  const saveFavorite = () => {
-    setFavorites((prev) => ({ ...prev, id }));
-    localStorage.setItem("favorites", JSON.stringify(favorite));
-  };
+  console.log(favorites);
   return (
     <>
       {/* Үндсэн Background */}
       {loading ? (
         <CustomSkeleton />
       ) : user ? (
-        <div className="bg-gray-100 min-h-screen ">
+        <div className="bg-gray-100 min-h-screen">
           {/* Цагаан блок (main container) */}
           {loading2 && <Loading />}
-          <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg ">
+          <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg  relative">
             {/* Дээд хэсэг */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
@@ -287,7 +318,7 @@ export default function Client() {
                 >
                   {loading2
                     ? `Түр хүлээнэ үү!`
-                    : `Таны хаяг баталгаажаагүй байна. Энд дарж хаягаа баталгаажуулна
+                    : `Хаяг баталгаажаагүй байна. Энд дарж хаягаа баталгаажуулна
                   уу!`}
                 </Button>
               )}
@@ -304,7 +335,16 @@ export default function Client() {
                     </button>
                   </Link>
                 )}
-
+                <div
+                  onClick={saveFavorite}
+                  className=" absolute top-0 right-0 p-2 text-2xl cursor-pointer"
+                >
+                  {isItFavorite ? (
+                    <MdFavorite className=" text-green-600" />
+                  ) : (
+                    <MdFavoriteBorder />
+                  )}
+                </div>
                 <button
                   onClick={copyURL}
                   className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
