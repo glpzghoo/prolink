@@ -236,7 +236,7 @@ export async function PUT(req: NextRequest) {
     if (statusValue === "accepted") {
       // ajil olgogch ruu
       await transporter.sendMail({
-        from: "Team HexaCode - Prolink", // sender address
+        from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
         to: jobApplication.client.email, // list of receivers
         subject: "ProLink - Freelancer -ийн дэлгэрэнгүй мэдээлэл!", // Subject line
         text: "Freelancing App / Team HexaCode", // plain text body
@@ -285,7 +285,7 @@ export async function PUT(req: NextRequest) {
       });
       // ajil gorilogch ruu
       await transporter.sendMail({
-        from: "Team HexaCode - Prolink", // sender address
+        from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
         to: jobApplication.freelancer.email, // list of receivers
         subject: "ProLink - Байгууллагын дэлгэрэнгүй мэдээлэл!", // Subject line
         text: "Freelancing App / Team HexaCode", // plain text body
@@ -337,7 +337,7 @@ export async function PUT(req: NextRequest) {
     } else if (statusValue === "denied") {
       // ajil gorilogch ruu
       await transporter.sendMail({
-        from: "Team HexaCode - Prolink", // sender address
+        from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
         to: jobApplication.freelancer.email, // list of receivers
         subject: "ProLink - Харамсалтай мэдээ!", // Subject line
         text: "Freelancing App / Team HexaCode", // plain text body

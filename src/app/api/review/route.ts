@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
         data: { rating, message, revieweeId, reviewerId: verify.id },
       });
       await transporter.sendMail({
-        from: "Team HexaCode - Prolink", // sender address
+        from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
         to: reviewee.email, // list of receivers
         subject: "ProLink - Шинэ үнэлгээ!", // Subject line
         text: "Freelancing App / Team HexaCode", // plain text body
@@ -158,7 +158,7 @@ export async function POST(req: NextRequest) {
         data: { rating, message, revieweeId, reviewerId: verify.id },
       });
       await transporter.sendMail({
-        from: "Team HexaCode - Prolink", // sender address
+        from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
         to: reviewee.email, // list of receivers
         subject: "ProLink - Шинэ үнэлгээ!", // Subject line
         text: "Freelancing App / Team HexaCode", // plain text body
