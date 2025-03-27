@@ -11,7 +11,7 @@ import nodemailer from "nodemailer";
 import { clientStatus } from "@prisma/client";
 import { avgRating } from "@/lib/helper";
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp.zoho.com",
   port: 465,
   secure: true,
   auth: {

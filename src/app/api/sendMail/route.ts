@@ -10,7 +10,7 @@ import { prisma } from "@/lib/prisma";
 
 import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp.zoho.com",
   port: 465,
   secure: true,
   auth: {

@@ -9,7 +9,7 @@ import { NextRequest } from "next/server";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp.zoho.com",
   port: 465,
   secure: true,
   auth: {

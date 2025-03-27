@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp.zoho.com",
   port: 465,
   secure: true,
   auth: {
