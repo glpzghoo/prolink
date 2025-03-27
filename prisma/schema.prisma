@@ -43,18 +43,18 @@ model otp {
   email     String
   createdAt DateTime @default(now())
 }
-model category {
-  id String @id @default(nanoid())
-  name String
-  createdAt DateTime @default(now())
-  skills skill[]
-}
+// model category {
+//   id String @id @default(nanoid())
+//   name String
+//   createdAt DateTime @default(now())
+//   skills skill[]
+// }
 model skill {
   id             String           @id @default(nanoid())
   name           String           @unique
   createdAt      DateTime         @default(now())
-  category category @relation(references: [id], fields: [categoryId])
-  categoryId String
+  // category category @relation(references: [id], fields: [categoryId])
+  // categoryId String
   featuredSkills featuredSkills[]
   job            job[]            @relation("jobToskill")
   user           user[]           @relation("skillTouser")
