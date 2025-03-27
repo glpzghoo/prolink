@@ -109,6 +109,14 @@ export default function Client() {
     fetchData();
   }, [change]);
   useEffect(() => {
+    const timeout = setTimeout(() => {
+      setVerifyMailResponse(undefined);
+    }, 3000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [verifyMailResponse]);
+  useEffect(() => {
     const getInfo = async () => {
       const res = await axios.get(`/api/account`);
 
