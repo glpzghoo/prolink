@@ -56,7 +56,6 @@ export async function GET(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const id = req.nextUrl.searchParams.get("id");
-    // console.log(id);
     if (!id) {
       return CustomNextResponse(false, "NO_ID", "Таних тэмдэг алга", null);
     }

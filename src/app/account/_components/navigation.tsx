@@ -17,7 +17,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 const navLinks = [
-  { href: "/freelancer", label: "Мэргэжилтэнгүүд" },
+  { href: "/freelancer", label: "Талентууд" },
   { href: "/job", label: "Ажлын санал" },
   { href: "/client", label: "Манайд бүртгэлтэй байгууллагууд" },
 ];
@@ -141,7 +141,7 @@ export function Navigation() {
               <input
                 onChange={(e) => debounce(e.target.value)}
                 className="bg-transparent w-full text-sm text-gray-800 placeholder-gray-500 focus:outline-none"
-                placeholder="Ажил, мэргэжилтэн хайх..."
+                placeholder="Компани, талент хайх..."
               />
             </motion.div>
 
@@ -253,7 +253,7 @@ export function Navigation() {
                 <input
                   onChange={(e) => debounce(e.target.value)}
                   className="bg-transparent w-full text-sm text-gray-800 placeholder-gray-500 focus:outline-none"
-                  placeholder="Ажил, мэргэжилтэн хайх..."
+                  placeholder="Компани, талент хайх..."
                 />
               </motion.div>
               {response?.code === "SUCCESS" && (

@@ -75,7 +75,7 @@ export function ClientCard({ user }: { user: CustomUser }) {
                 strokeLinejoin="round"
               />
             </svg>
-            {avrRating()}/5
+            {avrRating()}/5.0
             <p>({user.reviewee.length} үнэлгээ өгсөн)</p>
           </div>
           <div className=" flex flex-wrap justify-center gap-2 mt-2">

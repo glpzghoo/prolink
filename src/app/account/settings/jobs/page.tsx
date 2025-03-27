@@ -81,7 +81,6 @@ export default function AboutSettings() {
       if (res.data.success) {
         setRefresh(!refresh);
       }
-      console.log(res.data);
     } catch (err) {
       console.error(err);
     } finally {

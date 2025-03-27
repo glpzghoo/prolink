@@ -65,6 +65,7 @@ export default function Client() {
   const [verifyMailResponse, setVerifyMailResponse] = useState<responseData>();
   const [change, setChange] = useState(false);
   const [isValidRatingForm, setisValidRatingForm] = useState(true);
+  const [alert, setAlert] = useState(false);
   const [ratingResponse, setratingResponse] = useState<responseData>();
   const handleLeftScroll = () => {
     if (div.current) {
@@ -117,6 +118,14 @@ export default function Client() {
     };
   }, [verifyMailResponse]);
   useEffect(() => {
+    const timeout = setTimeout(() => {
+      setAlert(false);
+    }, 5000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [alert]);
+  useEffect(() => {
     const getInfo = async () => {
       const res = await axios.get(`/api/account`);
 
@@ -143,10 +152,12 @@ export default function Client() {
     return Number(fixed.toFixed(1));
   };
   const copyURL = () => {
+    setAlert(false);
     navigator.clipboard
       .writeText(window.location.href)
       .then(() => console.log("url copied!"))
       .catch((err) => console.error("fail: ", err));
+    setAlert(true);
   };
   const sendRating = async () => {
     setratingResponse(undefined);
@@ -207,6 +218,11 @@ export default function Client() {
                       className="rounded-full w-14 h-14 object-cover"
                     />
                   )}
+                  <Snackbar
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    open={alert}
+                    message={"Линк амжилттай хууллаа!"}
+                  />
                   {verifyMailResponse?.message && (
                     <Snackbar
                       sx={{
@@ -590,7 +606,7 @@ export default function Client() {
 
               {/* 1-р багана: Бусад чадварлаг хүмүүсийг хайх */}
               <div className="w-full flex flex-col p-4 gap-5">
-                <div className=" font-semibold">Төстэй freelancer -ууд~</div>
+                <div className=" font-semibold">Төстэй талентууд~</div>
                 <div className=" flex gap-14 whitespace-nowrap flex-wrap">
                   {similarUsers.length > 0 ? (
                     similarUsers.map((skil) => (

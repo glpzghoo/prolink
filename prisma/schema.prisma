@@ -18,7 +18,7 @@ model user {
   password                 String
   salary                   Int              @default(10000)
   salaryType               String           @default("HOUR")
-  pfp                      String
+  pfp                      String  @default("https://res.cloudinary.com/de1g2bwml/image/upload/v1743082081/wq8bizkppiekxiwgkxnt.png")
   about                    String?
   profileViews             Int              @default(0)
   companyLocation          String           @default("Улаанбаатар")
@@ -43,11 +43,18 @@ model otp {
   email     String
   createdAt DateTime @default(now())
 }
-
+model category {
+  id String @id @default(nanoid())
+  name String
+  createdAt DateTime @default(now())
+  skills skill[]
+}
 model skill {
   id             String           @id @default(nanoid())
   name           String           @unique
   createdAt      DateTime         @default(now())
+  category category @relation(references: [id], fields: [categoryId])
+  categoryId String
   featuredSkills featuredSkills[]
   job            job[]            @relation("jobToskill")
   user           user[]           @relation("skillTouser")

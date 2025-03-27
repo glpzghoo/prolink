@@ -194,7 +194,7 @@ export default function App() {
             </div>
             <div>-</div>
             <div>
-              Ажил олгогчийн дундаж үнэлгээ:{" "}
+              Компаний дундаж үнэлгээ:{" "}
               <span className=" font-bold">{avgRating(post.poster)}/5</span>
             </div>
           </div>
@@ -288,7 +288,7 @@ export default function App() {
           sx={{ color: "red" }}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
           open={alert}
-          message={"Сануулга: Уг ажил олгогч хаягаа баталгаажаагүй байна!"}
+          message={"Сануулга: Уг байгууллага хаягаа баталгаажаагүй байна!"}
         />
 
         <div className="mt-4 pb-4 border-b">

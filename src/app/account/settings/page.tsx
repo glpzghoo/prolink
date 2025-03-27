@@ -179,7 +179,7 @@ export default function AccountSettings() {
           Хэрэглэгчийн Статус:{" "}
           {user?.role === "CLIENT"
             ? "Компани/Үйлчлүүлэгч"
-            : "Freelancer/Ажил горилогч"}
+            : "Freelancer/Ажил горилогч/Талент"}
         </div>
         <div className="flex justify-center">
           <Tabs defaultValue="pfp" className="w-full items-center">

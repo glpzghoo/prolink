@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       return CustomNextResponse(
         false,
         "NO_PERMISSION",
-        "Зөвхөн байгууллага мэрэгжилтэнд, мэргэжилтэн байгууллагад үнэлгээ өгөх эрхтэй!",
+        "Зөвхөн байгууллага талентад, талент байгууллагад үнэлгээ өгөх эрхтэй!",
         null
       );
     }
@@ -182,7 +182,7 @@ export async function POST(req: NextRequest) {
     return CustomNextResponse(
       false,
       "NO_PERMISSION",
-      "Зөвхөн байгууллага мэрэгжилтэнд, мэргэжилтэн байгууллагад үнэлгээ өгөх эрхтэй!",
+      "Зөвхөн байгууллага талентад, талент байгууллагад үнэлгээ өгөх эрхтэй!",
       null
     );
   } catch (err) {

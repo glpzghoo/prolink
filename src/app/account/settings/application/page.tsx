@@ -114,12 +114,11 @@ export default function ProposalDetails() {
 
       setAlert(true);
     } catch (err) {
-      console.log("Value change error", err);
+      console.error("Value change error", err);
     } finally {
       setLoading2(false);
     }
   };
-  // console.log(applicationData[0].freelancer.email);
   useEffect(() => {
     setAcceptedAlert(true);
     const timeout = setTimeout(() => {
@@ -141,7 +140,7 @@ export default function ProposalDetails() {
   const renderStatusMessage = (application: CustomJobApplication) => {
     if (application.cancelled) {
       return role === "CLIENT"
-        ? "Ажил горилогч хүсэлтээ буцаасан байна!"
+        ? "Талент хүсэлтээ буцаасан байна!"
         : "Та хүсэлтээ буцаасан байна!";
     }
     if (role === "CLIENT") {
@@ -152,7 +151,7 @@ export default function ProposalDetails() {
         : "Татгалзсан";
     }
     return application.clientStatus === "waiting"
-      ? "Ажил олгогчийн хариуг хүлээж байна."
+      ? "Компаний хариуг хүлээж байна."
       : application.clientStatus === "accepted"
       ? "Зөвшөөрсөн"
       : "Татгалзсан";
@@ -281,9 +280,7 @@ export default function ProposalDetails() {
               <div className="lg:w-80 bg-gray-50 p-6 flex flex-col items-center justify-between rounded-lg">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-700 mb-4">
-                    {role === "CLIENT"
-                      ? "Ажил горилогчийн тухай"
-                      : "Ажил олгогчийн тухай"}
+                    {role === "CLIENT" ? "Талентын тухай" : "Компаний тухай"}
                   </h2>
                   <div className="space-y-3 text-gray-700">
                     <div className=" flex gap-2">

@@ -56,19 +56,21 @@ const ratingSchema = z.object({
   rating: z.number().min(1),
 });
 export default function Client() {
-  const searchParams = useSearchParams();
-  const filter = searchParams.get("filter");
   const [user, setUser] = useState<CustomUser>();
   const [similarUsers, setSimilarUsers] = useState<CustomUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(false);
   const [loadingAddingReview, setloadingAddingReview] = useState(false);
+  const [expand, setExpand] = useState(false);
+  const [expand2, setExpand2] = useState(false);
   const [change, setChange] = useState(false);
   const [isValidRatingForm, setisValidRatingForm] = useState(true);
   const [ratingResponse, setratingResponse] = useState<responseData>();
   const [verifyMailResponse, setVerifyMailResponse] = useState<responseData>();
   const [showFullReview, setshowFullReview] = useState<number | undefined>();
+  const [alert, setAlert] = useState(false);
   const div = useRef<HTMLDivElement>(null);
+  const textDiv = useRef<HTMLDivElement>(null);
   const handleLeftScroll = () => {
     if (div.current) {
       div.current.scrollBy({ left: -400, behavior: "smooth" });
@@ -137,6 +139,14 @@ export default function Client() {
       setisValidRatingForm(false);
     }
   }, [ratingForm]);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setAlert(false);
+    }, 5000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [alert]);
   const avgRating = (): number => {
     if (!user?.reviewee || user.reviewee.length === 0) return 0;
 
@@ -145,10 +155,12 @@ export default function Client() {
     return Number(fixed.toFixed(1));
   };
   const copyURL = () => {
+    setAlert(false);
     navigator.clipboard
       .writeText(window.location.href)
       .then(() => console.log("url copied!"))
       .catch((err) => console.error("fail: ", err));
+    setAlert(true);
   };
   const sendRating = async () => {
     try {
@@ -173,6 +185,11 @@ export default function Client() {
 
     setLoading2(false);
   };
+  useEffect(() => {
+    if (textDiv.current) {
+      setExpand(textDiv.current.scrollHeight > textDiv.current.clientHeight);
+    }
+  }, [user]);
   return (
     <>
       {/* Үндсэн Background */}
@@ -196,6 +213,11 @@ export default function Client() {
                     className="rounded-full w-14 h-14 object-cover"
                   />
                 )}
+                <Snackbar
+                  anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                  open={alert}
+                  message={"Линк амжилттай хууллаа!"}
+                />
                 {verifyMailResponse?.message && (
                   <Snackbar
                     sx={{ color: verifyMailResponse.success ? "green" : "red" }}
@@ -595,24 +617,36 @@ export default function Client() {
                           <div className=" text-green-500">
                             <GoDotFill className="animate-ping duration-4000" />
                           </div>
-                          {ski.title}
+                          <Link target="blank" href={`/job/${ski.id}`}>
+                            {ski.title}
+                          </Link>
                         </h3>
                         <div>{ski.postedAt.split("T")[0]}</div>
                       </div>
-                      <div className="list-disc list-inside text-gray-700 mt-1">
+                      <div
+                        ref={textDiv}
+                        className={`list-disc list-inside text-gray-700 mt-1 ${
+                          expand2 ? `h-full` : `max-h-20`
+                        } transition-all duration-300 overflow-hidden`}
+                      >
                         {ski.description}
                       </div>
+                      {expand && (
+                        <Button
+                          sx={{ color: "green" }}
+                          onClick={() => setExpand2(!expand2)}
+                        >
+                          үргэлжлүүлж унших
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </>
               )}
             </div>
 
-            {/* Доод линкүүдийн хэсэг */}
-
-            {/* 1-р багана: Бусад чадварлаг хүмүүсийг хайх */}
             <div className="w-full flex flex-col p-4 gap-5">
-              <div className=" font-semibold">Төстэй ажил олгогчид~</div>
+              <div className=" font-semibold">Төстэй компаниуд~</div>
               <div className=" flex gap-14 whitespace-nowrap flex-wrap">
                 {similarUsers.length > 0 ? (
                   similarUsers.map((skil) => (
