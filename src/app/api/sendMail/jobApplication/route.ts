@@ -107,7 +107,7 @@ export async function GET(req: NextRequest) {
     await transporter.sendMail({
       from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
       to: job.poster.email, // list of receivers
-      subject: "ProLink - Таньд ажлын урилга ирлээ!", // Subject line
+      subject: "ProLink - Ажлын хүсэлт ирлээ!", // Subject line
       text: "Freelancing App / Team HexaCode", // plain text body
       html: `<b>Сайн байна уу! ${job.poster.companyName}.</b><p>Таны "${
         job.title
