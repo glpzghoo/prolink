@@ -152,7 +152,6 @@ export default function Client() {
     return Number(fixed.toFixed(1));
   };
   const copyURL = () => {
-    setAlert(false);
     navigator.clipboard
       .writeText(window.location.href)
       .then(() => console.log("url copied!"))

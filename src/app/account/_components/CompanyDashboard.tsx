@@ -68,6 +68,8 @@ export default function Client() {
   const [ratingResponse, setratingResponse] = useState<responseData>();
   const [verifyMailResponse, setVerifyMailResponse] = useState<responseData>();
   const [showFullReview, setshowFullReview] = useState<number | undefined>();
+  const [favorite, setFavorites] = useState<string[]>([]);
+  const [isItFavorite, setIsFavorite] = useState(false);
   const [alert, setAlert] = useState(false);
   const div = useRef<HTMLDivElement>(null);
   const textDiv = useRef<HTMLDivElement>(null);
@@ -155,7 +157,6 @@ export default function Client() {
     return Number(fixed.toFixed(1));
   };
   const copyURL = () => {
-    setAlert(false);
     navigator.clipboard
       .writeText(window.location.href)
       .then(() => console.log("url copied!"))
@@ -178,6 +179,16 @@ export default function Client() {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     }
   };
+  useEffect(() => {
+    const favoritesString = localStorage.getItem("favorites");
+    const favorites = favoritesString ? JSON.parse(favoritesString) : [];
+    setFavorites(favorites);
+
+    const fav = favorites.some((a: { id: string }) => a.id === id);
+    if (fav) {
+      setIsFavorite(true);
+    }
+  }, []);
   const sendmail = async () => {
     setLoading2(true);
     const res = await axios.get(`/api/account/verifyEmail`);
@@ -190,6 +201,10 @@ export default function Client() {
       setExpand(textDiv.current.scrollHeight > textDiv.current.clientHeight);
     }
   }, [user]);
+  const saveFavorite = () => {
+    setFavorites((prev) => ({ ...prev, id }));
+    localStorage.setItem("favorites", JSON.stringify(favorite));
+  };
   return (
     <>
       {/* Үндсэн Background */}
@@ -204,13 +219,12 @@ export default function Client() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
                 {/* Профайл зураг */}
-                {user.pfp ? (
-                  <Image src={`${user.pfp}`} width={56} height={56} alt="pfp" />
-                ) : (
-                  <img
-                    src="images.jpeg"
-                    alt="Profile"
-                    className="rounded-full w-14 h-14 object-cover"
+                {user.pfp && (
+                  <Image
+                    src={`${user.pfp ? user.pfp : "/placeholder.png"}`}
+                    width={56}
+                    height={56}
+                    alt="pfp"
                   />
                 )}
                 <Snackbar
@@ -481,7 +495,7 @@ export default function Client() {
                       <Link
                         target="blank"
                         className=""
-                        href={`/client/${
+                        href={`/freelancer/${
                           user.reviewee[showFullReview - 1].reviewer.id
                         }`}
                       >
@@ -625,7 +639,7 @@ export default function Client() {
                       </div>
                       <div
                         ref={textDiv}
-                        className={`list-disc list-inside text-gray-700 mt-1 ${
+                        className={`list-disc list-inside  whitespace-pre-wrap text-gray-700 mt-1 ${
                           expand2 ? `h-full` : `max-h-20`
                         } transition-all duration-300 overflow-hidden`}
                       >
@@ -633,10 +647,10 @@ export default function Client() {
                       </div>
                       {expand && (
                         <Button
-                          sx={{ color: "green" }}
+                          sx={{ color: "green", textTransform: "lowercase" }}
                           onClick={() => setExpand2(!expand2)}
                         >
-                          үргэлжлүүлж унших
+                          {expand2 ? "хураах" : "дэлгэх"}
                         </Button>
                       )}
                     </div>
