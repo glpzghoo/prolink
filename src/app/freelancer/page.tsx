@@ -11,9 +11,14 @@ export type CustomUser = user & {
   skill: skill[];
   reviewee: review[];
 };
+type favorite = {
+  id: string;
+  role: string;
+};
 export default function Freelance() {
   const [users, setUsers] = useState<CustomUser[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<CustomUser[]>([]);
+  const [favorites, setFavorites] = useState<favorite[]>([]);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
@@ -74,6 +79,12 @@ export default function Freelance() {
     });
     setFilteredUsers(filterSkills);
   }, [filter]);
+
+  useEffect(() => {
+    const fav = localStorage.getItem("favorites");
+    const favoritesL = fav ? JSON.parse(fav) : [];
+    setFavorites(favoritesL);
+  }, []);
   return (
     <div>
       {!loading ? (
@@ -87,7 +98,7 @@ export default function Freelance() {
               </div>
               <div className="max-w-[1280px] mx-auto flex flex-wrap justify-between gap-4 mt-6">
                 {filteredUsers.map((user) => (
-                  <ClientCard key={user.id} user={user} />
+                  <ClientCard favorites={favorites} key={user.id} user={user} />
                 ))}
               </div>
             </>
@@ -100,7 +111,7 @@ export default function Freelance() {
               </div>
               <div className="max-w-[1280px] mx-auto flex flex-wrap justify-between gap-4 mt-6">
                 {users.map((user) => (
-                  <ClientCard key={user.id} user={user} />
+                  <ClientCard favorites={favorites} key={user.id} user={user} />
                 ))}
               </div>
             </>

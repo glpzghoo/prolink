@@ -10,7 +10,7 @@ import { prisma } from "@/lib/prisma";
 
 import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp.zoho.com",
   port: 465,
   secure: true,
   auth: {
@@ -66,12 +66,12 @@ export async function POST(req: NextRequest) {
       return CustomNextResponse(
         false,
         "REQUEST_FAILED",
-        "Freelancer холбоо барих хүсэлт илгээх боломжгүй!",
+        "Талентууд холбоо барих хүсэлт илгээх боломжгүй!",
         null
       );
     }
     await transporter.sendMail({
-      from: "Team HexaCode - Prolink", // sender address
+      from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
       to: profileOwner.email, // list of receivers
       subject: "ProLink - Холбоо барих хүсэлт ирлээ!", // Subject line
       text: "Freelancing App / Team HexaCode", // plain text body

@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp.zoho.com",
   port: 465,
   secure: true,
   auth: {
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
       data: { otp, email: user.email },
     });
     await transporter.sendMail({
-      from: "Team HexaCode - Prolink", // sender address
+      from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
       to: user.email, // list of receivers
       subject: "ProLink - Таны баталгаажуулах линк", // Subject line
       text: "Freelancing App / Team HexaCode", // plain text body

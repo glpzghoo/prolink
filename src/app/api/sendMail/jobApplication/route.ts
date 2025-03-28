@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp.zoho.com",
   port: 465,
   secure: true,
   auth: {
@@ -87,7 +87,7 @@ export async function GET(req: NextRequest) {
       return CustomNextResponse(
         false,
         "JOB_APPLICATION_EXIST",
-        "Та алв хэдийн хүсэлт гаргасан байна. Компань зөвшөөрөх хүртэл хүлээнэ үү!",
+        "Та аль хэдийн хүсэлт гаргасан байна. Компань зөвшөөрөх хүртэл хүлээнэ үү!",
         null
       );
     }
@@ -105,9 +105,9 @@ export async function GET(req: NextRequest) {
     }
 
     await transporter.sendMail({
-      from: "Team HexaCode - Prolink", // sender address
+      from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
       to: job.poster.email, // list of receivers
-      subject: "ProLink - Таньд ажлын урилга ирлээ!", // Subject line
+      subject: "ProLink - Ажлын хүсэлт ирлээ!", // Subject line
       text: "Freelancing App / Team HexaCode", // plain text body
       html: `<b>Сайн байна уу! ${job.poster.companyName}.</b><p>Таны "${
         job.title

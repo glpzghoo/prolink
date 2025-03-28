@@ -9,7 +9,7 @@ import { NextRequest } from "next/server";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp.zoho.com",
   port: 465,
   secure: true,
   auth: {
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       return CustomNextResponse(
         false,
         "NO_PERMISSION",
-        "Зөвхөн байгууллага мэрэгжилтэнд, мэргэжилтэн байгууллагад үнэлгээ өгөх эрхтэй!",
+        "Зөвхөн байгууллага талентад, талент байгууллагад үнэлгээ өгөх эрхтэй!",
         null
       );
     }
@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
         data: { rating, message, revieweeId, reviewerId: verify.id },
       });
       await transporter.sendMail({
-        from: "Team HexaCode - Prolink", // sender address
+        from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
         to: reviewee.email, // list of receivers
         subject: "ProLink - Шинэ үнэлгээ!", // Subject line
         text: "Freelancing App / Team HexaCode", // plain text body
@@ -158,7 +158,7 @@ export async function POST(req: NextRequest) {
         data: { rating, message, revieweeId, reviewerId: verify.id },
       });
       await transporter.sendMail({
-        from: "Team HexaCode - Prolink", // sender address
+        from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
         to: reviewee.email, // list of receivers
         subject: "ProLink - Шинэ үнэлгээ!", // Subject line
         text: "Freelancing App / Team HexaCode", // plain text body
@@ -182,7 +182,7 @@ export async function POST(req: NextRequest) {
     return CustomNextResponse(
       false,
       "NO_PERMISSION",
-      "Зөвхөн байгууллага мэрэгжилтэнд, мэргэжилтэн байгууллагад үнэлгээ өгөх эрхтэй!",
+      "Зөвхөн байгууллага талентад, талент байгууллагад үнэлгээ өгөх эрхтэй!",
       null
     );
   } catch (err) {

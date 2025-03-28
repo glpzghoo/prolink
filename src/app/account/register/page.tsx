@@ -266,7 +266,11 @@ export default function Login() {
                             />
                           )}
                           <Image
-                            src={form.pfp ? form.pfp : `/placeholder.png`}
+                            src={
+                              form.pfp
+                                ? form.pfp
+                                : `https://res.cloudinary.com/de1g2bwml/image/upload/v1743082081/wq8bizkppiekxiwgkxnt.png`
+                            }
                             alt="pfp"
                             className=""
                             width={100}
@@ -436,8 +440,8 @@ export default function Login() {
                     </Label>
                     <div className=" text-[#717171] text-xs">
                       {roles === "FREELANCER"
-                        ? "Ажил олгогч тантай холбогдох болно."
-                        : "Ажил горилогч тантай холбогдох болно."}
+                        ? "Компани тантай холбогдох болно."
+                        : "Талент тантай холбогдох болно."}
                     </div>
                     {form.phoneNumber && (
                       <div>

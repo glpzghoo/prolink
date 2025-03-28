@@ -46,7 +46,6 @@ export default function App() {
     };
     fetch();
   }, [search]);
-  console.log({ user, freelancers, clients });
   return (
     <Suspense fallback={<Loading />}>
       <div>
@@ -65,7 +64,7 @@ export default function App() {
               <div className="flex flex-col text-foreground px-28">
                 {freelancers.length > 0 && (
                   <div className=" font-bold">
-                    <div>Мэргэжилтэнгүүд</div>
+                    <div>Талентууд</div>
                     <div className="flex">
                       {freelancers.map((freelancer) => (
                         <ClientCard key={freelancer.id} user={freelancer} />

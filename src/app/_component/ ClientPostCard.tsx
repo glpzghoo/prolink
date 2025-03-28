@@ -5,17 +5,29 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
 import { GoUnverified } from "react-icons/go";
-
-export function ClientCard({ user }: { user: CustomUser }) {
+import { CiCircleCheck } from "react-icons/ci";
+import { IoMdCheckmark } from "react-icons/io";
+type favorite = {
+  id: string;
+  role: string;
+};
+export function ClientCard({
+  user,
+  favorites,
+}: {
+  user: CustomUser;
+  favorites?: favorite[];
+}) {
   const avrRating = () => {
     if (!user?.reviewee || user.reviewee.length === 0) return 0;
     const total = user.reviewee.reduce((prev, acc) => prev + acc.rating, 0);
     const avg = total / user.reviewee.length / 20;
     return avg.toFixed(1);
   };
+  const userSaved = favorites?.some((a) => a.id === user.id);
   return (
     <Link
-      className="w-[280px] max-h-[450px] md:mt-8 mx-auto border border-[#e9e9e9] rounded-xl p-4 shadow-lg"
+      className="w-[280px] max-h-[450px] md:mt-8 mx-auto border border-[#e9e9e9] rounded-xl p-4 shadow-lg relative"
       href={user.companyName ? `/client/${user.id}` : `/freelancer/${user.id}`}
     >
       <div>
@@ -41,6 +53,14 @@ export function ClientCard({ user }: { user: CustomUser }) {
               height={100}
             />
           </div>
+          {userSaved && (
+            <div className=" flex items-center absolute bottom-0 right-0 p-2 text-green-600">
+              <div>
+                <IoMdCheckmark className=" text-lg" />
+              </div>
+              <div>Хадгалсан</div>
+            </div>
+          )}
           <div className="flex">
             <p className="font-bold text-2xl">
               {" "}
@@ -75,7 +95,7 @@ export function ClientCard({ user }: { user: CustomUser }) {
                 strokeLinejoin="round"
               />
             </svg>
-            {avrRating()}/5
+            {avrRating()}/5.0
             <p>({user.reviewee.length} үнэлгээ өгсөн)</p>
           </div>
           <div className=" flex flex-wrap justify-center gap-2 mt-2">

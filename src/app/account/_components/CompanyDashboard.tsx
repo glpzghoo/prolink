@@ -28,6 +28,7 @@ import { FaCircleArrowLeft, FaCircleArrowRight } from "react-icons/fa6";
 import { GoDotFill, GoUnverified } from "react-icons/go";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
 import { ImNewTab, ImSpinner10 } from "react-icons/im";
+import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import z from "zod";
 import { useReactToPrint } from "react-to-print";
 type CustomUser = user & {
@@ -52,28 +53,36 @@ export type CustomFeaturedSkill = featuredSkills & {
   endedAt: string;
   user: CustomUser;
 };
+type favorite = {
+  id: string;
+  role: string;
+};
 const ratingSchema = z.object({
   message: z.string().min(5),
   rating: z.number().min(1),
 });
 export default function Client() {
-  const searchParams = useSearchParams();
-  const filter = searchParams.get("filter");
   const [user, setUser] = useState<CustomUser>();
   const [similarUsers, setSimilarUsers] = useState<CustomUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(false);
   const [loadingAddingReview, setloadingAddingReview] = useState(false);
+  const [expand, setExpand] = useState(false);
+  const [expand2, setExpand2] = useState(false);
   const [change, setChange] = useState(false);
   const [isValidRatingForm, setisValidRatingForm] = useState(true);
   const [ratingResponse, setratingResponse] = useState<responseData>();
   const [verifyMailResponse, setVerifyMailResponse] = useState<responseData>();
   const [showFullReview, setshowFullReview] = useState<number | undefined>();
+  const [favorites, setFavorites] = useState<favorite[]>([]);
+  const [isItFavorite, setIsFavorite] = useState(false);
+  const [alert, setAlert] = useState(false);
   const div = useRef<HTMLDivElement>(null);
 
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
 
+  const textDiv = useRef<HTMLDivElement>(null);
   const handleLeftScroll = () => {
     if (div.current) {
       div.current.scrollBy({ left: -400, behavior: "smooth" });
@@ -142,6 +151,14 @@ export default function Client() {
       setisValidRatingForm(false);
     }
   }, [ratingForm]);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setAlert(false);
+    }, 5000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [alert]);
   const avgRating = (): number => {
     if (!user?.reviewee || user.reviewee.length === 0) return 0;
 
@@ -154,6 +171,7 @@ export default function Client() {
       .writeText(window.location.href)
       .then(() => console.log("url copied!"))
       .catch((err) => console.error("fail: ", err));
+    setAlert(true);
   };
   const sendRating = async () => {
     try {
@@ -171,6 +189,45 @@ export default function Client() {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
     }
   };
+
+  // fav
+  useEffect(() => {
+    const favoritesString = localStorage.getItem("favorites");
+    const storedFavorites = favoritesString ? JSON.parse(favoritesString) : [];
+    setFavorites(storedFavorites);
+    const fav = storedFavorites.some((a: { id: string }) => a.id === id);
+    if (fav) {
+      setIsFavorite(true);
+    }
+  }, [id]);
+  const saveFavorite = () => {
+    const fav = favorites.some((a: { id: string }) => a.id === id);
+    if (fav) {
+      const updated = favorites.filter((fav) => fav.id !== id);
+      localStorage.setItem("favorites", JSON.stringify(updated));
+
+      setFavorites(updated);
+
+      return;
+    }
+
+    if (user) {
+      const updated = [...favorites, { id, role: user.role }];
+      localStorage.setItem("favorites", JSON.stringify(updated));
+
+      setFavorites(updated);
+    }
+  };
+  useEffect(() => {
+    const fav = favorites.some((a: { id: string }) => a.id === id);
+    if (!fav) {
+      setIsFavorite(false);
+    } else {
+      setIsFavorite(true);
+    }
+  }, [favorites]);
+  // fav end
+
   const sendmail = async () => {
     setLoading2(true);
     const res = await axios.get(`/api/account/verifyEmail`);
@@ -178,6 +235,12 @@ export default function Client() {
 
     setLoading2(false);
   };
+  useEffect(() => {
+    if (textDiv.current) {
+      setExpand(textDiv.current.scrollHeight > textDiv.current.clientHeight);
+    }
+  }, [user]);
+  console.log(favorites);
   return (
     <>
       {/* Үндсэн Background */}
@@ -188,22 +251,26 @@ export default function Client() {
           {/* Цагаан блок (main container) */}
           {loading2 && <Loading />}
           <div
-            className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg"
+            className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg relative"
             ref={contentRef}
           >
             {/* Дээд хэсэг */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
                 {/* Профайл зураг */}
-                {user.pfp ? (
-                  <Image src={`${user.pfp}`} width={56} height={56} alt="pfp" />
-                ) : (
-                  <img
-                    src="images.jpeg"
-                    alt="Profile"
-                    className="rounded-full w-14 h-14 object-cover"
+                {user.pfp && (
+                  <Image
+                    src={`${user.pfp ? user.pfp : "/placeholder.png"}`}
+                    width={56}
+                    height={56}
+                    alt="pfp"
                   />
                 )}
+                <Snackbar
+                  anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                  open={alert}
+                  message={"Линк амжилттай хууллаа!"}
+                />
                 {verifyMailResponse?.message && (
                   <Snackbar
                     sx={{ color: verifyMailResponse.success ? "green" : "red" }}
@@ -259,7 +326,7 @@ export default function Client() {
                 >
                   {loading2
                     ? `Түр хүлээнэ үү!`
-                    : `Таны хаяг баталгаажаагүй байна. Энд дарж хаягаа баталгаажуулна
+                    : `Хаяг баталгаажаагүй байна. Энд дарж хаягаа баталгаажуулна
                   уу!`}
                 </Button>
               )}
@@ -277,7 +344,16 @@ export default function Client() {
                     </button>
                   </Link>
                 )}
-
+                <div
+                  onClick={saveFavorite}
+                  className=" absolute top-0 right-0 p-2 text-2xl cursor-pointer"
+                >
+                  {isItFavorite ? (
+                    <MdFavorite className=" text-green-600" />
+                  ) : (
+                    <MdFavoriteBorder />
+                  )}
+                </div>
                 <button
                   onClick={copyURL}
                   className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
@@ -474,7 +550,7 @@ export default function Client() {
                       <Link
                         target="blank"
                         className=""
-                        href={`/client/${
+                        href={`/freelancer/${
                           user.reviewee[showFullReview - 1].reviewer.id
                         }`}
                       >
@@ -610,24 +686,36 @@ export default function Client() {
                           <div className=" text-green-500">
                             <GoDotFill className="animate-ping duration-4000" />
                           </div>
-                          {ski.title}
+                          <Link target="blank" href={`/job/${ski.id}`}>
+                            {ski.title}
+                          </Link>
                         </h3>
                         <div>{ski.postedAt.split("T")[0]}</div>
                       </div>
-                      <div className="list-disc list-inside text-gray-700 mt-1">
+                      <div
+                        ref={textDiv}
+                        className={`list-disc list-inside  whitespace-pre-wrap text-gray-700 mt-1 ${
+                          expand2 ? `h-full` : `max-h-20`
+                        } transition-all duration-300 overflow-hidden`}
+                      >
                         {ski.description}
                       </div>
+                      {expand && (
+                        <Button
+                          sx={{ color: "green", textTransform: "lowercase" }}
+                          onClick={() => setExpand2(!expand2)}
+                        >
+                          {expand2 ? "хураах" : "дэлгэх"}
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </>
               )}
             </div>
 
-            {/* Доод линкүүдийн хэсэг */}
-
-            {/* 1-р багана: Бусад чадварлаг хүмүүсийг хайх */}
             <div className="w-full flex flex-col p-4 gap-5">
-              <div className=" font-semibold">Төстэй ажил олгогчид~</div>
+              <div className=" font-semibold">Төстэй компаниуд~</div>
               <div className=" flex gap-14 whitespace-nowrap flex-wrap">
                 {similarUsers.length > 0 ? (
                   similarUsers.map((skil) => (

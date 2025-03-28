@@ -11,7 +11,7 @@ import nodemailer from "nodemailer";
 import { clientStatus } from "@prisma/client";
 import { avgRating } from "@/lib/helper";
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp.zoho.com",
   port: 465,
   secure: true,
   auth: {
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
       return CustomNextResponse(
         true,
         "REQUEST_SUCCESS",
-        "Ажил олгогчийн анкетүүд амжилттай татлаа!",
+        "Компаний анкетүүд амжилттай татлаа!",
         { user }
       );
     } else if (verify.role === "FREELANCER") {
@@ -74,7 +74,7 @@ export async function GET(req: NextRequest) {
       return CustomNextResponse(
         true,
         "REQUEST_SUCCESS",
-        "Ажил горилогчийн анкетүүд амжилттай татлаа!",
+        "Талентын анкетүүд амжилттай татлаа!",
         { user }
       );
     } else {
@@ -177,7 +177,7 @@ export async function PUT(req: NextRequest) {
       return CustomNextResponse(
         false,
         "NOT_PERMITTED",
-        "Ажил горилогчид төлөв өөрчлөх эрх байхгүй",
+        "Талент уг төлвийг өөрчлөх эрх байхгүй",
         null
       );
     } else if (verify.id !== jobApplication?.clientId) {
@@ -202,7 +202,7 @@ export async function PUT(req: NextRequest) {
       return CustomNextResponse(
         false,
         "REQUEST_FAILED",
-        "Ажил горилогч анкетийг буцаасан. Төлөв өөрчлөх боломжгүй!",
+        "Талент анкетийг буцаасан. Төлөв өөрчлөх боломжгүй!",
         jobApplication
       );
     }
@@ -236,15 +236,15 @@ export async function PUT(req: NextRequest) {
     if (statusValue === "accepted") {
       // ajil olgogch ruu
       await transporter.sendMail({
-        from: "Team HexaCode - Prolink", // sender address
+        from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
         to: jobApplication.client.email, // list of receivers
-        subject: "ProLink - Freelancer -ийн дэлгэрэнгүй мэдээлэл!", // Subject line
+        subject: "ProLink - Талентын дэлгэрэнгүй мэдээлэл!", // Subject line
         text: "Freelancing App / Team HexaCode", // plain text body
         html: `<b>Сайн байна уу! ${jobApplication.client.companyName}
         <br>
         <br>
         
-        <h2>Freelancer -ын тухай дэлгэрэнгүй мэдээлэл!</h2>
+        <h2>Талентын тухай дэлгэрэнгүй мэдээлэл!</h2>
             <br> 
              <br>
             <strong>Овог</strong>: ${jobApplication.freelancer.lastName}
@@ -285,7 +285,7 @@ export async function PUT(req: NextRequest) {
       });
       // ajil gorilogch ruu
       await transporter.sendMail({
-        from: "Team HexaCode - Prolink", // sender address
+        from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
         to: jobApplication.freelancer.email, // list of receivers
         subject: "ProLink - Байгууллагын дэлгэрэнгүй мэдээлэл!", // Subject line
         text: "Freelancing App / Team HexaCode", // plain text body
@@ -337,7 +337,7 @@ export async function PUT(req: NextRequest) {
     } else if (statusValue === "denied") {
       // ajil gorilogch ruu
       await transporter.sendMail({
-        from: "Team HexaCode - Prolink", // sender address
+        from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
         to: jobApplication.freelancer.email, // list of receivers
         subject: "ProLink - Харамсалтай мэдээ!", // Subject line
         text: "Freelancing App / Team HexaCode", // plain text body
