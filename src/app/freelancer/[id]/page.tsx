@@ -247,7 +247,7 @@ export default function Client() {
             </div>
           ) : (
             <div
-              className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-backgroundrelative shadow-lg"
+              className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background relative shadow-lg"
               ref={contentRef}
             >
               {/* Дээд хэсэг */}
