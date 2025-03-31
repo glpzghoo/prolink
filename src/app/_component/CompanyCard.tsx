@@ -4,41 +4,42 @@ import { CustomJob } from "../job/[id]/page";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { GoDotFill } from "react-icons/go";
 import { calculateTime } from "@/lib/helper";
+
 type Props = {
   post: CustomJob;
 };
+
 export default function CompanyCard({ post }: Props) {
   return (
     <Link href={`/job/${post.id}`}>
-      <div className="border border-solid w-xl rounded-3xl flex flex-col justify-center p-6 gap-6 relative shadow-lg">
-        <div className="flex justify-between">
-          <div>
-            <p className="font-bold">{post.title}</p>
-            <p className="text-gray-400 text-sm">
+      <div className="border border-solid w-xl rounded-2xl flex flex-col justify-center p-4 gap-2 shadow-lg hover:shadow-xl transition-shadow duration-300 relative">
+        <div className="flex flex-col sm:flex-row justify-between gap-2">
+          <div className="max-w-[60%]">
+            <p className="font-bold text-base truncate">{post.title}</p>
+            <p className="text-gray-400 text-xs">
               {calculateTime(post.postedAt)}
             </p>
           </div>
-          <div>
+          <div className="text-xs flex items-center gap-1 whitespace-nowrap">
             {post.status === "ACTIVE" ? (
-              <div className=" text-green-600 text-xs flex items-center gap-1 whitespace-nowrap">
-                <div>Идэвхитэй зар</div>{" "}
-                <GoDotFill className="animate-ping duration-4000" />
+              <div className="text-green-600 flex items-center">
+                <span>Идэвхитэй зар</span>
+                <GoDotFill className="animate-ping" />
               </div>
             ) : (
-              <div className=" text-pink-700/70 text-xs flex items-center gap-1 whitespace-nowrap">
-                <div>Идэвхигүй зар</div>{" "}
-              </div>
+              <div className="text-pink-700/70">Идэвхигүй зар</div>
             )}
           </div>
         </div>
-        <div className="flex justify-between gap-6">
-          <div className="flex text-sm items-end">
+
+        <div className="flex flex-col sm:flex-row justify-between gap-3">
+          <div className="flex text-sm items-center truncate">
             Байгууллага:
-            <span className="font-bold"> {post.poster.companyName}</span>
+            <span className="font-bold ml-1">{post.poster.companyName}</span>
           </div>
-          <div className="flex items-center">
-            <p className=" text-2xl">{post.salary}</p>
-            <h2 className="text-sm text-gray-400">
+          <div className="flex items-center gap-1">
+            <p className="text-xl font-semibold">{post.salary}</p>
+            <h2 className="text-xs text-gray-400">
               /
               {post.salaryRate === "MONTH"
                 ? `сар`
@@ -48,26 +49,30 @@ export default function CompanyCard({ post }: Props) {
             </h2>
           </div>
         </div>
-        <p className=" h-[100px] overflow-hidden">{post.description}</p>
 
-        <div className="flex gap-4">
-          {post.skill.length === 0
-            ? `Ур чадварын шаардлага алга`
-            : post.skill
-                .map((ski) => (
-                  <button
-                    key={ski.id}
-                    className="bg-gray-300 p-1 rounded-3xl text-xs text-gray-500"
-                  >
-                    {ski.name}
-                  </button>
-                ))
-                .slice(0, 3)}
+        <p className="text-sm h-[80px] overflow-hidden text-ellipsis line-clamp-3">
+          {post.description}
+        </p>
+
+        <div className="flex flex-wrap gap-2">
+          {post.skill.length === 0 ? (
+            <span className="text-xs text-gray-500">
+              Ур чадварын шаардлага алга
+            </span>
+          ) : (
+            post.skill.slice(0, 3).map((ski) => (
+              <button
+                key={ski.id}
+                className="bg-gray-200 p-1 px-2 rounded-full text-xs text-gray-600 hover:bg-gray-300 transition-colors"
+              >
+                {ski.name}
+              </button>
+            ))
+          )}
         </div>
-        <div className=" absolute bottom-0 right-0 p-5 flex items-center gap-1">
-          {" "}
-          <MdOutlineRemoveRedEye />
-          {post.jobPostView}
+        <div className="absolute bottom-2 right-2 flex items-center gap-1 text-gray-500">
+          <MdOutlineRemoveRedEye className="text-sm" />
+          <span className="text-xs">{post.jobPostView}</span>
         </div>
       </div>
     </Link>
