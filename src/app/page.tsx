@@ -25,7 +25,6 @@ export default function Home() {
         ref={mobileImgRef}
         className="max-w-[1280px] bg-[#fff] w-full min-h-[548px] my-20 mx-auto flex flex-col lg:flex-row items-center justify-between border rounded-2xl p-3"
       >
-        {/* Mobile Image */}
         <div className=" lg:hidden w-full flex justify-center">
           <img
             alt="Connecting people"

@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Montserrat", sans-serif;
+  --font-mono: "Montserrat", monospace;
 }
 
 :root {
@@ -125,5 +125,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: "Montserrat", sans-serif;
   }
 }

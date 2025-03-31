@@ -92,7 +92,7 @@ export default function Freelance() {
           {filter ? (
             <>
               <Badge />
-              <div className="border border-solid max-w-[1250px] text-start p-4 font-bold rounded-3xl mx-auto ">
+              <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto bg-white">
                 Дундаж үнэлгээ:{" "}
                 {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
               </div>
@@ -105,7 +105,7 @@ export default function Freelance() {
           ) : (
             <>
               <Badge />
-              <div className="border border-solid max-w-[1250px] text-start p-4 font-bold rounded-3xl mx-auto ">
+              <div className="border border-solid max-w-[1250px] p-4 font-bold rounded-3xl mx-auto bg-white text-center">
                 Дундаж үнэлгээ:{" "}
                 {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
               </div>
