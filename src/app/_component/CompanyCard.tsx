@@ -42,7 +42,7 @@ export default function CompanyCard({ post }: Props) {
             <span className="font-semibold">{post.poster.companyName}</span>
           </div>
           <div className="flex items-center gap-2 bg-green-50 px-2 py-1 rounded-md">
-            <span className="text-lg sm:text-xl font-bold text-green-700">
+            <span className="text-md font-bold text-green-700">
               {formattedSalary} ₮
             </span>
             <span className="text-xs text-gray-700 font-medium bg-green-100 px-1.5 py-0.5 rounded">
