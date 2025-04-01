@@ -95,7 +95,7 @@ export default function Freelance() {
           {filter ? (
             <>
               <Badge />
-              <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto">
+              <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto mb-4">
                 Дундаж үнэлгээ:{" "}
                 {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
               </div>
@@ -109,12 +109,12 @@ export default function Freelance() {
           ) : (
             <>
               <Badge />
-              <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto">
+              <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto mb-4">
                 Дундаж үнэлгээ:{" "}
                 {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
               </div>
-              <div className="max-w-[1280px] mx-auto flex justify-between flex-wrap gap-4 mt-4">
-                {users.map((user) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {(filter ? filteredUsers : users).map((user) => (
                   <ClientCard favorites={favorites} key={user.id} user={user} />
                 ))}
               </div>

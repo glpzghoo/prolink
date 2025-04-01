@@ -331,7 +331,7 @@ export function Navigation() {
           </motion.div>
         )}
       </motion.nav>
-      <div className="h-16 sm:h-20 lg:h-24"></div>
+      <div className="h-16 sm:h-20 lg:h-24 bg-white"></div>
     </>
   );
 }
