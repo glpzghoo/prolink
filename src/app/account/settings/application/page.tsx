@@ -183,13 +183,13 @@ export default function ProposalDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-white py-8">
       {loading2 && <Loading />}
       <div className="max-w-6xl mx-auto space-y-6">
         {applicationData.map((application) => (
           <div
             key={application.id}
-            className="bg-white rounded-xl shadow-md overflow-hidden relative"
+            className="bg-white rounded-xl shadow-md overflow-hidden relative border border-gray-200"
           >
             {alert && (
               <div>
