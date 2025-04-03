@@ -228,32 +228,26 @@ export default function Client() {
       setIsFavorite(true);
     }
   }, [favorites]);
-  // fav end
 
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
   return (
     <>
-      {/* Үндсэн Background */}
       {loading ? (
         <CustomSkeleton />
       ) : user ? (
-        <div className="bg-gray-100 min-h-screen">
-          {/* Цагаан блок (main container) */}
-
+        <div className="bg-white min-h-screen">
           {user.companyName ? (
             <div className="flex justify-center min-h-screen items-center">
               Холбоос буруу байна!
             </div>
           ) : (
             <div
-              className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background relative shadow-lg"
+              className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 border border-gray-200 rounded-xl bg-background relative shadow-lg"
               ref={contentRef}
             >
-              {/* Дээд хэсэг */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
-                  {/* Профайл зураг */}
                   {user.pfp ? (
                     <Image
                       src={`${user.pfp}`}
@@ -284,7 +278,6 @@ export default function Client() {
                     />
                   )}
                   <div>
-                    {/* Нэр, Байршил */}
                     <div className="flex space-x-2">
                       <h1 className="text-xl font-semibold">
                         {user.firstName}, {user.lastName}
@@ -302,7 +295,6 @@ export default function Client() {
                           onMouseOver={() => "asdf"}
                         />
                       )}
-                      {/* Badge жишээ */}
                       {((avgRating() > 4.5 && user.reviewee.length > 2) ||
                         (avgRating() > 4.0 && user.reviewee.length > 10)) && (
                         <span className="px-2 py-1 text-xs text-white bg-green-600 rounded-full">
@@ -329,7 +321,6 @@ export default function Client() {
                   уу!`}
                   </Button>
                 )}
-                {/* Хуваалцах товч */}
                 <div className="flex gap-1">
                   {owner && (
                     <Link href={`/account/settings/about`}>
@@ -362,14 +353,9 @@ export default function Client() {
                   </button>
                 </div>
               </div>
-              {/* /Дээд хэсэг */}
 
-              {/* Профайл харах, статистик */}
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between border-b pb-4">
-                <div className="flex items-center space-x-3">
-                  {/* Шаардлагатай бол нэмэлт значок, тэмдэглэгээ оруулж болно */}
-                </div>
-                {/* Статистик */}
+                <div className="flex items-center space-x-3"></div>
                 <div className="mt-2 md:mt-0 flex items-center space-x-4 text-sm text-gray-500">
                   <div>
                     Энэ profile нийт{" "}
@@ -389,9 +375,7 @@ export default function Client() {
                   </div>
                 </div>
               </div>
-              {/* /Профайл харах, статистик */}
 
-              {/* Ажилд авах уриалга (Ready to Work) */}
               {!owner && user.role === "FREELANCER" && (
                 <div className="border-b pb-7">
                   <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-between">
@@ -410,9 +394,7 @@ export default function Client() {
                   </div>
                 </div>
               )}
-              {/* /Ажилд авах уриалга */}
 
-              {/* Профайл ерөнхий мэдээлэл */}
               <div className="mt-6 pb-4">
                 <div className="border-b py-5">
                   <div className="flex items-center justify-between">
@@ -457,9 +439,7 @@ export default function Client() {
                   )}
                 </div>
               </div>
-              {/* /Профайл ерөнхий мэдээлэл
 
-            {/* Үнэлгээ (жишээ) */}
               <div className="mt-4 border-b pb-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-md">Үнэлгээ</h3>
@@ -476,7 +456,6 @@ export default function Client() {
                   ref={div}
                   className="mt-2 flex gap-3 whitespace-nowrap overflow-hidden scrollbar-hide"
                 >
-                  {/* Үнэлгээний зурвасын жишээ (placeholder) */}
                   {user.reviewee.length > 0 ? (
                     user.reviewee.map((reviewe, index) => (
                       <div
@@ -528,7 +507,6 @@ export default function Client() {
                 </div>
               </div>
 
-              {/* show full review */}
               {showFullReview && (
                 <div>
                   {showFullReview > 0 && (
@@ -651,7 +629,6 @@ export default function Client() {
                 </div>
               </div>
 
-              {/* Ур чадвар */}
               <div className="mt-4 pb-4 border-b">
                 <h3 className="font-semibold text-md mb-2">Ур чадвар</h3>
                 <div className="flex flex-wrap gap-2">
@@ -667,9 +644,6 @@ export default function Client() {
                 </div>
               </div>
 
-              {/* Доод линкүүдийн хэсэг */}
-
-              {/* 1-р багана: Бусад чадварлаг хүмүүсийг хайх */}
               <div className="w-full flex flex-col p-4 gap-5">
                 <div className=" font-semibold">Төстэй талентууд~</div>
                 <div className=" flex gap-14 whitespace-nowrap flex-wrap">
@@ -686,7 +660,6 @@ export default function Client() {
                   )}
                 </div>
               </div>
-              {/* /Доод линкүүдийн хэсэг */}
             </div>
           )}
         </div>

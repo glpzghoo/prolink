@@ -61,7 +61,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="bg-gray-50 flex items-center justify-center">
+    <div className="bg-white flex items-center justify-center">
       {loading ? (
         <Loading />
       ) : (

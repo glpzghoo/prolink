@@ -163,7 +163,7 @@ export default function AccountSettings() {
     }
   };
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center border border-gray-200 bg-white">
       {response?.message && (
         <Snackbar
           sx={{ color: response.success ? "green" : "red" }}
@@ -173,19 +173,19 @@ export default function AccountSettings() {
         />
       )}
       {loading && <Loading />}
-      <div className=" bg-background w-1/2 flex flex-col gap-12 h-screen">
+      <div className=" bg-white w-1/2 flex flex-col gap-12 h-screen rounded-xl shadow-md p-6 mx-auto my-10 border border-gray-200">
         {/* <Button onClick={handleOpen}>asdfasd</Button> */}
-        <div className=" p-20">
+        <div className="p-20 mx-auto flex flex-col items-center justify-center gap-4">
           Хэрэглэгчийн Статус:{" "}
           {user?.role === "CLIENT"
             ? "Компани/Үйлчлүүлэгч"
             : "Freelancer/Ажил горилогч/Талент"}
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center items-center gap-4">
           <Tabs defaultValue="pfp" className="w-full items-center">
             <TabsList>
               <TabsTrigger className=" cursor-pointer" value="pfp">
-                Profile Picture
+                Нүүр зураг
               </TabsTrigger>
               <TabsTrigger className=" cursor-pointer" value="name">
                 Нэр

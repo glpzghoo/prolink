@@ -88,7 +88,7 @@ export default function AboutSettings() {
   };
 
   return userInfo ? (
-    <div className="min-h-screen flex justify-center  bg-gray-50 p-6">
+    <div className="min-h-screen flex justify-center bg-white p-6">
       {userInfo.success ? (
         <div className="w-full flex flex-col items-center bg-white shadow-xl rounded-lg p-8 border border-gray-200">
           <h2 className="text-xl font-semibold text-center text-gray-800 border-b pb-4">

@@ -4,6 +4,7 @@ import { CustomJob } from "../job/[id]/page";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { GoDotFill } from "react-icons/go";
 import { calculateTime } from "@/lib/helper";
+import { Building } from "lucide-react";
 
 type Props = {
   post: CustomJob;
@@ -37,8 +38,8 @@ export default function CompanyCard({ post }: Props) {
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-3">
-          <div className="text-sm text-gray-900 truncate">
-            Байгууллага:
+          <div className="flex gap-2 text-sm text-gray-900 truncate">
+            <Building />
             <span className="font-semibold">{post.poster.companyName}</span>
           </div>
           <div className="flex items-center gap-2 bg-green-50 px-2 py-1 rounded-md">
