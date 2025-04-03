@@ -130,7 +130,7 @@ export default function SkillBadge() {
             </Button>
           </div>
           {filter && (
-            <div className=" flex  justify-center items-center pt-2 gap-10">
+            <div className=" flex  justify-center items-center pb-5 gap-10">
               <div>Шүүлтүүр: {filtered()}</div>
               <Link href={pathname} className=" cursor-pointer">
                 <Button className=" cursor-pointer">Арилгах</Button>

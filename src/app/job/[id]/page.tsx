@@ -134,7 +134,7 @@ export default function App() {
   return loading ? (
     <CustomSkeleton />
   ) : post ? (
-    <div className="bg-gray-100 min-h-screen ">
+    <div className=" min-h-screen ">
       <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">

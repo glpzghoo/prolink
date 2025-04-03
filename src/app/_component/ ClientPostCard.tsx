@@ -24,7 +24,7 @@ export function ClientCard({
     return (total / user.reviewee.length / 20).toFixed(1);
   };
 
-  const formattedSalary = Number(user.salary).toLocaleString("mn-MN");
+  const formattedSalary = user.salary.toLocaleString("mn-MN");
   const userSaved = favorites?.some((fav) => fav.id === user.id);
 
   return (
@@ -62,7 +62,10 @@ export function ClientCard({
 
           <div className="text-center">
             <div className="flex items-center justify-center gap-1">
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 truncate max-w-[250px]">
+              <h3
+                title={user.companyName || user.lastName + " " + user.firstName}
+                className="text-lg sm:text-xl font-semibold text-gray-900 truncate max-w-[250px]"
+              >
                 {user.companyName || user.firstName}
               </h3>
               {user.emailVerified && (
@@ -106,7 +109,9 @@ export function ClientCard({
                 ))
               ) : (
                 <span className="text-xs text-gray-500 italic bg-gray-100 px-2 py-1 rounded-full">
-                  Ур чадвар оруулаагүй
+                  {user.role === "CLIENT"
+                    ? "Нээлттэй ажлын байр оруулаагүй байна"
+                    : "Ур чадвар оруулаагүй байна"}
                 </span>
               )}
               {user.skill.length > 3 && (

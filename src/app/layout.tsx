@@ -41,7 +41,7 @@ export default function RootLayout({
         <div className=" min-h-screen bg-background">
           <Suspense fallback={<Loading />}>{children}</Suspense>
         </div>
-        <div>
+        <div className=" mt-6">
           <Footer />
         </div>
       </body>
