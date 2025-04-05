@@ -18,6 +18,7 @@ import { ImSpinner10 } from "react-icons/im";
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "@/lib/theme";
 import _ from "lodash";
+
 export type CustomJob = job & {
   poster: CustomUser;
   postedAt: string;
@@ -41,8 +42,9 @@ export default function App() {
   const params = useParams();
   const { id } = params;
   if (!id) {
-    return <div>Холбоос буруу байна!</div>;
+    return <div className="text-center text-red-600">Холбоос буруу байна!</div>;
   }
+
   const [post, setPost] = useState<CustomJob>();
   const [similarPosts, setSimilarPosts] = useState<job[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,22 +54,19 @@ export default function App() {
   const [userApplied, setUserApplied] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [response, setResponse] = useState<responseData>();
+
   const fetchData = async () => {
     try {
       const res = await axios.get(`/api/job/post?id=${id}`);
       if (res.data.success) {
         setPost(res.data.data.post);
-
         const posts: CustomJob = res.data.data.post;
         const test = posts.skill.flatMap((ski) => ski.job);
         const test2 = _.uniqBy(test, "id");
         const test3 = test2.filter((jobbb) => jobbb.id !== id);
         setSimilarPosts(test3);
         document.title = posts.title;
-
-        if (!res.data.data.post.poster.emailVerified) {
-          setAlert(true);
-        }
+        if (!res.data.data.post.poster.emailVerified) setAlert(true);
       }
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
@@ -75,27 +74,24 @@ export default function App() {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, [isClicked]);
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setAlert(false);
       setAlert2(false);
     }, 5000);
-    return () => {
-      clearTimeout(timeout);
-    };
+    return () => clearTimeout(timeout);
   }, [alert, alert2]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setResponse(undefined);
-    }, 4000);
-    return () => {
-      clearTimeout(timeout);
-    };
+    const timeout = setTimeout(() => setResponse(undefined), 4000);
+    return () => clearTimeout(timeout);
   }, [response]);
+
   useEffect(() => {
     const fetc = async () => {
       const response = await axios.get(`/api/job/checkApplied?id=${id}`);
@@ -105,13 +101,13 @@ export default function App() {
     };
     fetc();
   }, [isClicked]);
+
   const avgRating = (user: CustomUser) => {
     if (!user.reviewee || user.reviewee.length === 0) return 0;
-
     const total = user.reviewee.reduce((prev, acc) => prev + acc.rating, 0);
-    const fixed = total / user.reviewee.length / 20;
-    return Number(fixed.toFixed(1));
+    return Number((total / user.reviewee.length / 20).toFixed(1));
   };
+
   const sendJobApplication = async () => {
     setLoading2(true);
     try {
@@ -124,6 +120,7 @@ export default function App() {
       setIsClicked(!isClicked);
     }
   };
+
   const copyURL = () => {
     navigator.clipboard
       .writeText(window.location.href)
@@ -131,61 +128,56 @@ export default function App() {
       .catch((err) => console.error("fail: ", err));
     setAlert2(true);
   };
+
   return loading ? (
     <CustomSkeleton />
   ) : post ? (
-    <div className=" min-h-screen ">
-      <div className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-background  shadow-lg">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
-            <Snackbar
-              anchorOrigin={{ vertical: "top", horizontal: "center" }}
-              open={alert2}
-              message={"Линк амжилттай хууллаа!"}
-            />
-            <div>
-              <span className="text-ыт text-green-700">
+    <div className="bg-white min-h-screen py-8">
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 md:p-8 border border-gray-200">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span
+                className={`text-sm font-medium ${
+                  post.status === "ACTIVE" ? "text-green-600" : "text-pink-400"
+                } flex items-center gap-1`}
+              >
                 {post.status === "ACTIVE" ? (
-                  <div className=" text-green-600 text-xs flex items-center gap-1 whitespace-nowrap">
-                    <div>Идэвхитэй зар</div>{" "}
-                    <GoDotFill className="animate-ping duration-4000" />
-                  </div>
+                  <>
+                    Идэвхитэй зар <GoDotFill className="animate-ping" />
+                  </>
                 ) : (
-                  <div className=" text-pink-400 text-xs flex items-center gap-1 whitespace-nowrap">
-                    <div>Идэвхигүй зар</div>{" "}
-                  </div>
+                  "Идэвхигүй зар"
                 )}
               </span>
-              <div className="flex items-center space-x-2 text-2xl font-extrabold">
-                {post.title}
-              </div>
-              <div className="flex gap-4 text-xs">
-                <div className="text-gray-400">
-                  нийтэлсэн байгууллага:{" "}
-                  <Link target="blank" href={`/client/${post.poster.id}`}>
-                    <span
-                      title={`${
-                        post.poster.emailVerified
-                          ? `Баталгаажсан хэрэглэгч`
-                          : `Баталгаажуулаагүй хэрэглэгч`
-                      }`}
-                      className={` ${
-                        post.poster.emailVerified
-                          ? `text-black`
-                          : `text-red-600`
-                      } font-bold`}
-                    >
-                      {post.poster.companyName}
-                    </span>
-                  </Link>
-                </div>
-                <div className="text-gray-400">
-                  {calculateTime(post.postedAt)}
-                </div>
-              </div>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900">{post.title}</h1>
+            <div className="flex flex-col sm:flex-row gap-2 text-sm text-gray-600">
+              <span>
+                Нийтэлсэн:{" "}
+                <Link
+                  href={`/client/${post.poster.id}`}
+                  className="hover:underline"
+                >
+                  <span
+                    className={`font-semibold ${
+                      post.poster.emailVerified
+                        ? "text-gray-900"
+                        : "text-red-600"
+                    }`}
+                    title={
+                      post.poster.emailVerified
+                        ? "Баталгаажсан хэрэглэгч"
+                        : "Баталгаажуулаагүй хэрэглэгч"
+                    }
+                  >
+                    {post.poster.companyName}
+                  </span>
+                </Link>
+              </span>
+              <span>· {calculateTime(post.postedAt)}</span>
             </div>
           </div>
-
           <Button
             onClick={copyURL}
             sx={{ color: "green" }}
@@ -197,146 +189,164 @@ export default function App() {
           </Button>
         </div>
 
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between border-b pb-4">
-          <div className="flex items-center space-x-3"></div>
-          <div className="mt-2 md:mt-0 flex items-center space-x-4 text-xs text-gray-500">
-            <div>
-              Пост <span className=" font-bold">{post.jobPostView}</span>{" "}
-              үзэлттэй байна,
-            </div>
-            <div>-</div>
-            <div>
-              Одоогоор нийт{" "}
-              <span className=" font-bold">{post.jobApplication.length}</span>{" "}
-              хүн ажиллах хүсэлт тавьсан байна!
-            </div>
-            <div>-</div>
-            <div>
-              Компаний дундаж үнэлгээ:{" "}
-              <span className=" font-bold">{avgRating(post.poster)}/5</span>
-            </div>
+        <div className="flex flex-wrap gap-4 text-sm text-gray-600 border-b pb-4 mb-6">
+          <div>
+            Пост <span className=" font-bold">{post.jobPostView}</span> үзэлттэй
+            байна,
+          </div>
+          <span>·</span>
+          <div>
+            Одоогоор нийт{" "}
+            <span className=" font-bold">{post.jobApplication.length}</span> хүн
+            ажиллах хүсэлт тавьсан байна!
+          </div>
+          <span>·</span>
+          <div>
+            Дундаж:{" "}
+            <span className=" font-bold">{avgRating(post.poster)}/5</span>
           </div>
         </div>
 
-        <div className="mt-6 pb-4 border-b">
-          <div className="border-b py-5">
-            <div className="flex flex-col gap-3 justify-center">
-              <h2 className="text-2xl font-extrabold text-[#129600]">
-                Саналын дэлгэрэнгүй
-              </h2>
-              <p className=" whitespace-pre-wrap">{post.description}</p>
-            </div>
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-2xl font-semibold text-green-700 mb-4">
+              Саналын дэлгэрэнгүй
+            </h2>
+            <p className="text-gray-700 leading-relaxed whitespace-pre-wrap border-b pb-4 mb-6">
+              {post.description}
+            </p>
           </div>
-          <div className="mt-4 flex gap-2 justify-evenly">
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-gray-800 border-b pb-4 mb-6">
             <div>
-              Амласан цалин -{" "}
-              <span className="text-xl font-bold">
+              <span className="font-medium">Цалин:</span>{" "}
+              <span className="font-bold">
                 {post.salary}/
                 {post.salaryRate === "MONTH"
-                  ? `сар`
+                  ? "сар"
                   : post.salaryRate === "HOUR"
-                  ? `өдөр`
-                  : `цаг`}
+                  ? "өдөр"
+                  : "цаг"}
               </span>
             </div>
             <div>
-              Туршлага -{" "}
-              <span className="text-xl font-bold">
-                {post.experienced ? `шаардлагатай` : `шаардлагагүй`}
+              <span className="font-medium">Туршлага:</span>{" "}
+              <span className="font-bold">
+                {post.experienced ? "Шаардлагатай" : "Шаардлагагүй"}
               </span>
             </div>
             <div>
-              Байршил -{" "}
-              <span className="text-xl font-bold">{post.jobLocation}</span>
+              <span className="font-medium">Байршил:</span>{" "}
+              <span className="font-bold">{post.jobLocation}</span>
             </div>
           </div>
-        </div>
-        <div className="flex flex-col  p-6">
-          <div>Шаардлага:</div>
-          <div className="flex gap-2.5 flex-wrap justify-center py-3">
-            {post.skill.map((ski) => (
-              <ThemeProvider theme={theme} key={ski.id}>
-                <Chip color="primary" label={ski.name} variant="outlined" />
-              </ThemeProvider>
-            ))}
-          </div>
-        </div>
-        {post.status === "ACTIVE" ? (
-          <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-around">
-            <div className="mb-2 md:mb-0 font-bold">
-              Уг ажлыг сонирхож байна уу?
-            </div>
-            {userApplied ? (
-              <div className="text-gray-400 font-bold">Хүсэлт илгээсэн!</div>
-            ) : (
-              <Button
-                disabled={loading2}
-                onClick={sendJobApplication}
-                sx={{ color: "green" }}
-              >
-                {loading2
-                  ? "Ажлын хүсэлт илгээж байна!"
-                  : "Ажиллах хүсэлт илгээх"}
-              </Button>
-            )}
-          </div>
-        ) : (
-          <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-around">
-            {/* <div className="mb-2 md:mb-0 font-bold">
-              Уг пост идэвхигүй байна!
-            </div> */}
-            <Link href={`/client/${post.poster.id}`}>
-              <Button sx={{ color: "green" }}>
-                Идэвхигүй ч гэсэн ажиллах хүсэлтэй байгаа бол энд дарж
-                компанитай холбогдох хүсэлт илгээнэ үү!
-              </Button>
-            </Link>
-          </div>
-        )}
-        {response?.message && (
-          <Snackbar
-            sx={{ color: response.success ? "green" : "red" }}
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
-            open={response.message ? true : false}
-            message={response.message}
-          />
-        )}
 
+          <div className="border-b pb-4 mb-6">
+            <h3 className="font-medium text-gray-800 mb-2">Шаардлага:</h3>
+            <div className="flex flex-wrap gap-2">
+              {post.skill.map((ski) => (
+                <ThemeProvider theme={theme} key={ski.id}>
+                  <Chip
+                    label={ski.name}
+                    variant="outlined"
+                    color="primary"
+                    className="rounded-full"
+                  />
+                </ThemeProvider>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 p-4 bg-green-50 border border-green-200 rounded-lg">
+          {post.status === "ACTIVE" ? (
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <span className="font-semibold text-gray-800">
+                Уг ажлыг сонирхож байна уу?
+              </span>
+              {userApplied ? (
+                <span className="text-gray-500 font-medium">
+                  Хүсэлт илгээсэн!
+                </span>
+              ) : (
+                <Button
+                  disabled={loading2}
+                  onClick={sendJobApplication}
+                  variant="contained"
+                  sx={{ bgcolor: "green", "&:hover": { bgcolor: "darkgreen" } }}
+                  className="rounded-full"
+                >
+                  {loading2 ? "Илгээж байна..." : "Хүсэлт илгээх"}
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="text-center">
+              <Link href={`/client/${post.poster.id}`}>
+                <Button
+                  variant="outlined"
+                  sx={{ borderColor: "green", color: "green" }}
+                  className="rounded-full"
+                >
+                  Компанитай холбогдох
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-8 border-t pt-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">
+            Бусад төстэй зарууд
+          </h3>
+          {similarPosts.length === 0 ? (
+            <p className="text-gray-500">Төстэй пост алга</p>
+          ) : (
+            <div className="flex flex-wrap gap-3">
+              {similarPosts.map((j) => (
+                <Link
+                  key={j.id}
+                  href={`/job/${j.id}`}
+                  className="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-700 hover:bg-gray-200 transition"
+                >
+                  {j.title}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={alert2}
+          message="Линк амжилттай хууллаа!"
+          autoHideDuration={5000}
+        />
         <Snackbar
           sx={{ color: "red" }}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
           open={alert}
-          message={"Сануулга: Уг байгууллага хаягаа баталгаажаагүй байна!"}
+          message="Сануулга: Уг байгууллага хаягаа баталгаажаагүй байна!"
+          autoHideDuration={5000}
         />
-
-        <div className="mt-4 pb-4 border-b">
-          <h3 className="font-semibold text-md mb-2">Бусад төстэй зарууд</h3>
-          <div className="flex flex-wrap gap-2">
-            {similarPosts.length === 0 ? (
-              <div>Төстэй пост алга</div>
-            ) : (
-              similarPosts.map((j) => (
-                <Link
-                  key={j.id}
-                  href={`/job/${j.id}`}
-                  className=" bg-secondary px-2 rounded-2xl text-xs"
-                >
-                  <div className="">{j.title}</div>
-                </Link>
-              ))
-            )}
-          </div>
-        </div>
-        <div className="w-full">
-          <div className=" flex gap-14 whitespace-nowrap overflow-scroll"></div>
-        </div>
+        {response?.message && (
+          <Snackbar
+            sx={{ color: response.success ? "green" : "red" }}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={!!response.message}
+            message={response.message}
+            autoHideDuration={4000}
+          />
+        )}
       </div>
     </div>
   ) : (
-    <div className="flex flex-col items-center gap-2">
-      <div>Пост олдсонгүй! </div>
-      <Link href={`/job`}>
-        <Button className=" underline">Буцах</Button>
+    <div className="flex flex-col items-center justify-center min-h-screen text-gray-700">
+      <p className="text-lg">Пост олдсонгүй!</p>
+      <Link href="/job">
+        <Button variant="text" className="mt-4 text-green-600 underline">
+          Буцах
+        </Button>
       </Link>
     </div>
   );
