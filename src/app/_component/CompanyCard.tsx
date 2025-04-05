@@ -17,8 +17,11 @@ export default function CompanyCard({ post }: Props) {
     <Link href={`/job/${post.id}`} className="block">
       <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 shadow-md hover:shadow-lg hover:border-green-300 transition-all duration-300 flex flex-col gap-3 sm:gap-4 relative h-[320px] w-full max-w-md mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-3">
-          <div className="flex-1">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate hover:text-green-600 transition-colors">
+          <div className="flex-1  w-[50%]">
+            <h3
+              title={post.title}
+              className="text-base sm:text-lg font-semibold text-gray-900 truncate hover:text-green-600 transition-colors whitespace-pre overflow-hidden"
+            >
               {post.title}
             </h3>
             <p className="text-gray-600 text-xs mt-1">
@@ -38,15 +41,18 @@ export default function CompanyCard({ post }: Props) {
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-3">
-          <div className="flex gap-2 text-sm text-gray-900 truncate">
+          <div
+            title={post.poster.companyName}
+            className=" w-[50%] flex gap-2 text-sm text-gray-900 whitespace-nowrap overflow-hidden"
+          >
             <Building />
             <span className="font-semibold">{post.poster.companyName}</span>
           </div>
           <div className="flex items-center gap-2 bg-green-50 px-2 py-1 rounded-md">
-            <span className="text-lg sm:text-xl font-bold text-green-700">
+            <span className="text-md font-bold text-green-700">
               {formattedSalary} ₮
             </span>
-            <span className="text-xs text-gray-700 font-medium bg-green-100 px-1.5 py-0.5 rounded">
+            <span className="text-xs text-gray-700 font-medium bg-green-100 px-1.5 py-0.5 rounded overflow-ellipsis">
               {post.salaryRate === "MONTH"
                 ? "сард"
                 : post.salaryRate === "DAY"
@@ -56,7 +62,10 @@ export default function CompanyCard({ post }: Props) {
           </div>
         </div>
 
-        <p className="text-sm text-gray-800 line-clamp-3 flex-1 overflow-hidden leading-relaxed">
+        <p
+          title={post.description}
+          className="text-sm text-gray-800 line-clamp-3 flex-1 overflow-hidden leading-relaxed"
+        >
           {post.description}
         </p>
 
