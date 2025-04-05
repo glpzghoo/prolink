@@ -43,6 +43,14 @@ export async function POST(req: NextRequest) {
         success: false,
       });
     }
+    if (verified.id === id) {
+      return CustomNextResponse(
+        false,
+        "REQUEST_FAILED",
+        "Өөрийгөө мэдэгдэх боломжгүй",
+        null
+      );
+    }
     const existingReport = await prisma.reportUser.findFirst({
       where: {
         reporterUserId: verified.id,
