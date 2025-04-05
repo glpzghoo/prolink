@@ -9,6 +9,7 @@ import { responseData } from "@/lib/types";
 import {
   Box,
   Button,
+  Checkbox,
   Snackbar,
   ThemeProvider,
   Typography,
@@ -28,8 +29,19 @@ import _ from "lodash";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
 import { GoUnverified } from "react-icons/go";
 import { theme } from "@/lib/theme";
-import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
+import {
+  MdFavorite,
+  MdFavoriteBorder,
+  MdOutlineReportGmailerrorred,
+} from "react-icons/md";
 import { useReactToPrint } from "react-to-print";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 type CustomUser = user & {
   skill: CustomSkill[];
@@ -77,10 +89,26 @@ export default function Client() {
   const [ratingResponse, setRatingResponse] = useState<responseData>();
   const [owner, setOwner] = useState(false);
 
+  const [alert2, setAlert2] = useState(false);
+  const [accept, setAccept] = useState(false);
+  const [reason, setReason] = useState("");
+  const [reportResponse, setReportResponse] = useState("");
+
   const params = useParams();
   const { id } = params as { id: string };
   const [ratingForm, setRatingForm] = useState({ rating: 0, message: "" });
-
+  const sendReport = async () => {
+    try {
+      const res = await axios.post(`/api/account/report?id=${id}`, { reason });
+      if (res.data) {
+        setReportResponse(res.data.message);
+      }
+    } catch (err) {
+      console.error(err, "Сервертэй холбогдож чадсангүй!");
+    } finally {
+      setAlert2(true);
+    }
+  };
   const handleLeftScroll = () =>
     div.current?.scrollBy({ left: -400, behavior: "smooth" });
   const handleRightScroll = () =>
@@ -117,9 +145,12 @@ export default function Client() {
   }, [verifyMailResponse]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setAlert(false), 5000);
+    const timeout = setTimeout(() => {
+      setAlert(false);
+      setAlert2(false);
+    }, 5000);
     return () => clearTimeout(timeout);
-  }, [alert]);
+  }, [alert, alert2]);
 
   useEffect(() => {
     const getInfo = async () => {
@@ -208,21 +239,13 @@ export default function Client() {
         >
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div className="flex items-center gap-4">
-              {user.pfp ? (
-                <Image
-                  src={user.pfp}
-                  width={64}
-                  height={64}
-                  alt="Profile"
-                  className="rounded-full object-cover"
-                />
-              ) : (
-                <img
-                  src="/images.jpeg"
-                  alt="Profile"
-                  className="rounded-full w-16 h-16 object-cover"
-                />
-              )}
+              <Image
+                src={`${user.pfp ? user.pfp : "/placeholder.png"}`}
+                width={64}
+                height={64}
+                alt="Profile"
+                className="rounded-full object-cover"
+              />
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-2xl font-bold text-gray-900">
@@ -239,6 +262,13 @@ export default function Client() {
                       className="text-red-600 text-xl"
                     />
                   )}
+                  <Snackbar
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    open={alert2}
+                    message={
+                      <div className=" text-center">{reportResponse}</div>
+                    }
+                  />
                   {((avgRating() > 4.5 && user.reviewee.length > 2) ||
                     (avgRating() > 4.0 && user.reviewee.length > 10)) && (
                     <span className="px-2 py-1 text-xs text-white bg-green-600 rounded-full">
@@ -451,16 +481,75 @@ export default function Client() {
           </div>
 
           <div className="mt-8 border-t pt-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Үнэлгээ өгөх
-            </h3>
-            <Rating
-              value={ratingForm.rating / 20}
-              onChange={(e, value) =>
-                value && setRatingForm({ ...ratingForm, rating: value * 20 })
-              }
-              precision={0.5}
-            />
+            <div className="flex justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  Үнэлгээ өгөх
+                </h3>
+                <Rating
+                  value={ratingForm.rating / 20}
+                  onChange={(e, value) =>
+                    value &&
+                    setRatingForm({ ...ratingForm, rating: value * 20 })
+                  }
+                  precision={0.5}
+                />
+              </div>
+              <Dialog>
+                <DialogTrigger>
+                  <div className=" text-red-400 text-xs flex items-center gap-2">
+                    <MdOutlineReportGmailerrorred />
+                    <div>Уг хэрэглэгчийг мэдэгдэх</div>
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle>
+                    <div className=" text-sm">
+                      Та {user.role === "CLIENT" ? "байгууллага" : "талент"} "
+                      {user.companyName || user.lastName + " " + user.firstName}
+                      " -ыг мэдэгдэх гэж байна.
+                    </div>
+                  </DialogTitle>
+                  <div className=" text-xs">
+                    Бид хэн энэ мэдэгдлийг хийснийг чанд нууцлаж, зохистой арга
+                    хэмжээ авах болно.
+                  </div>
+                  <Label className="" htmlFor="reason">
+                    Доор шалтгааныг бичнэ үү!
+                  </Label>
+                  <Textarea
+                    id="reason"
+                    onChange={(e) => setReason(e.target.value)}
+                  />
+                  <div className="flex ">
+                    <Checkbox
+                      onClick={() => setAccept((p) => !p)}
+                      checked={accept}
+                      id="accept"
+                      sx={{
+                        borderColor: accept ? "green" : "red",
+                        color: accept ? "green" : "red",
+                      }}
+                    />
+                    <Label
+                      htmlFor="accept"
+                      className={` text-xs ${
+                        accept ? `text-green-400` : `text-red-400`
+                      }`}
+                    >
+                      Уг мэдэгдлийг зохистой гэж үзэж байна.
+                    </Label>
+                  </div>
+                  <Button
+                    onClick={sendReport}
+                    disabled={!accept}
+                    sx={{ color: "green" }}
+                  >
+                    Илгээх
+                  </Button>
+                </DialogContent>
+              </Dialog>
+            </div>
             <Textarea
               value={ratingForm.message}
               onChange={(e) =>

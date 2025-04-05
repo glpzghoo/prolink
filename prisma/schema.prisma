@@ -113,6 +113,7 @@ model reportUser {
   reason         String?
   reportedUserId String
   reporterUserId String
+  resolved Boolean @default(false)
   reportedUser   user    @relation("reportedUser", fields: [reportedUserId], references: [id])
   reporterUser   user    @relation("reporter", fields: [reporterUserId], references: [id])
 }
