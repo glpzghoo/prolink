@@ -7,9 +7,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { calculateTime } from "@/lib/helper";
 import { theme } from "@/lib/theme";
 import { responseData } from "@/lib/types";
+import { MdOutlineReportGmailerrorred } from "react-icons/md";
+
 import {
   Box,
   Button,
+  Checkbox,
   Snackbar,
   ThemeProvider,
   Typography,
@@ -31,6 +34,13 @@ import { ImNewTab, ImSpinner10 } from "react-icons/im";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import z from "zod";
 import { useReactToPrint } from "react-to-print";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 type CustomUser = user & {
   skill: CustomSkill[];
   reviewee: CustomReviewee[];
@@ -77,6 +87,11 @@ export default function Client() {
   const [favorites, setFavorites] = useState<favorite[]>([]);
   const [isItFavorite, setIsFavorite] = useState(false);
   const [alert, setAlert] = useState(false);
+  const [alert2, setAlert2] = useState(false);
+  const [accept, setAccept] = useState(false);
+  const [reason, setReason] = useState("");
+  const [reportResponse, setReportResponse] = useState("");
+
   const div = useRef<HTMLDivElement>(null);
 
   const contentRef = useRef<HTMLDivElement>(null);
@@ -100,6 +115,18 @@ export default function Client() {
   }
   const [ratingForm, setRatingForm] = useState({ rating: 0 });
   const [owner, setOwner] = useState(false);
+  const sendReport = async () => {
+    try {
+      const res = await axios.post(`/api/account/report?id=${id}`, { reason });
+      if (res.data) {
+        setReportResponse(res.data.message);
+      }
+    } catch (err) {
+      console.error(err, "Сервертэй холбогдож чадсангүй!");
+    } finally {
+      setAlert2(true);
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -154,11 +181,12 @@ export default function Client() {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setAlert(false);
+      setAlert2(false);
     }, 5000);
     return () => {
       clearTimeout(timeout);
     };
-  }, [alert]);
+  }, [alert, alert2]);
   const avgRating = (): number => {
     if (!user?.reviewee || user.reviewee.length === 0) return 0;
 
@@ -240,7 +268,6 @@ export default function Client() {
       setExpand(textDiv.current.scrollHeight > textDiv.current.clientHeight);
     }
   }, [user]);
-  console.log(favorites);
   return (
     <>
       {loading ? (
@@ -254,25 +281,33 @@ export default function Client() {
           >
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
-                {user.pfp && (
-                  <Image
-                    src={`${user.pfp ? user.pfp : "/placeholder.png"}`}
-                    width={56}
-                    height={56}
-                    alt="pfp"
-                  />
-                )}
+                <Image
+                  src={`${user.pfp ? user.pfp : "/placeholder.png"}`}
+                  width={56}
+                  height={56}
+                  alt="pfp"
+                />
+
                 <Snackbar
                   anchorOrigin={{ vertical: "top", horizontal: "center" }}
                   open={alert}
                   message={"Линк амжилттай хууллаа!"}
+                />
+                <Snackbar
+                  anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                  open={alert2}
+                  message={<div className=" text-center">{reportResponse}</div>}
                 />
                 {verifyMailResponse?.message && (
                   <Snackbar
                     sx={{ color: verifyMailResponse.success ? "green" : "red" }}
                     anchorOrigin={{ vertical: "top", horizontal: "center" }}
                     open={Boolean(verifyMailResponse.message)}
-                    message={verifyMailResponse.message}
+                    message={
+                      <div className=" text-center">
+                        {verifyMailResponse.message}
+                      </div>
+                    }
                   />
                 )}
                 <div>
@@ -500,12 +535,6 @@ export default function Client() {
                     </div>
                   ))
                 ) : (
-                  // <Image
-                  //   width={40}
-                  //   height={40}
-                  //   src="https://res.cloudinary.com/de1g2bwml/image/upload/v1741700987/31747695_s4k6_pdjv_220810_gfnpo2.jpg"
-                  //   alt="Үнэлгээний зурвас"
-                  // />
                   <div>Үнэлгээ одоогоор алга байна!</div>
                 )}
               </div>
@@ -555,29 +584,82 @@ export default function Client() {
               </div>
             )}
 
-            {/* <div className="mt-4 pb-4 border-b">
-              <h3 className="font-semibold text-md mb-1">Ажлын түүх</h3>
-              <p className="text-gray-700 text-sm">
-                Дууссан ажлууд (9) | Явагдаж буй ажлууд (1)
-              </p>
-            </div> */}
             <div>
-              <div>Үнэлгээ өгөх</div>
-              <div>
-                <Rating
-                  name="simple-controlled"
-                  value={ratingForm?.rating ? ratingForm?.rating / 20 : 0}
-                  onChange={(event, newValue) => {
-                    if (newValue) {
-                      setRatingForm((prev) => {
-                        return {
-                          ...prev,
-                          rating: newValue * 20,
-                        };
-                      });
-                    }
-                  }}
-                />
+              <div className="flex justify-between">
+                <div>
+                  <div>Үнэлгээ өгөх</div>
+                  <div>
+                    <Rating
+                      name="simple-controlled"
+                      value={ratingForm?.rating ? ratingForm?.rating / 20 : 0}
+                      onChange={(event, newValue) => {
+                        if (newValue) {
+                          setRatingForm((prev) => {
+                            return {
+                              ...prev,
+                              rating: newValue * 20,
+                            };
+                          });
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+                <Dialog>
+                  <DialogTrigger>
+                    <div className=" text-red-400 text-xs flex items-center gap-2">
+                      <MdOutlineReportGmailerrorred />
+                      <div>Уг хэрэглэгчийг мэдэгдэх</div>
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogTitle>
+                      <div className=" text-sm">
+                        Та {user.role === "CLIENT" ? "байгууллага" : "талент"} "
+                        {user.companyName ||
+                          user.lastName + " " + user.firstName}
+                        " -ыг мэдэгдэх гэж байна.
+                      </div>
+                    </DialogTitle>
+                    <div className=" text-xs">
+                      Бид хэн энэ мэдэгдлийг хийснийг чанд нууцлаж, зохистой
+                      арга хэмжээ авах болно.
+                    </div>
+                    <Label className="" htmlFor="reason">
+                      Доор шалтгааныг бичнэ үү!
+                    </Label>
+                    <Textarea
+                      id="reason"
+                      onChange={(e) => setReason(e.target.value)}
+                    />
+                    <div className="flex ">
+                      <Checkbox
+                        onClick={() => setAccept((p) => !p)}
+                        checked={accept}
+                        id="accept"
+                        sx={{
+                          borderColor: accept ? "green" : "red",
+                          color: accept ? "green" : "red",
+                        }}
+                      />
+                      <Label
+                        htmlFor="accept"
+                        className={` text-xs ${
+                          accept ? `text-green-400` : `text-red-400`
+                        }`}
+                      >
+                        Уг мэдэгдлийг зохистой гэж үзэж байна.
+                      </Label>
+                    </div>
+                    <Button
+                      onClick={sendReport}
+                      disabled={!accept}
+                      sx={{ color: "green" }}
+                    >
+                      Илгээх
+                    </Button>
+                  </DialogContent>
+                </Dialog>
               </div>
               <div>
                 <Textarea
