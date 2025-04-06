@@ -12,6 +12,15 @@ export async function GET(req: NextRequest) {
     if (!process.env.REFRESH_TOKEN || !process.env.ACCESS_TOKEN) {
       return NextResponse_NoEnv("BOTH_TOKEN");
     }
+    const checkAccessToken = req.cookies.get("accessToken")?.value;
+    if (checkAccessToken) {
+      return CustomNextResponse(
+        false,
+        "REQUEST_FAILED",
+        "Access Token сэргээх шаардлагагүй!",
+        {}
+      );
+    }
     const oldRefreshToken = req.cookies.get("refreshToken")?.value;
     if (!oldRefreshToken) {
       return CustomNextResponse(
