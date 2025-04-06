@@ -79,6 +79,9 @@ export async function GET(req: NextRequest) {
     return response;
   } catch (err) {
     console.error(err, "Сервер дээр асуудал гарлаа!");
-    return NextResponse_CatchError(err);
+    const response = NextResponse_CatchError(err);
+    response.cookies.delete("accessToken");
+    response.cookies.delete("refreshToken");
+    return response;
   }
 }

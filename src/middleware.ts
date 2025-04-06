@@ -12,6 +12,7 @@ export const decodeToken = (token: string) => {
 };
 
 export const isTokenExpired = (token: string) => {
+  if (!token) return true;
   const decoded = decodeToken(token);
   if (!decoded?.exp) return true;
   return Date.now() >= decoded.exp * 1000;
