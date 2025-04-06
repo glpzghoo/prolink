@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       { expiresIn: "1h" }
     );
     const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_TOKEN, {
-      expiresIn: "4h",
+      expiresIn: "48h",
     });
     const { password, ...userInfo } = user;
     const response = NextResponse.json({
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-      maxAge: 60 * 60 * 4,
+      maxAge: 60 * 60 * 48,
     });
     return response;
   } catch (err) {
