@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     { expiresIn: "1h" }
   );
   const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_TOKEN, {
-    expiresIn: "4h",
+    expiresIn: "48h",
   });
   const response = NextResponse.redirect(
     new URL(
@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
     httpOnly: true,
     secure: true,
     sameSite: "strict",
-    maxAge: 60 * 60 * 4,
+    maxAge: 60 * 60 * 48,
   });
   if (!user.emailVerified) {
     await prisma.user.update({
