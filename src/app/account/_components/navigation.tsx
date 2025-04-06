@@ -16,7 +16,7 @@ import { responseData } from "@/lib/types";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { signOut } from "next-auth/react";
-
+import { MdDashboard } from "react-icons/md";
 const navLinks = [
   { href: "/freelancer", label: "Талентууд" },
   { href: "/job", label: "Ажлын санал" },
@@ -30,7 +30,7 @@ const navVariants = {
 };
 
 const hoverVariants = {
-  hover: { scale: 1.05, transition: { duration: 0.3 } },
+  hover: { scale: 1.01, transition: { duration: 0.3 } },
 };
 
 const mobileMenuVariants = {
@@ -108,7 +108,7 @@ export function Navigation() {
               ProLink
             </motion.div>
           </Link>
-          <div className="hidden xl:flex gap-6 text-sm font-medium">
+          <div className="hidden 2xl:flex gap-6 text-sm font-medium">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
                 <motion.div
@@ -129,7 +129,7 @@ export function Navigation() {
 
         <div className="flex items-center gap-4">
           <button
-            className="xl:hidden text-[#14A800] text-2xl"
+            className="2xl:hidden text-[#14A800] text-2xl cursor-pointer"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <Menu />
@@ -187,9 +187,23 @@ export function Navigation() {
                     </span>
                   </motion.div>
                 </Link>
+                <Link
+                  href={`/account/settings/about`}
+                  className=" cursor-pointer"
+                >
+                  <motion.div
+                    className="p-2.5 bg-gray-100 rounded-full hover:bg-gray-200 transition-all duration-300"
+                    variants={hoverVariants}
+                    whileHover="hover"
+                  >
+                    <span title="Дашбоард">
+                      <MdDashboard className="text-[#14A800] text-xl" />
+                    </span>
+                  </motion.div>
+                </Link>
                 <motion.button
                   onClick={logout}
-                  className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-all duration-300"
+                  className="p-2 cursor-pointer bg-gray-100 rounded-full hover:bg-gray-200 transition-all duration-300"
                   variants={hoverVariants}
                   whileHover="hover"
                 >
@@ -225,7 +239,7 @@ export function Navigation() {
 
         {isMobileMenuOpen && (
           <motion.div
-            className="absolute top-16 left-0 w-full bg-white shadow-md lg:hidden px-4 py-4 z-40"
+            className="absolute top-16 left-0 w-full bg-white shadow-md 2xl:hidden px-4 py-4 z-40"
             variants={mobileMenuVariants}
             initial="hidden"
             animate="visible"
@@ -259,44 +273,59 @@ export function Navigation() {
                   placeholder="Компани, талент хайх..."
                 />
               </motion.div>
+
               {response?.code === "SUCCESS" && (
                 <div className="flex flex-col gap-4">
-                  <Link
-                    href={
-                      response.data?.informations?.companyName
-                        ? `/client/${response.data?.informations?.id}`
-                        : `/freelancer/${response.data?.informations?.id}`
-                    }
-                  >
-                    <motion.div
-                      className="flex items-center gap-2 bg-gray-50 p-2 rounded-full shadow-sm hover:bg-gray-100 transition-all duration-300"
-                      variants={hoverVariants}
-                      whileHover="hover"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                  <div className=" flex justify-around">
+                    <Link
+                      href={
+                        response.data?.informations?.companyName
+                          ? `/client/${response.data?.informations?.id}`
+                          : `/freelancer/${response.data?.informations?.id}`
+                      }
                     >
-                      <div className="rounded-full overflow-hidden border-2 border-[#14A800]">
-                        <Image
-                          src={`${response.data?.informations?.pfp}`}
-                          width={32}
-                          height={32}
-                          alt="Профайлын зураг"
-                        />
-                      </div>
-                      <span className="text-sm font-medium text-gray-800">
-                        {response.data?.informations?.companyName ||
-                          `${response.data?.informations?.lastName} ${response.data?.informations?.firstName}`}
-                        {response.data.informations.emailVerified ? (
-                          <span title="Баталгаажсан">
-                            <Verified className="inline ml-1 text-[#14A800] text-lg" />
-                          </span>
-                        ) : (
-                          <span title="Баталгаажаагүй">
-                            <CircleX className="inline ml-1 text-red-600 text-lg" />
-                          </span>
-                        )}
-                      </span>
-                    </motion.div>
-                  </Link>
+                      <motion.div
+                        className="flex items-center gap-2 bg-gray-50 p-2 rounded-full shadow-sm hover:bg-gray-100 transition-all duration-300"
+                        variants={hoverVariants}
+                        whileHover="hover"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <div className="rounded-full overflow-hidden border-2 border-[#14A800]">
+                          <Image
+                            src={`${response.data?.informations?.pfp}`}
+                            width={32}
+                            height={32}
+                            alt="Профайлын зураг"
+                          />
+                        </div>
+                        <span className="text-sm font-medium text-gray-800">
+                          {response.data?.informations?.companyName ||
+                            `${response.data?.informations?.lastName} ${response.data?.informations?.firstName}`}
+                          {response.data.informations.emailVerified ? (
+                            <span title="Баталгаажсан">
+                              <Verified className="inline ml-1 text-[#14A800] text-lg" />
+                            </span>
+                          ) : (
+                            <span title="Баталгаажаагүй">
+                              <CircleX className="inline ml-1 text-red-600 text-lg" />
+                            </span>
+                          )}
+                        </span>
+                      </motion.div>
+                    </Link>
+                    <Link href={`/account/settings/about`}>
+                      <motion.div
+                        className="flex items-center gap-2 bg-gray-50 p-5 rounded-full shadow-sm hover:bg-gray-100 transition-all duration-300"
+                        variants={hoverVariants}
+                        whileHover="hover"
+                      >
+                        <span title="Дашбоард">
+                          <MdDashboard className="text-[#14A800] text-xl" />
+                        </span>
+                        Дашбоард
+                      </motion.div>
+                    </Link>
+                  </div>
                   {response?.data?.informations?.role === "CLIENT" && (
                     <div>
                       <Link href="/job/new">
@@ -311,12 +340,13 @@ export function Navigation() {
                       </Link>
                     </div>
                   )}
+
                   <motion.button
                     onClick={() => {
                       logout();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="px-4 py-2 bg-gray-100 rounded-full text-sm font-medium hover:bg-gray-200 transition-all duration-300 flex items-center justify-center gap-2"
+                    className="px-4 cursor-pointer py-2 bg-gray-100 rounded-full text-sm font-medium hover:bg-gray-200 transition-all duration-300 flex items-center justify-center gap-2"
                     variants={hoverVariants}
                     whileHover="hover"
                   >
