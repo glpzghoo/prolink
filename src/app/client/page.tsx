@@ -97,10 +97,12 @@ export default function Freelance() {
             Дундаж үнэлгээ:{" "}
             {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {(filter ? filteredUsers : users).map((user) => (
-              <ClientCard favorites={favorites} key={user.id} user={user} />
-            ))}
+          <div className="flex justify-center">
+            <div className="flex flex-wrap max-w-[70%] gap-6">
+              {(filter ? filteredUsers : users).map((user) => (
+                <ClientCard favorites={favorites} key={user.id} user={user} />
+              ))}
+            </div>
           </div>
         </Suspense>
       ) : (
