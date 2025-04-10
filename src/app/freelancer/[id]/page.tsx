@@ -239,13 +239,15 @@ export default function Client() {
         >
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div className="flex items-center gap-4">
-              <Image
-                src={`${user.pfp ? user.pfp : "/placeholder.png"}`}
-                width={64}
-                height={64}
-                alt="Profile"
-                className="rounded-full object-cover"
-              />
+              <div className=" flex justify-center items-center w-16 h-16 overflow-hidden rounded-full">
+                <Image
+                  src={`${user.pfp ? user.pfp : "/placeholder.png"}`}
+                  width={64}
+                  height={64}
+                  alt="Profile"
+                  className="rounded-full object-cover"
+                />
+              </div>
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-2xl font-bold text-gray-900">
@@ -394,17 +396,19 @@ export default function Client() {
           </div>
 
           <div className="mt-8 border-t pt-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Үнэлгээ</h3>
-              <div className="flex gap-2">
-                <Button sx={{ color: "green" }} onClick={handleLeftScroll}>
-                  <FaCircleArrowLeft className="text-xl" />
-                </Button>
-                <Button sx={{ color: "green" }} onClick={handleRightScroll}>
-                  <FaCircleArrowRight className="text-xl" />
-                </Button>
+            {user.reviewee.length > 2 && (
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-800">Үнэлгээ</h3>
+                <div className="flex gap-2">
+                  <Button sx={{ color: "green" }} onClick={handleLeftScroll}>
+                    <FaCircleArrowLeft className="text-xl" />
+                  </Button>
+                  <Button sx={{ color: "green" }} onClick={handleRightScroll}>
+                    <FaCircleArrowRight className="text-xl" />
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
             <div
               ref={div}
               className="flex gap-4 overflow-x-auto scrollbar-hide pb-4"

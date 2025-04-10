@@ -89,33 +89,18 @@ export default function Freelance() {
     <div>
       {!loading ? (
         <Suspense fallback={<Loading />}>
-          {filter ? (
-            <>
-              <Badge />
-              <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto bg-white mb-4">
-                Дундаж үнэлгээ:{" "}
-                {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
-              </div>
-              <div className="max-w-[1280px] mx-auto flex flex-wrap justify-between gap-4 mt-6">
-                {filteredUsers.map((user) => (
-                  <ClientCard favorites={favorites} key={user.id} user={user} />
-                ))}
-              </div>
-            </>
-          ) : (
-            <>
-              <Badge />
-              <div className="border border-solid max-w-[1250px] p-4 font-bold rounded-3xl mx-auto bg-white text-center mb-4">
-                Дундаж үнэлгээ:{" "}
-                {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {(filter ? filteredUsers : users).map((user) => (
-                  <ClientCard favorites={favorites} key={user.id} user={user} />
-                ))}
-              </div>
-            </>
-          )}
+          <Badge />
+          <div className="border border-solid max-w-[1250px] p-4 font-bold rounded-3xl mx-auto bg-white text-center mb-4">
+            Дундаж үнэлгээ:{" "}
+            {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
+          </div>
+          <div className=" flex justify-center">
+            <div className="flex flex-wrap max-w-[70%] gap-6">
+              {(filter ? filteredUsers : users).map((user) => (
+                <ClientCard favorites={favorites} key={user.id} user={user} />
+              ))}
+            </div>
+          </div>
         </Suspense>
       ) : (
         <CustomSkeleton />

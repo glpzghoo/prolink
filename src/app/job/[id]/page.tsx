@@ -46,6 +46,7 @@ export default function App() {
   }
 
   const [post, setPost] = useState<CustomJob>();
+  const [posterInfo, setPosterInfo] = useState<user>();
   const [similarPosts, setSimilarPosts] = useState<job[]>([]);
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState(false);
@@ -67,6 +68,10 @@ export default function App() {
         setSimilarPosts(test3);
         document.title = posts.title;
         if (!res.data.data.post.poster.emailVerified) setAlert(true);
+      }
+      const res1 = await axios.get(`/api/account`);
+      if (res1.data.success) {
+        setPosterInfo(res1.data.data.informations);
       }
     } catch (err) {
       console.error(err, "Сервертэй холбогдож чадсангүй!");
@@ -128,7 +133,6 @@ export default function App() {
       .catch((err) => console.error("fail: ", err));
     setAlert2(true);
   };
-
   return loading ? (
     <CustomSkeleton />
   ) : post ? (
@@ -212,7 +216,9 @@ export default function App() {
             <h2 className="text-2xl font-semibold text-green-700 mb-4">
               Саналын дэлгэрэнгүй
             </h2>
-            <p className="text-gray-700 leading-relaxed whitespace-pre-wrap border-b pb-4 mb-6">
+            <p
+              className={`text-gray-700 leading-relaxed whitespace-pre-wrap border-b  pb-4 mb-6`}
+            >
               {post.description}
             </p>
           </div>
@@ -241,7 +247,11 @@ export default function App() {
             </div>
           </div>
 
-          <div className="border-b pb-4 mb-6">
+          <div
+            className={`pb-4 mb-6 ${
+              posterInfo?.role !== "CLIENT" && `border-b`
+            }`}
+          >
             <h3 className="font-medium text-gray-800 mb-2">Шаардлага:</h3>
             <div className="flex flex-wrap gap-2">
               {post.skill.map((ski) => (
@@ -258,42 +268,47 @@ export default function App() {
           </div>
         </div>
 
-        <div className="mt-8 p-4 bg-green-50 border border-green-200 rounded-lg">
-          {post.status === "ACTIVE" ? (
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <span className="font-semibold text-gray-800">
-                Уг ажлыг сонирхож байна уу?
-              </span>
-              {userApplied ? (
-                <span className="text-gray-500 font-medium">
-                  Хүсэлт илгээсэн!
+        {(posterInfo?.role !== "CLIENT" || posterInfo === undefined) && (
+          <div className="mt-8 p-4 bg-green-50 border border-green-200 rounded-lg">
+            {post.status === "ACTIVE" ? (
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <span className="font-semibold text-gray-800">
+                  Уг ажлыг сонирхож байна уу?
                 </span>
-              ) : (
-                <Button
-                  disabled={loading2}
-                  onClick={sendJobApplication}
-                  variant="contained"
-                  sx={{ bgcolor: "green", "&:hover": { bgcolor: "darkgreen" } }}
-                  className="rounded-full"
-                >
-                  {loading2 ? "Илгээж байна..." : "Хүсэлт илгээх"}
-                </Button>
-              )}
-            </div>
-          ) : (
-            <div className="text-center">
-              <Link href={`/client/${post.poster.id}`}>
-                <Button
-                  variant="outlined"
-                  sx={{ borderColor: "green", color: "green" }}
-                  className="rounded-full"
-                >
-                  Компанитай холбогдох
-                </Button>
-              </Link>
-            </div>
-          )}
-        </div>
+                {userApplied ? (
+                  <span className="text-gray-500 font-medium">
+                    Хүсэлт илгээсэн!
+                  </span>
+                ) : (
+                  <Button
+                    disabled={loading2}
+                    onClick={sendJobApplication}
+                    variant="contained"
+                    sx={{
+                      bgcolor: "green",
+                      "&:hover": { bgcolor: "darkgreen" },
+                    }}
+                    className="rounded-full"
+                  >
+                    {loading2 ? "Илгээж байна..." : "Хүсэлт илгээх"}
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <div className="text-center">
+                <Link href={`/client/${post.poster.id}`}>
+                  <Button
+                    variant="outlined"
+                    sx={{ borderColor: "green", color: "green" }}
+                    className="rounded-full"
+                  >
+                    Компанитай холбогдох
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="mt-8 border-t pt-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-3">

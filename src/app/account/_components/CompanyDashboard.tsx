@@ -281,12 +281,14 @@ export default function Client() {
           >
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
-                <Image
-                  src={`${user.pfp ? user.pfp : "/placeholder.png"}`}
-                  width={56}
-                  height={56}
-                  alt="pfp"
-                />
+                <div className=" flex justify-center items-center w-16 h-16 overflow-hidden rounded-full">
+                  <Image
+                    src={`${user.pfp ? user.pfp : "/placeholder.png"}`}
+                    width={64}
+                    height={64}
+                    alt="pfp"
+                  />
+                </div>
 
                 <Snackbar
                   anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -480,17 +482,19 @@ export default function Client() {
               </div>
             </div>
             <div className="mt-4 border-b pb-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-md">Үнэлгээ</h3>
-                <div className="flex gap-4">
-                  <Button sx={{ color: "green" }} onClick={handleLeftScroll}>
-                    <FaCircleArrowLeft className=" text-xl" />
-                  </Button>
-                  <Button sx={{ color: "green" }} onClick={handleRightScroll}>
-                    <FaCircleArrowRight className=" text-xl" />
-                  </Button>
+              {user.reviewee.length > 2 && (
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-md">Үнэлгээ</h3>
+                  <div className="flex gap-4">
+                    <Button sx={{ color: "green" }} onClick={handleLeftScroll}>
+                      <FaCircleArrowLeft className=" text-xl" />
+                    </Button>
+                    <Button sx={{ color: "green" }} onClick={handleRightScroll}>
+                      <FaCircleArrowRight className=" text-xl" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              )}
               <div
                 ref={div}
                 className="mt-2 flex gap-3 whitespace-nowrap overflow-hidden scrollbar-hide"
