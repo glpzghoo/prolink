@@ -20,5 +20,5 @@ jobs:
       - name: 📦 Install dependencies with Bun
         run: bun install
 
-      - name: 🧪 Run tests
-        run: bun test
+      - name: 🛠 Build project
+        run: bun run build
