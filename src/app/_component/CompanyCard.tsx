@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CustomJob } from '../job/[id]/page';
+import { CustomJob } from '../job/types';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { GoDotFill } from 'react-icons/go';
 import { calculateTime } from '@/lib/helper';

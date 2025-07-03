@@ -1,6 +1,6 @@
 'use client';
 import CompanyCard from '@/app/_component/CompanyCard';
-import { CustomJob } from './[id]/page';
+import { CustomJob } from './types';
 import CustomSkeleton from '../_component/skeleton';
 import { useState } from 'react';
 
