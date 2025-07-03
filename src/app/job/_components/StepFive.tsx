@@ -20,7 +20,7 @@ export function StepFive({ setCurrentStep, setSalary, setSalaryRate, salaryRate 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-6">
       <h2 className="text-2xl font-semibold">Таны төсөв ямар байх вэ?</h2>
-      <p className="text-gray-600">
+      <p className="text-foreground">
         Энэ нь таны боломжит авьяастнуудтай нийцэх төслүүдийг тохируулахад тусална.
       </p>
 
@@ -59,10 +59,7 @@ export function StepFive({ setCurrentStep, setSalary, setSalaryRate, salaryRate 
         <Button variant="outline" onClick={() => setCurrentStep(4)}>
           Буцах
         </Button>
-        <Button
-          onClick={() => setCurrentStep(6)}
-          className="bg-green-600 text-white hover:bg-black"
-        >
+        <Button onClick={() => setCurrentStep(6)} className=" text-white hover:bg-foreground">
           Үргэлжлүүлэх
         </Button>
       </div>

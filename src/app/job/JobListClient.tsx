@@ -6,36 +6,36 @@ import { useState } from 'react';
 
 export default function JobListClient({ posts }: { posts: CustomJob[] }) {
   const [loading] = useState(false);
-  return (
-    <div className="min-h-screen bg-white py-12 px-4">
-      {loading ? (
-        <div className="max-w-7xl mx-auto">
-          <CustomSkeleton />
-        </div>
-      ) : (
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 text-center">Идэвхитэй ажлын зарууд</h1>
-          </div>
 
-          {posts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {posts.map((post) => (
-                <div
-                  key={post.id}
-                  className="transform transition-all duration-300 hover:scale-[1.02]"
-                >
-                  <CompanyCard post={post} />
-                </div>
-              ))}
+  return (
+    <div className="min-h-screen bg-background py-12 px-4">
+      <div className="w-[90%] mx-auto">
+        {loading ? (
+          <CustomSkeleton />
+        ) : (
+          <>
+            <div className="mb-10 text-center">
+              <h1 className="text-3xl font-bold text-foreground">Идэвхитэй ажлын зарууд</h1>
             </div>
-          ) : (
-            <div className="text-center py-16 bg-white rounded-lg shadow-md">
-              <p className="text-gray-500 text-lg">Идэвхитэй ажлын зар байхгүй байна.</p>
-            </div>
-          )}
-        </div>
-      )}
+            {posts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {posts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="transition-transform duration-300 hover:scale-[1.01]"
+                  >
+                    <CompanyCard post={post} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16 bg-background rounded-lg shadow-md">
+                <p className="text-foreground0 text-lg">Идэвхитэй ажлын зар байхгүй байна.</p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

@@ -52,15 +52,15 @@ export function StepThree({ setCurrentStep, setSelectedSkills, selectedSkills }:
             Таны ажилд шаардлагатай гол ур чадварууд юу вэ?
           </h2>
           <div className="mb-4">
-            <div className="border rounded-md p-2 flex flex-wrap gap-2 min-h-[40px] bg-white">
+            <div className="border rounded-md p-2 flex flex-wrap gap-2 min-h-[40px] bg-background">
               {selectedSkills.map((skill) => (
                 <span
                   key={skill}
-                  className="flex items-center bg-green-500 text-white px-3 py-1 rounded-full text-sm"
+                  className="flex items-center 0 text-white px-3 py-1 rounded-full text-sm"
                 >
                   {skill}
                   <button
-                    className="ml-2 text-white hover:text-gray-200"
+                    className="ml-2 text-white hover:text-foreground"
                     onClick={() => toggleSkill(skill)}
                   >
                     <X size={14} />
@@ -73,7 +73,7 @@ export function StepThree({ setCurrentStep, setSelectedSkills, selectedSkills }:
                 readOnly
               />
             </div>
-            <p className="text-gray-500 text-sm mt-1">
+            <p className="text-foreground0 text-sm mt-1">
               Шилдэг үр дүн авахын тулд 3-5 ур чадвар нэмээрэй
             </p>
           </div>
@@ -83,7 +83,7 @@ export function StepThree({ setCurrentStep, setSelectedSkills, selectedSkills }:
                 key={skill.id}
                 variant="outline"
                 className={`rounded-full transition-colors ${
-                  selectedSkills.includes(skill.name) ? 'bg-green-500 text-white' : ''
+                  selectedSkills.includes(skill.name) ? '0 text-white' : ''
                 }`}
                 onClick={() => toggleSkill(skill.name)}
               >

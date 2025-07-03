@@ -54,7 +54,7 @@ export default function Loading() {
         >
           ProLink
         </motion.div>
-        <div className="flex items-center gap-3 text-gray-700">
+        <div className="flex items-center gap-3 text-foreground">
           <span className="text-lg font-medium">Түр хүлээнэ үү!</span>
           <motion.div
             animate={{ rotate: 360 }}

@@ -17,7 +17,7 @@ export default function App() {
   return (
     <div className="flex min-h-screen items-center justify-center gap-4">
       <div>Бүртгэлгүй хэрэглэгч байна.</div>
-      <div className=" text-green-700 flex items-center gap-3">
+      <div className=" text-foreground flex items-center gap-3">
         Буцаж байна.
         <ImSpinner10 className=" animate-spin" />
       </div>

@@ -53,7 +53,7 @@ export default function MailDetail({ id, setChange, change }: Props) {
       disabled={loading || sentMail}
       onClick={sendDetails}
       className={` ${
-        loading || sentMail ? ' bg-muted' : `bg-green-600 hover:bg-green-700`
+        loading || sentMail ? ' bg-muted' : ` hover:`
       } cursor-pointer  px-4 py-2 rounded  text-sm`}
     >
       {alert && res && (

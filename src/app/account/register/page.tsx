@@ -281,8 +281,8 @@ export default function Login() {
                       />
                       <Label
                         htmlFor="lastName"
-                        className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
-        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
+                        className={cn(`absolute left-3 top-1 text-foreground0 text-md transition-all 
+        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-foreground 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
           form.lastName && 'top-1 text-[10px] text-[#108A00]'
         }`)}
@@ -302,8 +302,8 @@ export default function Login() {
                       />
                       <Label
                         htmlFor="firstName"
-                        className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
-        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
+                        className={cn(`absolute left-3 top-1 text-foreground0 text-md transition-all 
+        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-foreground 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
           form.firstName && 'top-1 text-[10px] text-[#108A00]'
         }`)}
@@ -408,8 +408,8 @@ export default function Login() {
                     />
                     <Label
                       htmlFor="phoneNumber"
-                      className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
-        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
+                      className={cn(`absolute left-3 top-1 text-foreground0 text-md transition-all 
+        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-foreground 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
           form.phoneNumber && 'top-1 text-[10px] text-[#108A00]'
         }`)}
@@ -443,8 +443,8 @@ export default function Login() {
                       />
                       <Label
                         htmlFor="companyName"
-                        className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
-        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
+                        className={cn(`absolute left-3 top-1 text-foreground0 text-md transition-all 
+        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-foreground 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
           form.companyName && 'top-1 text-[10px] text-[#108A00]'
         }`)}
@@ -477,8 +477,8 @@ export default function Login() {
                       </div>
                       <Label
                         htmlFor="salary"
-                        className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
-        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
+                        className={cn(`absolute left-3 top-1 text-foreground0 text-md transition-all 
+        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-foreground 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
           form.salary && 'top-1 text-[10px] text-[#108A00]'
         }`)}
@@ -512,8 +512,8 @@ export default function Login() {
                     />
                     <Label
                       htmlFor="password"
-                      className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
-        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
+                      className={cn(`absolute left-3 top-1 text-foreground0 text-md transition-all 
+        peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-foreground 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
           form.password && 'top-2 text-[10px] text-[#108A00]'
         }`)}
@@ -542,7 +542,7 @@ export default function Login() {
                   </Button>
                   {response && (
                     <div className="flex justify-between">
-                      <div className={`${response.success ? `text-green-500 ` : `text-red-400`} `}>
+                      <div className={`${response.success ? `text-foreground ` : `text-red-400`} `}>
                         {response.message}
                       </div>
                       {response?.code === 'USER_EXISTS' && (

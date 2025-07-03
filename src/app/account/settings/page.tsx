@@ -153,7 +153,7 @@ export default function AccountSettings() {
     }
   };
   return (
-    <div className="flex flex-col items-center justify-center border border-gray-200 bg-white">
+    <div className="flex flex-col items-center justify-center border border-gray-200 bg-background">
       {response?.message && (
         <Snackbar
           sx={{ color: response.success ? 'green' : 'red' }}
@@ -163,7 +163,7 @@ export default function AccountSettings() {
         />
       )}
       {loading && <Loading />}
-      <div className=" bg-white w-1/2 flex flex-col gap-12 h-screen rounded-xl shadow-md p-6 mx-auto my-10 border border-gray-200">
+      <div className=" bg-background w-1/2 flex flex-col gap-12 h-screen rounded-xl shadow-md p-6 mx-auto my-10 border border-gray-200">
         {/* <Button onClick={handleOpen}>asdfasd</Button> */}
         <div className="p-20 mx-auto flex flex-col items-center justify-center gap-4">
           Хэрэглэгчийн Статус:{' '}

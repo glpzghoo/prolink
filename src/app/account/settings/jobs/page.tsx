@@ -142,7 +142,7 @@ export default function AboutSettings() {
                       <Link target="blank" href={`/job/${post.id}`}>
                         <div className="font-bold">{post.title}</div>
                       </Link>
-                      <div className="flex justify-end font-semibold text-green-700  absolute top-0 right-0">
+                      <div className="flex justify-end font-semibold text-foreground  absolute top-0 right-0">
                         <div>Таны амласан цалин: {post.salary}</div>/
                         <div>
                           {post.salaryRate === 'MONTH'
@@ -204,7 +204,7 @@ export default function AboutSettings() {
 
                     <div>Байршил: {post.jobLocation}</div>
                     <div className="flex justify-between">
-                      <div className="text-gray-400/70 text-xs absolute bottom-2 left-0">
+                      <div className="text-foreground/70 text-xs absolute bottom-2 left-0">
                         Зар үүссэн огноо: {post.postedAt.split('T')[0]} (
                         {calculateTime(post.postedAt)})
                       </div>
@@ -225,7 +225,7 @@ export default function AboutSettings() {
                           <p>идэвхигүй пост</p>
                         </div>
                       ) : (
-                        <div className=" text-gray-400/70 text-sm font-semibold absolute top-0 left-0 flex items-center gap-1">
+                        <div className=" text-foreground/70 text-sm font-semibold absolute top-0 left-0 flex items-center gap-1">
                           <p>Ноорог пост</p>
                         </div>
                       )}
@@ -238,7 +238,7 @@ export default function AboutSettings() {
                         color: post.status === 'CLOSED' ? 'green' : 'red',
                       }}
                       className={` ${
-                        post.status === 'ACTIVE' ? ' text-green-500' : 'text-red-500'
+                        post.status === 'ACTIVE' ? ' text-foreground' : 'text-red-500'
                       }`}
                     >
                       {post.status == 'ACTIVE' ? 'Идэвхигүй болгох' : 'Идэвхитэй болгох'}

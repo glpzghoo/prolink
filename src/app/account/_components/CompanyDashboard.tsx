@@ -259,10 +259,10 @@ export default function Client() {
       {loading ? (
         <CustomSkeleton />
       ) : user ? (
-        <div className="bg-white min-h-screen mb-20">
+        <div className="bg-background min-h-screen mb-20">
           {loading2 && <Loading />}
           <div
-            className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 border border-gray-200 rounded-xl bg-white shadow-lg relative"
+            className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 border border-gray-200 rounded-xl bg-background shadow-lg relative"
             ref={contentRef}
           >
             <div className="flex items-center justify-between mb-6">
@@ -306,7 +306,7 @@ export default function Client() {
                     {user.emailVerified ? (
                       <HiOutlineCheckBadge
                         title="Баталгаажсан"
-                        className="text-green-700 text-lg cursor-pointer"
+                        className="text-foreground text-lg cursor-pointer"
                         onMouseOver={() => 'asdf'}
                       />
                     ) : (
@@ -318,12 +318,12 @@ export default function Client() {
                     )}
                     {((avgRating() > 4.5 && user.reviewee.length > 2) ||
                       (avgRating() > 4.0 && user.reviewee.length > 10)) && (
-                      <span className="px-2 py-1 text-xs text-white bg-green-600 rounded-full">
+                      <span className="px-2 py-1 text-xs text-white  rounded-full">
                         Шилдэг үнэлгээтэй
                       </span>
                     )}
                   </div>
-                  {/* <p className="text-gray-600 text-sm">
+                  {/* <p className="text-foreground text-sm">
                     {user.skill.length} мэргэжилтэй
                   </p> */}
                 </div>
@@ -345,7 +345,7 @@ export default function Client() {
               <div className="flex gap-1">
                 {owner && (
                   <Link href={`/account/settings/${user.role === 'CLIENT' ? `jobs` : `skills`}`}>
-                    <button className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2">
+                    <button className="text-foreground hover:text-foreground text-sm border cursor-pointer border-gray-300 rounded px-3 py-2">
                       Дашбоард
                     </button>
                   </Link>
@@ -354,17 +354,21 @@ export default function Client() {
                   onClick={saveFavorite}
                   className=" absolute top-0 right-0 p-2 text-2xl cursor-pointer"
                 >
-                  {isItFavorite ? <MdFavorite className=" text-green-600" /> : <MdFavoriteBorder />}
+                  {isItFavorite ? (
+                    <MdFavorite className=" text-foreground" />
+                  ) : (
+                    <MdFavoriteBorder />
+                  )}
                 </div>
                 <button
                   onClick={copyURL}
-                  className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
+                  className="text-foreground hover:text-foreground text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
                 >
                   Хуваалцах
                 </button>
                 <button
                   onClick={() => reactToPrintFn()}
-                  className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
+                  className="text-foreground hover:text-foreground text-sm border cursor-pointer border-gray-300 rounded px-3 py-2"
                 >
                   Татах
                 </button>
@@ -374,7 +378,7 @@ export default function Client() {
             <div className="flex  sm:flex-row items-start sm:items-center justify-between border-b pb-4">
               <div className="flex items-center gap-3"></div>
 
-              <div className="hidden lg:flex items-center gap-4 text-sm text-gray-500">
+              <div className="hidden lg:flex items-center gap-4 text-sm text-foreground0">
                 <div>
                   Энэ profile нийт <span className="font-bold">{user.profileViews}</span> үзэлттэй
                   байна!
@@ -390,7 +394,7 @@ export default function Client() {
                 </div>
               </div>
 
-              <div className="flex lg:hidden items-center gap-6 text-sm text-gray-500 mt-2">
+              <div className="flex lg:hidden items-center gap-6 text-sm text-foreground0 mt-2">
                 <div className="flex items-center gap-2">
                   <EyeIcon />
                   <span className="font-bold">{user.profileViews}</span>
@@ -424,9 +428,9 @@ export default function Client() {
 
             {!owner && user.role === 'FREELANCER' && (
               <div className="border-b pb-7">
-                <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-between">
+                <div className=" border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-between">
                   <div className="mb-2 md:mb-0">
-                    <p className="font-semibold text-green-800">
+                    <p className="font-semibold text-foreground">
                       {user.firstName} -тэй хамтран ажиллахад бэлэн үү?
                     </p>
                   </div>
@@ -440,11 +444,11 @@ export default function Client() {
               <div className=" py-5">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-[#129600]">Манай байгууллагын тухай</h2>
-                  {/* <p className="text-gray-600 text-sm">
+                  {/* <p className="text-foreground text-sm">
                     {user.salary}/{user.salaryType === "HOUR" ? `цаг` : `сар`}
                   </p> */}
                 </div>
-                <p className="text-gray-700 mt-2 whitespace-pre-wrap">{user.about}</p>
+                <p className="text-foreground mt-2 whitespace-pre-wrap">{user.about}</p>
               </div>
             </div>
             <div className="mt-4 border-b pb-4">
@@ -478,7 +482,7 @@ export default function Client() {
                         }
                       }}
                       key={reviewe.id}
-                      className="border flex flex-col gap-10 p-6 relative max-w-96 hover:bg-green-100  cursor-pointer"
+                      className="border flex flex-col gap-10 p-6 relative max-w-96 hover:  cursor-pointer"
                     >
                       <div className="flex flex-col justify-center">
                         <div className="flex justify-between">
@@ -487,7 +491,7 @@ export default function Client() {
                               ? reviewe.reviewer.companyName
                               : reviewe.reviewer.firstName}
                           </h1>
-                          <div className="text-xs text-gray-400 absolute top-0 right-0 p-2">
+                          <div className="text-xs text-foreground absolute top-0 right-0 p-2">
                             {calculateTime(reviewe.createdAt)}
                           </div>
                         </div>
@@ -604,7 +608,7 @@ export default function Client() {
                       />
                       <Label
                         htmlFor="accept"
-                        className={` text-xs ${accept ? `text-green-400` : `text-red-400`}`}
+                        className={` text-xs ${accept ? `text-foreground` : `text-red-400`}`}
                       >
                         Уг мэдэгдлийг зохистой гэж үзэж байна.
                       </Label>
@@ -669,7 +673,7 @@ export default function Client() {
                   user.skill.map((skill) => (
                     <span
                       key={skill.id}
-                      className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm"
+                      className="bg-gray-200 text-foreground px-3 py-1 rounded-full text-sm"
                     >
                       {skill.name}
                     </span>
@@ -690,7 +694,7 @@ export default function Client() {
                     >
                       <div className="flex justify-between">
                         <h3 className="font-semibold text-md items-center flex gap-2">
-                          <div className=" text-green-500">
+                          <div className=" text-foreground">
                             <GoDotFill className="animate-ping duration-4000" />
                           </div>
                           <Link target="blank" href={`/job/${ski.id}`}>
@@ -701,7 +705,7 @@ export default function Client() {
                       </div>
                       <div
                         ref={textDiv}
-                        className={`list-disc list-inside  whitespace-pre-wrap text-gray-700 mt-1 ${
+                        className={`list-disc list-inside  whitespace-pre-wrap text-foreground mt-1 ${
                           expand2 ? `h-full` : `max-h-20`
                         } transition-all duration-300 overflow-hidden`}
                       >

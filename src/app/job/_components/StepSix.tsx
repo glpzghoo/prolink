@@ -73,10 +73,10 @@ export function StepSix({
     }
   };
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-6">
       <div className="max-w-2xl w-full">
         <h1 className="text-3xl font-bold mt-2">Саналын дэлгэрэнгүй!</h1>
-        <p className="text-gray-600 mt-2">Шаардлагатай байгаа зүйлсээ бичээрэй.</p>
+        <p className="text-foreground mt-2">Шаардлагатай байгаа зүйлсээ бичээрэй.</p>
 
         <div className="mt-2">
           <Textarea
@@ -90,7 +90,7 @@ export function StepSix({
 
         <div className="mt-6">
           <h3 className="text-md font-semibold">Жишээ:</h3>
-          <ul className="list-disc pl-5 text-gray-600 text-sm mt-2">
+          <ul className="list-disc pl-5 text-foreground text-sm mt-2">
             <li>Таны даалгавар эсвэл хүргэх ажлын талаар тодорхой мэдээлэл</li>
             <li>Ажлыг гүйцэтгэхэд шаардлагатай ур чадварууд</li>
             <li>Сайн харилцаа холбоо</li>

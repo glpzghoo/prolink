@@ -28,7 +28,7 @@ export function StepFour({
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h2 className="text-2xl font-semibold">Туршлагын түвшнийг тодорхойлно уу</h2>
-      <p className="text-gray-600 mb-4">
+      <p className="text-foreground mb-4">
         Энэ нь эцсийн үр дүн биш бөгөөд таны хэрэгцээнд тохирох зөв хүнийг олоход тусална.
       </p>
 

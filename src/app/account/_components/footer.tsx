@@ -112,10 +112,10 @@ export default function Footer() {
                     value={`item-${idx}`}
                     className="border-b border-gray-400"
                   >
-                    <AccordionTrigger className="text-sm sm:text-base hover:text-gray-700 py-2 sm:py-3 transition-colors duration-200">
+                    <AccordionTrigger className="text-sm sm:text-base hover:text-foreground py-2 sm:py-3 transition-colors duration-200">
                       {item.trigger}
                     </AccordionTrigger>
-                    <AccordionContent className="text-xs sm:text-sm text-gray-800 pb-3 sm:pb-4">
+                    <AccordionContent className="text-xs sm:text-sm text-foreground pb-3 sm:pb-4">
                       {item.content}
                     </AccordionContent>
                   </AccordionItem>
@@ -135,28 +135,28 @@ export default function Footer() {
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between sm:gap-6">
             <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 text-xs sm:text-sm">
               <span>© 2025 ProLink, Inc.</span>
-              <span className="text-gray-400">·</span>
+              <span className="text-foreground">·</span>
               <motion.a
                 href="#"
-                className="hover:text-gray-700 transition-colors duration-200"
+                className="hover:text-foreground transition-colors duration-200"
                 variants={hoverVariants}
                 whileHover="hover"
               >
                 Хувийн нууцлалын бодлого
               </motion.a>
-              <span className="text-gray-400">·</span>
+              <span className="text-foreground">·</span>
               <motion.a
                 href="#"
-                className="hover:text-gray-700 transition-colors duration-200"
+                className="hover:text-foreground transition-colors duration-200"
                 variants={hoverVariants}
                 whileHover="hover"
               >
                 Үйлчилгээний нөхцөл
               </motion.a>
-              <span className="text-gray-400">·</span>
+              <span className="text-foreground">·</span>
               <motion.a
                 href="#"
-                className="hover:text-gray-700 transition-colors duration-200"
+                className="hover:text-foreground transition-colors duration-200"
                 variants={hoverVariants}
                 whileHover="hover"
               >
@@ -166,7 +166,7 @@ export default function Footer() {
 
             <div className="flex items-center gap-4 sm:gap-6">
               <motion.button
-                className="text-xs sm:text-sm hover:text-gray-700 transition-colors duration-200"
+                className="text-xs sm:text-sm hover:text-foreground transition-colors duration-200"
                 variants={hoverVariants}
                 whileHover="hover"
               >

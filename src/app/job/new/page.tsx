@@ -115,7 +115,7 @@ const Post = ({ currentStep, setCurrentStep }: PostProps) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen flex-col">
-      <div className="bg-green-100 text-green-700 border border-green-400 px-6 py-4 rounded-lg shadow-md text-lg font-semibold">
+      <div className=" text-foreground border border-green-400 px-6 py-4 rounded-lg shadow-md text-lg font-semibold">
         Зар амжилттай нийтлэгдлээ
       </div>
       <Link

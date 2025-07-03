@@ -32,16 +32,16 @@ export const FeaturedSkillsetup = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 flex flex-col gap-4">
+    <div className="bg-background rounded-xl shadow-md p-6 border border-gray-200 flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-start">
-          <h3 className="text-xl font-semibold text-gray-800">{skill.skill.name}</h3>
-          <div className="text-sm text-gray-600 flex items-center gap-2">
+          <h3 className="text-xl font-semibold text-foreground">{skill.skill.name}</h3>
+          <div className="text-sm text-foreground flex items-center gap-2">
             <span className="font-medium">Туршлага:</span>
             <span>
               {startedAt.split('T')[0]} - {skill.present ? 'Одоог хүртэл' : endedAt?.split('T')[0]}
               {endedAt && (
-                <span className="ml-2 text-gray-500">
+                <span className="ml-2 text-foreground0">
                   ({calculateYears(endedAt, startedAt)} жил)
                 </span>
               )}
@@ -50,7 +50,7 @@ export const FeaturedSkillsetup = ({
         </div>
       </div>
 
-      <div className="text-gray-700 text-base leading-relaxed">{skill.detail}</div>
+      <div className="text-foreground text-base leading-relaxed">{skill.detail}</div>
 
       <div className="flex justify-end mt-2">
         <Button

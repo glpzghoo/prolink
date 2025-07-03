@@ -203,15 +203,15 @@ export default function Client() {
   return loading ? (
     <CustomSkeleton />
   ) : user ? (
-    <div className="bg-white min-h-screen py-8">
+    <div className="bg-background min-h-screen py-8">
       {user.companyName ? (
-        <div className="flex justify-center items-center min-h-screen text-gray-700">
+        <div className="flex justify-center items-center min-h-screen text-foreground">
           Холбоос буруу байна!
         </div>
       ) : (
         <div
           ref={contentRef}
-          className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8 relative border border-gray-200"
+          className="max-w-4xl mx-auto bg-background rounded-xl shadow-lg p-6 md:p-8 relative border border-gray-200"
         >
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div className="flex items-center gap-4">
@@ -226,11 +226,11 @@ export default function Client() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-bold text-gray-900">
+                  <h1 className="text-2xl font-bold text-foreground">
                     {user.firstName}, {user.lastName}
                   </h1>
                   {user.emailVerified ? (
-                    <HiOutlineCheckBadge title="Баталгаажсан" className="text-green-600 text-xl" />
+                    <HiOutlineCheckBadge title="Баталгаажсан" className="text-foreground text-xl" />
                   ) : (
                     <GoUnverified title="Баталгаажаагүй" className="text-red-600 text-xl" />
                   )}
@@ -241,12 +241,12 @@ export default function Client() {
                   />
                   {((avgRating() > 4.5 && user.reviewee.length > 2) ||
                     (avgRating() > 4.0 && user.reviewee.length > 10)) && (
-                    <span className="px-2 py-1 text-xs text-white bg-green-600 rounded-full">
+                    <span className="px-2 py-1 text-xs text-white  rounded-full">
                       Шилдэг үнэлгээтэй
                     </span>
                   )}
                 </div>
-                <p className="text-gray-600 text-sm">
+                <p className="text-foreground text-sm">
                   {user.skill.length} мэргэжилтэй · {user.gender === 'MALE' ? 'Эрэгтэй' : 'Эмэгтэй'}
                 </p>
               </div>
@@ -264,25 +264,25 @@ export default function Client() {
               )}
               <button
                 onClick={saveFavorite}
-                className="text-2xl text-gray-600 hover:text-green-600 transition"
+                className="text-2xl text-foreground hover:text-foreground transition"
               >
-                {isFavorite ? <MdFavorite className="text-green-600" /> : <MdFavoriteBorder />}
+                {isFavorite ? <MdFavorite className="text-foreground" /> : <MdFavoriteBorder />}
               </button>
               <button
                 onClick={copyURL}
-                className="text-sm text-gray-600 border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 transition"
+                className="text-sm text-foreground border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 transition"
               >
                 Хуваалцах
               </button>
               <button
                 onClick={() => reactToPrintFn()}
-                className="text-sm text-gray-600 border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 transition"
+                className="text-sm text-foreground border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 transition"
               >
                 Татах
               </button>
               {owner && (
                 <Link href="/account/settings/about">
-                  <button className="text-sm text-gray-600 border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 transition">
+                  <button className="text-sm text-foreground border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 transition">
                     Дашбоард
                   </button>
                 </Link>
@@ -290,7 +290,7 @@ export default function Client() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-4 text-sm text-gray-600 border-b pb-4 mb-6">
+          <div className="flex flex-wrap gap-4 text-sm text-foreground border-b pb-4 mb-6">
             <span>
               Энэ profile нийт <span className=" font-bold">{user.profileViews} </span>
               үзэлттэй байна!
@@ -307,9 +307,9 @@ export default function Client() {
           </div>
 
           {!owner && user.role === 'FREELANCER' && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <div className=" border border-green-200 rounded-lg p-4 mb-6">
               <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <p className="font-semibold text-green-800">
+                <p className="font-semibold text-foreground">
                   {user.firstName}-тэй хамтран ажиллахад бэлэн үү?
                 </p>
                 <MailDetail id={id} setChange={setChange} change={change} />
@@ -320,26 +320,30 @@ export default function Client() {
           <div className="space-y-6">
             <div>
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-green-700">Миний тухай</h2>
-                <p className="text-gray-600 text-sm">
+                <h2 className="text-xl font-semibold text-foreground">Миний тухай</h2>
+                <p className="text-foreground text-sm">
                   {user.salary}/{user.salaryType === 'HOUR' ? 'цаг' : 'сар'}
                 </p>
               </div>
-              <p className="text-gray-700 mt-2 leading-relaxed whitespace-pre-wrap">{user.about}</p>
+              <p className="text-foreground mt-2 leading-relaxed whitespace-pre-wrap">
+                {user.about}
+              </p>
             </div>
             {user.featuredSkills.length > 0 && (
               <div>
-                <h3 className="text-xl font-semibold text-green-700 mb-3">Онцолсон ур чадварууд</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-3">
+                  Онцолсон ур чадварууд
+                </h3>
                 {user.featuredSkills.map((ski) => (
                   <div key={ski.id} className="mb-4">
                     <div className="flex justify-between items-center">
-                      <h4 className="font-semibold text-gray-800">{ski.skill.name}</h4>
-                      <span className="text-sm text-gray-600">
+                      <h4 className="font-semibold text-foreground">{ski.skill.name}</h4>
+                      <span className="text-sm text-foreground">
                         {ski.startedAt.split('T')[0]} -{' '}
                         {ski.present ? 'Одоог хүртэл' : ski.endedAt.split('T')[0]}
                       </span>
                     </div>
-                    <p className="text-gray-700 mt-1">{ski.detail}</p>
+                    <p className="text-foreground mt-1">{ski.detail}</p>
                   </div>
                 ))}
               </div>
@@ -349,7 +353,7 @@ export default function Client() {
           <div className="mt-8 border-t pt-6">
             {user.reviewee.length > 2 && (
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">Үнэлгээ</h3>
+                <h3 className="text-lg font-semibold text-foreground">Үнэлгээ</h3>
                 <div className="flex gap-2">
                   <Button sx={{ color: 'green' }} onClick={handleLeftScroll}>
                     <FaCircleArrowLeft className="text-xl" />
@@ -369,13 +373,13 @@ export default function Client() {
                     onClick={() =>
                       setShowFullReview(showFullReview === index + 1 ? undefined : index + 1)
                     }
-                    className="border rounded-lg p-4 min-w-[300px] bg-white shadow-sm hover:bg-green-50 cursor-pointer transition"
+                    className="border rounded-lg p-4 min-w-[300px] bg-background shadow-sm hover: cursor-pointer transition"
                   >
                     <div className="flex justify-between items-start">
-                      <h4 className="font-semibold text-green-700">
+                      <h4 className="font-semibold text-foreground">
                         {reviewe.reviewer.companyName || reviewe.reviewer.firstName}
                       </h4>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-foreground">
                         {calculateTime(reviewe.createdAt)}
                       </span>
                     </div>
@@ -383,11 +387,11 @@ export default function Client() {
                       <Rating value={reviewe.rating / 20} precision={0.5} readOnly />
                       <span>{reviewe.rating / 20} / 5</span>
                     </div>
-                    <p className="text-gray-700 mt-2 truncate">{reviewe.message}</p>
+                    <p className="text-foreground mt-2 truncate">{reviewe.message}</p>
                   </motion.div>
                 ))
               ) : (
-                <p className="text-gray-500">Үнэлгээ одоогоор алга байна!</p>
+                <p className="text-foreground0">Үнэлгээ одоогоор алга байна!</p>
               )}
             </div>
             {showFullReview && (
@@ -402,7 +406,7 @@ export default function Client() {
                   <Link
                     href={`/client/${user.reviewee[showFullReview - 1].reviewer.id}`}
                     target="_blank"
-                    className="text-green-700 hover:underline flex items-center gap-1"
+                    className="text-foreground hover:underline flex items-center gap-1"
                   >
                     {user.reviewee[showFullReview - 1].reviewer.companyName ||
                       user.reviewee[showFullReview - 1].reviewer.firstName}
@@ -414,7 +418,7 @@ export default function Client() {
                   precision={0.5}
                   readOnly
                 />
-                <p className="text-gray-700 mt-2">{user.reviewee[showFullReview - 1].message}</p>
+                <p className="text-foreground mt-2">{user.reviewee[showFullReview - 1].message}</p>
               </motion.div>
             )}
           </div>
@@ -422,7 +426,7 @@ export default function Client() {
           <div className="mt-8 border-t pt-6">
             <div className="flex justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Үнэлгээ өгөх</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-4">Үнэлгээ өгөх</h3>
                 <Rating
                   value={ratingForm.rating / 20}
                   onChange={(e, value) =>
@@ -465,7 +469,7 @@ export default function Client() {
                     />
                     <Label
                       htmlFor="accept"
-                      className={` text-xs ${accept ? `text-green-400` : `text-red-400`}`}
+                      className={` text-xs ${accept ? `text-foreground` : `text-red-400`}`}
                     >
                       Уг мэдэгдлийг зохистой гэж үзэж байна.
                     </Label>
@@ -502,7 +506,7 @@ export default function Client() {
                 </Button>
               </ThemeProvider>
               {ratingResponse && (
-                <span className={ratingResponse.success ? 'text-green-700' : 'text-red-700'}>
+                <span className={ratingResponse.success ? 'text-foreground' : 'text-red-700'}>
                   {ratingResponse.message}
                 </span>
               )}
@@ -510,12 +514,12 @@ export default function Client() {
           </div>
 
           <div className="mt-8 border-t pt-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Ур чадвар</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Ур чадвар</h3>
             <div className="flex flex-wrap gap-2">
               {user.skill.map((skill) => (
                 <span
                   key={skill.id}
-                  className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition"
+                  className="bg-gray-100 text-foreground px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition"
                 >
                   {skill.name}
                 </span>
@@ -524,21 +528,21 @@ export default function Client() {
           </div>
 
           <div className="mt-8 border-t pt-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Төстэй талентууд</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Төстэй талентууд</h3>
             {similarUsers.length > 0 ? (
               <div className="flex flex-wrap gap-4">
                 {similarUsers.map((skil) => (
                   <Link
                     key={skil.id}
                     href={`/freelancer/${skil.id}`}
-                    className="text-green-700 hover:underline"
+                    className="text-foreground hover:underline"
                   >
                     {skil.firstName} {skil.lastName}
                   </Link>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500">Одоогоор байхгүй байна!</p>
+              <p className="text-foreground0">Одоогоор байхгүй байна!</p>
             )}
           </div>
 
@@ -561,10 +565,10 @@ export default function Client() {
       )}
     </div>
   ) : (
-    <div className="flex flex-col items-center justify-center min-h-screen text-gray-700">
+    <div className="flex flex-col items-center justify-center min-h-screen text-foreground">
       <p className="text-lg">Хэрэглэгч олдсонгүй!</p>
       <Link href="/">
-        <Button variant="text" className="mt-4 text-green-600 underline">
+        <Button variant="text" className="mt-4 text-foreground underline">
           Буцах
         </Button>
       </Link>

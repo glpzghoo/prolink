@@ -115,15 +115,15 @@ export const FeaturedSkillNewButton = ({ setRefresh, setLoading, refresh, featur
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 flex flex-col gap-6">
+    <div className="bg-background rounded-xl shadow-md p-6 flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="skill" className="text-sm font-medium text-gray-700">
+        <Label htmlFor="skill" className="text-sm font-medium text-foreground">
           Ур чадвар
         </Label>
         {skills?.length === 0 ? (
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-foreground">
             Skill харагдахгүй байна уу?{' '}
-            <Link href="/account/settings/about" className="text-green-600 hover:underline">
+            <Link href="/account/settings/about" className="text-foreground hover:underline">
               Энд дарж
             </Link>{' '}
             skill нэмээрэй!
@@ -134,7 +134,7 @@ export const FeaturedSkillNewButton = ({ setRefresh, setLoading, refresh, featur
             onChange={handleForm}
             name="skill"
             id="skill"
-            className="w-full mt-1 rounded-md border border-gray-300 px-4 py-2 text-gray-700 focus:border-green-600 focus:outline-none"
+            className="w-full mt-1 rounded-md border border-gray-300 px-4 py-2 text-foreground focus:border-green-600 focus:outline-none"
           >
             <option value="" disabled>
               Ур чадвар сонгоно уу
@@ -149,7 +149,7 @@ export const FeaturedSkillNewButton = ({ setRefresh, setLoading, refresh, featur
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="detail" className="text-sm font-medium text-gray-700">
+        <Label htmlFor="detail" className="text-sm font-medium text-foreground">
           Дэлгэрэнгүй
         </Label>
         <Textarea
@@ -157,7 +157,7 @@ export const FeaturedSkillNewButton = ({ setRefresh, setLoading, refresh, featur
           onChange={handleForm}
           name="detail"
           id="detail"
-          className="w-full mt-1 rounded-md border border-gray-300 px-4 py-3 text-gray-700 focus:border-green-600 focus:outline-none"
+          className="w-full mt-1 rounded-md border border-gray-300 px-4 py-3 text-foreground focus:border-green-600 focus:outline-none"
           rows={4}
           placeholder="Энд ур чадварынхаа талаар дэлгэрэнгүй бичнэ үү"
         />
@@ -165,7 +165,7 @@ export const FeaturedSkillNewButton = ({ setRefresh, setLoading, refresh, featur
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <Label htmlFor="startedAt" className="text-sm font-medium text-gray-700">
+          <Label htmlFor="startedAt" className="text-sm font-medium text-foreground">
             Эхлэсэн
           </Label>
           <Input
@@ -177,14 +177,14 @@ export const FeaturedSkillNewButton = ({ setRefresh, setLoading, refresh, featur
               const date = new Date(e.target.value);
               setForm((prev) => ({ ...prev, startedAt: date }));
             }}
-            className="w-full mt-1 rounded-md border border-gray-300 px-4 py-2 text-gray-700 focus:border-green-600 focus:outline-none"
+            className="w-full mt-1 rounded-md border border-gray-300 px-4 py-2 text-foreground focus:border-green-600 focus:outline-none"
             sx={{ '& input': { padding: '8px 12px' } }}
           />
         </div>
 
         <div className="flex items-center gap-6">
           <div className="flex-1 flex flex-col gap-2">
-            <Label htmlFor="endedAt" className="text-sm font-medium text-gray-700">
+            <Label htmlFor="endedAt" className="text-sm font-medium text-foreground">
               Хүртэл
             </Label>
             <Input
@@ -197,7 +197,7 @@ export const FeaturedSkillNewButton = ({ setRefresh, setLoading, refresh, featur
                 setForm((prev) => ({ ...prev, endedAt: date }));
               }}
               disabled={form.present}
-              className="w-full mt-1 rounded-md border border-gray-300 px-4 py-2 text-gray-700 focus:border-green-600 focus:outline-none disabled:bg-gray-100"
+              className="w-full mt-1 rounded-md border border-gray-300 px-4 py-2 text-foreground focus:border-green-600 focus:outline-none disabled:bg-gray-100"
               sx={{ '& input': { padding: '8px 12px' } }}
             />
           </div>
@@ -212,7 +212,7 @@ export const FeaturedSkillNewButton = ({ setRefresh, setLoading, refresh, featur
                 },
               }}
             />
-            <Label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+            <Label className="text-sm font-medium text-foreground whitespace-nowrap">
               Одоог хүртэл
             </Label>
           </div>

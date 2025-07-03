@@ -24,7 +24,7 @@ export default function NavigationSettings() {
   }, []);
 
   return (
-    <div className="bg-white flex justify-center items-center py-2 px-8 shadow-md border border-gray-200">
+    <div className="bg-background flex justify-center items-center py-2 px-8 shadow-md border border-gray-200">
       <nav className="flex gap-6">
         {user &&
           (user.role === 'CLIENT' ? (

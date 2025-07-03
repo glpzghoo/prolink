@@ -114,14 +114,14 @@ export default function JobDetailClient() {
   return loading ? (
     <CustomSkeleton />
   ) : post ? (
-    <div className="bg-white min-h-screen py-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 md:p-8 border border-gray-200">
+    <div className="bg-background min-h-screen py-8">
+      <div className="max-w-4xl mx-auto bg-background rounded-lg shadow-md p-6 md:p-8 border border-gray-200">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <span
                 className={`text-sm font-medium ${
-                  post.status === 'ACTIVE' ? 'text-green-600' : 'text-pink-400'
+                  post.status === 'ACTIVE' ? 'text-foreground' : 'text-pink-400'
                 } flex items-center gap-1`}
               >
                 {post.status === 'ACTIVE' ? (
@@ -133,14 +133,14 @@ export default function JobDetailClient() {
                 )}
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">{post.title}</h1>
-            <div className="flex flex-col sm:flex-row gap-2 text-sm text-gray-600">
+            <h1 className="text-2xl font-bold text-foreground">{post.title}</h1>
+            <div className="flex flex-col sm:flex-row gap-2 text-sm text-foreground">
               <span>
                 Нийтэлсэн:{' '}
                 <Link href={`/client/${post.poster.id}`} className="hover:underline">
                   <span
                     className={`font-semibold ${
-                      post.poster.emailVerified ? 'text-gray-900' : 'text-red-600'
+                      post.poster.emailVerified ? 'text-foreground' : 'text-red-600'
                     }`}
                     title={
                       post.poster.emailVerified
@@ -156,13 +156,13 @@ export default function JobDetailClient() {
             </div>
           </div>
           <Button onClick={copyURL} sx={{ color: 'green' }} className="flex gap-1">
-            <div className="text-green-600 hover:text-green-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2">
+            <div className="text-foreground hover:text-foreground text-sm border cursor-pointer border-gray-300 rounded px-3 py-2">
               Хуваалцах
             </div>
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 text-sm text-gray-600 border-b pb-4 mb-6">
+        <div className="flex flex-wrap gap-4 text-sm text-foreground border-b pb-4 mb-6">
           <div>
             Пост <span className=" font-bold">{post.jobPostView}</span> үзэлттэй байна,
           </div>
@@ -179,13 +179,15 @@ export default function JobDetailClient() {
 
         <div className="space-y-4">
           <div>
-            <h2 className="text-2xl font-semibold text-green-700 mb-4">Саналын дэлгэрэнгүй</h2>
-            <p className={`text-gray-700 leading-relaxed whitespace-pre-wrap border-b  pb-4 mb-6`}>
+            <h2 className="text-2xl font-semibold text-foreground mb-4">Саналын дэлгэрэнгүй</h2>
+            <p
+              className={`text-foreground leading-relaxed whitespace-pre-wrap border-b  pb-4 mb-6`}
+            >
               {post.description}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-gray-800 border-b pb-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-foreground border-b pb-4 mb-6">
             <div>
               <span className="font-medium">Цалин:</span>{' '}
               <span className="font-bold">
@@ -206,7 +208,7 @@ export default function JobDetailClient() {
           </div>
 
           <div className={`pb-4 mb-6 ${posterInfo?.role !== 'CLIENT' && `border-b`}`}>
-            <h3 className="font-medium text-gray-800 mb-2">Шаардлага:</h3>
+            <h3 className="font-medium text-foreground mb-2">Шаардлага:</h3>
             <div className="flex flex-wrap gap-2">
               {post.skill.map((ski) => (
                 <ThemeProvider theme={theme} key={ski.id}>
@@ -223,12 +225,12 @@ export default function JobDetailClient() {
         </div>
 
         {(posterInfo?.role !== 'CLIENT' || posterInfo === undefined) && (
-          <div className="mt-8 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <div className="mt-8 p-4  border border-green-200 rounded-lg">
             {post.status === 'ACTIVE' ? (
               <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <span className="font-semibold text-gray-800">Уг ажлыг сонирхож байна уу?</span>
+                <span className="font-semibold text-foreground">Уг ажлыг сонирхож байна уу?</span>
                 {userApplied ? (
-                  <span className="text-gray-500 font-medium">Хүсэлт илгээсэн!</span>
+                  <span className="text-foreground0 font-medium">Хүсэлт илгээсэн!</span>
                 ) : (
                   <Button
                     disabled={loading2}
@@ -261,16 +263,16 @@ export default function JobDetailClient() {
         )}
 
         <div className="mt-8 border-t pt-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">Бусад төстэй зарууд</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-3">Бусад төстэй зарууд</h3>
           {similarPosts.length === 0 ? (
-            <p className="text-gray-500">Төстэй пост алга</p>
+            <p className="text-foreground0">Төстэй пост алга</p>
           ) : (
             <div className="flex flex-wrap gap-3">
               {similarPosts.map((j) => (
                 <Link
                   key={j.id}
                   href={`/job/${j.id}`}
-                  className="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-700 hover:bg-gray-200 transition"
+                  className="bg-gray-100 px-3 py-1 rounded-full text-sm text-foreground hover:bg-gray-200 transition"
                 >
                   {j.title}
                 </Link>
@@ -304,10 +306,10 @@ export default function JobDetailClient() {
       </div>
     </div>
   ) : (
-    <div className="flex flex-col items-center justify-center min-h-screen text-gray-700">
+    <div className="flex flex-col items-center justify-center min-h-screen text-foreground">
       <p className="text-lg">Пост олдсонгүй!</p>
       <Link href="/job">
-        <Button variant="text" className="mt-4 text-green-600 underline">
+        <Button variant="text" className="mt-4 text-foreground underline">
           Буцах
         </Button>
       </Link>

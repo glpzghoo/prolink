@@ -16,19 +16,19 @@ export function StepTwo({ setCurrentStep, setTitle, title }: JobTitleStepProps) 
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-6">
       <div className="max-w-2xl w-full">
         {/* Алхамын мэдээлэл */}
-        <h4 className="text-sm font-medium text-gray-500">1/5 Ажлын зар</h4>
+        <h4 className="text-sm font-medium text-foreground0">1/5 Ажлын зар</h4>
         <h1 className="text-3xl font-bold mt-2">Сонирхолтой гарчигтай эхлээрэй.</h1>
-        <p className="text-gray-600 mt-2">
+        <p className="text-foreground mt-2">
           Танай ажлын зар зөв хүнээ олоход туслах болно. Энэ бол хамгийн түрүүнд харагдах зүйл тул
           сайн гарчиг сонгоорой!
         </p>
 
         {/* Гарчиг оруулах хэсэг */}
         <div className="mt-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-foreground mb-2">
             Ажлын зарын гарчиг бичнэ үү
           </label>
           <Input
@@ -43,7 +43,7 @@ export function StepTwo({ setCurrentStep, setTitle, title }: JobTitleStepProps) 
         {/* Жишээ гарчигууд */}
         <div className="mt-6">
           <h3 className="text-md font-semibold">Жишээ гарчигууд</h3>
-          <ul className="list-disc pl-5 text-gray-600 text-sm mt-2">
+          <ul className="list-disc pl-5 text-foreground text-sm mt-2">
             <li>Номын захиалга/төлбөрийн системтэй WordPress сайт хийх</li>
             <li>Олон төрлийн сурталчилгаанд зориулсан график дизайнер хайж байна</li>
             <li>Бүтээгдэхүүний нээлтэнд зориулсан Facebook зарын мэргэжилтэн</li>

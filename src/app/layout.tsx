@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import './globals.css';
-import { Navigation } from './account/_components/navigation';
 import Footer from './account/_components/footer';
 import { Suspense } from 'react';
 import Loading from './_component/loading';
+import Navigation from './account/_components/navigation';
 
 const montserrat = Roboto({
   variable: '--font-montserrat',
@@ -24,11 +24,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`min-h-screen bg-white ${montserrat.variable}`}>
+      <body className={`min-h-screen ${montserrat.variable} dark`}>
         <div>
           <Navigation />
         </div>
-        <div className=" min-h-screen bg-background">
+        <div className=" min-h-screen">
           <Suspense fallback={<Loading />}>{children}</Suspense>
         </div>
         <div className=" mt-6">

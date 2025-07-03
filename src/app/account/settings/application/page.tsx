@@ -158,31 +158,31 @@ export default function ProposalDetails() {
       case 'waiting':
         return 'bg-yellow-100 text-yellow-800';
       case 'accepted':
-        return 'bg-green-100 text-green-800';
+        return ' text-foreground';
       case 'denied':
         return 'bg-red-100 text-red-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-foreground';
     }
   };
 
   if (loading) return <Loading />;
   if (!applicationData.length) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-600 text-lg">
+      <div className="min-h-screen flex items-center justify-center text-foreground text-lg">
         Одоогоор ажлын хүсэлт байхгүй байна.
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white py-8">
+    <div className="min-h-screen bg-background py-8">
       {loading2 && <Loading />}
       <div className="max-w-6xl mx-auto space-y-6">
         {applicationData.map((application) => (
           <div
             key={application.id}
-            className="bg-white rounded-xl shadow-md overflow-hidden relative border border-gray-200"
+            className="bg-background rounded-xl shadow-md overflow-hidden relative border border-gray-200"
           >
             {alert && (
               <div>
@@ -199,7 +199,7 @@ export default function ProposalDetails() {
             <div className="p-6 flex flex-col lg:flex-row gap-6">
               <div className="flex-1 space-y-6">
                 <div className="flex justify-between items-center">
-                  <h1 className="text-2xl font-bold text-gray-800">{application.job.title}</h1>
+                  <h1 className="text-2xl font-bold text-foreground">{application.job.title}</h1>
                   <p
                     className={cn(
                       'text-sm font-medium px-3 py-1 rounded-full whitespace-nowrap',
@@ -210,11 +210,11 @@ export default function ProposalDetails() {
                   </p>
                 </div>
                 <div className="space-y-4">
-                  <h2 className="text-lg font-semibold text-gray-700">Ажлын дэлгэрэнгүй</h2>
+                  <h2 className="text-lg font-semibold text-foreground">Ажлын дэлгэрэнгүй</h2>
                   <div className="flex justify-between items-center">
-                    <span className="text-xl font-bold text-gray-800">
+                    <span className="text-xl font-bold text-foreground">
                       {application.job.salary}
-                      <span className="text-gray-500 text-sm ml-1">
+                      <span className="text-foreground0 text-sm ml-1">
                         /
                         {application.job.salaryRate === 'MONTH'
                           ? 'сар'
@@ -224,16 +224,16 @@ export default function ProposalDetails() {
                       </span>
                     </span>
                   </div>
-                  <div className="flex gap-2 text-sm text-gray-600">
+                  <div className="flex gap-2 text-sm text-foreground">
                     <span>Нийтлэсэн: {application.job.postedAt.split('T')[0]}</span>
                   </div>
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap max-h-40 overflow-hidden">
+                  <p className="text-foreground leading-relaxed whitespace-pre-wrap max-h-40 overflow-hidden">
                     {application.job.description}
                   </p>
                   <Link
                     href={`/job/${application.job.id}`}
                     target="_blank"
-                    className="text-green-600 hover:underline"
+                    className="text-foreground hover:underline"
                   >
                     Ажлын саналтай танилцах
                   </Link>
@@ -248,12 +248,12 @@ export default function ProposalDetails() {
                   />
                 )}
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-700">Шаардлага</h2>
+                  <h2 className="text-lg font-semibold text-foreground">Шаардлага</h2>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {application.job.skill.map((skill) => (
                       <span
                         key={skill.id}
-                        className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
+                        className="bg-gray-100 text-foreground px-3 py-1 rounded-full text-sm"
                       >
                         {skill.name}
                       </span>
@@ -264,10 +264,10 @@ export default function ProposalDetails() {
 
               <div className="lg:w-80 bg-gray-50 p-6 flex flex-col items-center justify-between rounded-lg">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-700 mb-4">
+                  <h2 className="text-lg font-semibold text-foreground mb-4">
                     {role === 'CLIENT' ? 'Талентын тухай' : 'Компаний тухай'}
                   </h2>
-                  <div className="space-y-3 text-gray-700">
+                  <div className="space-y-3 text-foreground">
                     <div className=" flex gap-2">
                       <strong>Нэр:</strong>{' '}
                       {role === 'CLIENT' ? (
@@ -418,7 +418,7 @@ export default function ProposalDetails() {
                           </SelectContent>
                         </Select>
                         <Button
-                          className="bg-green-600 hover:bg-green-700"
+                          className=" hover:"
                           onClick={changeApplicationStatus}
                           disabled={
                             loading2 ||
@@ -460,7 +460,7 @@ export default function ProposalDetails() {
                         </SelectContent>
                       </Select>
                       <Button
-                        className="bg-green-600 hover:bg-green-700"
+                        className=" hover:"
                         onClick={changeRequestStatus}
                         disabled={
                           loading2 ||
@@ -474,7 +474,7 @@ export default function ProposalDetails() {
                   )}
                 </div>
                 {application.clientStatus === 'accepted' ? (
-                  <div className=" absolute bottom-1 right-1 text-green-400 text-sm">
+                  <div className=" absolute bottom-1 right-1 text-foreground text-sm">
                     Зөвшөөрөгдсөн анкетийн төлөвийг өөрчлөх боломжгүй. Таньд амжилт хүсье!
                   </div>
                 ) : (

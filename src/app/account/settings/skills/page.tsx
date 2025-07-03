@@ -60,13 +60,13 @@ export default function Settings() {
   };
 
   return (
-    <div className="bg-white flex items-center justify-center">
+    <div className="bg-background flex items-center justify-center">
       {loading ? (
         <Loading />
       ) : (
         <div className="w-full max-w-6xl mx-auto py-8">
-          <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          <div className="bg-background rounded-xl shadow-md p-6 border border-gray-200">
+            <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
               Ур чадварын тохиргоо
             </h2>
             <div className="flex flex-col gap-6">
@@ -77,7 +77,7 @@ export default function Settings() {
                 featured={featured}
               />
               <div className="flex flex-col gap-4">
-                <div className="text-lg font-semibold text-gray-800 border-b pb-4 text-center">
+                <div className="text-lg font-semibold text-foreground border-b pb-4 text-center">
                   Таны онцолсон ур чадварууд
                 </div>
                 {featured.length > 0 ? (
@@ -92,7 +92,7 @@ export default function Settings() {
                     />
                   ))
                 ) : (
-                  <p className="text-sm text-gray-500 text-center">
+                  <p className="text-sm text-foreground0 text-center">
                     Одоогоор онцолсон ур чадварууд алга
                   </p>
                 )}

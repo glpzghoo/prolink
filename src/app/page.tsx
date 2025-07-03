@@ -22,7 +22,7 @@ export default function Home() {
     <div>
       <div
         ref={mobileImgRef}
-        className="max-w-[1280px] bg-[#fff] w-full min-h-[548px] my-20 mx-auto flex flex-col lg:flex-row items-center justify-between border rounded-2xl p-3"
+        className="max-w-[1280px]  w-full min-h-[548px] my-20 mx-auto flex flex-col lg:flex-row items-center justify-between border rounded-2xl p-3"
       >
         <div className=" lg:hidden w-full flex justify-center">
           <img
@@ -51,7 +51,7 @@ export default function Home() {
           </h4>
 
           <div className="text-center mx-auto mt-8 lg:mt-[45%] w-full lg:w-[20vw]">
-            <h4 className="text-sm font-semibold uppercase text-gray-600">TRUSTED BY</h4>
+            <h4 className="text-sm font-semibold uppercase text-foreground">TRUSTED BY</h4>
             <div className="flex justify-center gap-6 mt-2">
               <figure>
                 <img
@@ -87,7 +87,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="max-w-[1280px] w-full mx-auto mb-20 bg-green-50 p-6 md:p-10 rounded-2xl flex flex-col lg:flex-row items-center shadow-lg">
+      <div className="max-w-[1280px] w-full mx-auto mb-20  p-6 md:p-10 rounded-2xl flex flex-col lg:flex-row items-center shadow-lg">
         <img src="./mainPageJoin.png" className="w-full lg:w-1/2 max-w-[500px] lg:max-w-none" />
 
         <div className="w-full lg:w-1/2 lg:pl-10 mt-6 lg:mt-0 text-center lg:text-left">
@@ -110,10 +110,10 @@ export default function Home() {
               },
             ].map((item, index) => (
               <div key={index} className="flex items-start space-x-3">
-                <Check className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                <Check className="w-5 h-5 text-foreground mt-1 flex-shrink-0" />
                 <div>
                   <p className="font-semibold">{item.title}</p>
-                  <p className="text-gray-600">{item.description}</p>
+                  <p className="text-foreground">{item.description}</p>
                 </div>
               </div>
             ))}
@@ -121,12 +121,12 @@ export default function Home() {
 
           <div className="mt-6 flex flex-col sm:flex-row sm:justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
             <Link href={'/account'}>
-              <button className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold w-full sm:w-auto">
+              <button className=" text-background px-6 py-3 rounded-lg font-semibold w-full sm:w-auto">
                 Бүртгүүлэх
               </button>
             </Link>
             <Link href={'/account'}>
-              <button className="border-2 border-green-600 text-green-600 px-6 py-3 rounded-lg font-semibold w-full sm:w-auto">
+              <button className="border-2 border-green-600 text-foreground px-6 py-3 rounded-lg font-semibold w-full sm:w-auto">
                 Нэвтрэх
               </button>
             </Link>
@@ -140,10 +140,10 @@ export default function Home() {
             <h4 className="text-sm uppercase font-semibold">Бизнесүүдэд</h4>
             <h1 className="text-3xl sm:text-4xl font-bold mt-4 leading-snug">
               Энд <br />
-              <span className="text-green-300">сайн компаниуд</span> <br />
-              <span className="text-green-300">сайн хамтрагчаа олдог.</span>
+              <span className="text-foreground">сайн компаниуд</span> <br />
+              <span className="text-foreground">сайн хамтрагчаа олдог.</span>
             </h1>
-            <p className="text-gray-300 mt-4 text-base sm:text-lg">
+            <p className="text-foreground mt-4 text-base sm:text-lg">
               ProLink-ийн шилдэг авъяастнуудад хандаж, холимог ажлын хүчний удирдлагын иж бүрэн
               хэрэгслүүдийг ашиглаарай. Энэ бол инноваци хэрхэн ажилладаг шинэ арга зам юм.
             </p>
@@ -155,13 +155,13 @@ export default function Home() {
                 'Бүрэн үйлчилгээний дэмжлэг авахын тулд ProLink-тэй хамтар',
               ].map((item, index) => (
                 <li key={index} className="flex items-start gap-2">
-                  <span className="text-green-300 text-xl">✔</span>
+                  <span className="text-foreground text-xl">✔</span>
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
             <Link href={'/freelancer'}>
-              <button className="mt-6 bg-white text-green-900 px-6 py-3 rounded-md font-medium hover:bg-gray-200 transition">
+              <button className="mt-6 bg-background text-foreground px-6 py-3 rounded-md font-medium hover:bg-gray-200 transition">
                 Дэлгэрэнгүй үзэх
               </button>
             </Link>
@@ -187,7 +187,7 @@ export default function Home() {
           }}
           className="relative min-h-[700px] lg:min-h-[600] sm:max-h-[600px] bg-no-repeat bg-cover bg-center"
         >
-          <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center md:items-start px-6 sm:px-12 py-12 text-white text-center md:text-left">
+          <div className="absolute inset-0 bg-background/50 flex flex-col justify-center items-center md:items-start px-6 sm:px-12 py-12 text-white text-center md:text-left">
             <p className="text-sm uppercase mt-3 font-medium">Үйлчлүүлэгчдэд</p>
             <h1 className="text-3xl sm:text-4xl font-bold mt-[-10px] sm:mt-[10px]">
               Авъяас чадвараа <br className="hidden md:block" /> хүссэнээрээ ол
@@ -214,7 +214,7 @@ export default function Home() {
                 },
               ].map((item, index) => (
                 <Link key={index} href={'/freelancer'} className="flex">
-                  <button className="flex-1 bg-transparent border border-gray-300 text-white py-6 px-4 text-left rounded-lg shadow-lg hover:bg-black transition w-full">
+                  <button className="flex-1 bg-transparent border border-gray-300 text-white py-6 px-4 text-left rounded-lg shadow-lg hover:bg-foreground transition w-full">
                     <span className="text-lg font-semibold block">{item.title}</span>
                     <span className="text-sm opacity-80">{item.subtitle}</span>
                   </button>
@@ -259,7 +259,7 @@ export default function Home() {
             ))}
           </div>
           <Link href={'/job'} className="flex">
-            <button className="mt-6 bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-gray-200">
+            <button className="mt-6 bg-background text-blue-600 font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-gray-200">
               Ажил хайх →
             </button>
           </Link>

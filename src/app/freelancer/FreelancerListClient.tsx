@@ -54,7 +54,7 @@ export default function FreelancerListClient({ initialUsers }: { initialUsers: C
       (
       <Suspense fallback={<Loading />}>
         <Badge />
-        <div className="border border-solid max-w-[1250px] p-4 font-bold rounded-3xl mx-auto bg-white text-center mb-4">
+        <div className="border border-solid max-w-[1250px] p-4 font-bold rounded-3xl mx-auto bg-background text-center mb-4">
           Дундаж үнэлгээ: {allreviews(users) ? allreviews(users) + '/5' : 'Үнэлгээ алга'}
         </div>
         <div className=" flex justify-center">
