@@ -1,20 +1,21 @@
 'use client';
 
 import CustomSkeleton from '@/app/_component/skeleton';
-import { calculateTime } from '@/lib/helper';
 import { responseData } from '@/lib/types';
 import { Button, Chip } from '@mui/material';
 import { job, user } from '@prisma/client';
-import { CustomJob, CustomUser } from '../types';
+import { CustomJob } from '../types';
 import axios from 'axios';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import Snackbar from '@mui/material/Snackbar';
 import { useEffect, useState } from 'react';
-import { GoDotFill } from 'react-icons/go';
 import { ThemeProvider } from '@emotion/react';
 import { theme } from '@/lib/theme';
 import _ from 'lodash';
+import JobHeader from './components/JobHeader';
+import JobStats from './components/JobStats';
+import SimilarPosts from './components/SimilarPosts';
 
 export default function JobDetailClient() {
   const params = useParams();
@@ -85,12 +86,6 @@ export default function JobDetailClient() {
     fetc();
   }, [isClicked]);
 
-  const avgRating = (user: CustomUser) => {
-    if (!user.reviewee || user.reviewee.length === 0) return 0;
-    const total = user.reviewee.reduce((prev, acc) => prev + acc.rating, 0);
-    return Number((total / user.reviewee.length / 20).toFixed(1));
-  };
-
   const sendJobApplication = async () => {
     setLoading2(true);
     try {
@@ -116,67 +111,9 @@ export default function JobDetailClient() {
   ) : post ? (
     <div className="bg-background min-h-screen py-8">
       <div className="max-w-4xl mx-auto bg-background rounded-lg shadow-md p-6 md:p-8 border border-gray-200">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span
-                className={`text-sm font-medium ${
-                  post.status === 'ACTIVE' ? 'text-foreground' : 'text-pink-400'
-                } flex items-center gap-1`}
-              >
-                {post.status === 'ACTIVE' ? (
-                  <>
-                    Идэвхитэй зар <GoDotFill className="animate-ping" />
-                  </>
-                ) : (
-                  'Идэвхигүй зар'
-                )}
-              </span>
-            </div>
-            <h1 className="text-2xl font-bold text-foreground">{post.title}</h1>
-            <div className="flex flex-col sm:flex-row gap-2 text-sm text-foreground">
-              <span>
-                Нийтэлсэн:{' '}
-                <Link href={`/client/${post.poster.id}`} className="hover:underline">
-                  <span
-                    className={`font-semibold ${
-                      post.poster.emailVerified ? 'text-foreground' : 'text-red-600'
-                    }`}
-                    title={
-                      post.poster.emailVerified
-                        ? 'Баталгаажсан хэрэглэгч'
-                        : 'Баталгаажуулаагүй хэрэглэгч'
-                    }
-                  >
-                    {post.poster.companyName}
-                  </span>
-                </Link>
-              </span>
-              <span>· {calculateTime(post.postedAt)}</span>
-            </div>
-          </div>
-          <Button onClick={copyURL} sx={{ color: 'green' }} className="flex gap-1">
-            <div className="text-foreground hover:text-foreground text-sm border cursor-pointer border-gray-300 rounded px-3 py-2">
-              Хуваалцах
-            </div>
-          </Button>
-        </div>
+        <JobHeader post={post} copyURL={copyURL} />
 
-        <div className="flex flex-wrap gap-4 text-sm text-foreground border-b pb-4 mb-6">
-          <div>
-            Пост <span className=" font-bold">{post.jobPostView}</span> үзэлттэй байна,
-          </div>
-          <span>·</span>
-          <div>
-            Одоогоор нийт <span className=" font-bold">{post.jobApplication.length}</span> хүн
-            ажиллах хүсэлт тавьсан байна!
-          </div>
-          <span>·</span>
-          <div>
-            Дундаж: <span className=" font-bold">{avgRating(post.poster)}/5</span>
-          </div>
-        </div>
-
+        <JobStats post={post} />
         <div className="space-y-4">
           <div>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Саналын дэлгэрэнгүй</h2>
@@ -262,24 +199,7 @@ export default function JobDetailClient() {
           </div>
         )}
 
-        <div className="mt-8 border-t pt-6">
-          <h3 className="text-lg font-semibold text-foreground mb-3">Бусад төстэй зарууд</h3>
-          {similarPosts.length === 0 ? (
-            <p className="text-foreground0">Төстэй пост алга</p>
-          ) : (
-            <div className="flex flex-wrap gap-3">
-              {similarPosts.map((j) => (
-                <Link
-                  key={j.id}
-                  href={`/job/${j.id}`}
-                  className="bg-gray-100 px-3 py-1 rounded-full text-sm text-foreground hover:bg-gray-200 transition"
-                >
-                  {j.title}
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
+        <SimilarPosts posts={similarPosts} />
 
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

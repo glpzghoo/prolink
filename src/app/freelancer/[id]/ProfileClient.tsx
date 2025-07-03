@@ -6,9 +6,7 @@ import { calculateTime } from '@/lib/helper';
 import { responseData } from '@/lib/types';
 import { Button, Checkbox, Snackbar, ThemeProvider } from '@mui/material';
 import Rating from '@mui/material/Rating';
-import { featuredSkills, review, skill, user } from '@prisma/client';
 import axios from 'axios';
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useParams } from 'next/navigation';
@@ -17,36 +15,14 @@ import { ImNewTab, ImSpinner10 } from 'react-icons/im';
 import { FaCircleArrowLeft, FaCircleArrowRight } from 'react-icons/fa6';
 import z from 'zod';
 import _ from 'lodash';
-import { HiOutlineCheckBadge } from 'react-icons/hi2';
-import { GoUnverified } from 'react-icons/go';
 import { theme } from '@/lib/theme';
-import { MdFavorite, MdFavoriteBorder, MdOutlineReportGmailerrorred } from 'react-icons/md';
+import { MdOutlineReportGmailerrorred } from 'react-icons/md';
 import { useReactToPrint } from 'react-to-print';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-
-type CustomUser = user & {
-  skill: CustomSkill[];
-  reviewee: CustomReviewee[];
-  reviewer: review[];
-  featuredSkills: CustomFeaturedSkill[];
-  birthday: string;
-};
-type CustomReviewee = review & {
-  reviewee: CustomUser;
-  reviewer: CustomUser;
-  createdAt: string;
-};
-type CustomSkill = skill & {
-  user: CustomUser[];
-};
-export type CustomFeaturedSkill = featuredSkills & {
-  skill: skill;
-  startedAt: string;
-  endedAt: string;
-  user: CustomUser;
-};
-type favorite = { id: string; role: string };
+import ProfileHeader from './components/ProfileHeader';
+import ProfileStats from './components/ProfileStats';
+import type { CustomUser, Favorite } from './types';
 
 const ratingSchema = z.object({
   message: z.string().min(5),
@@ -59,7 +35,7 @@ export default function Client() {
   const [user, setUser] = useState<CustomUser>();
   const [showFullReview, setShowFullReview] = useState<number | undefined>();
   const [similarUsers, setSimilarUsers] = useState<CustomUser[]>([]);
-  const [favorites, setFavorites] = useState<favorite[]>([]);
+  const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingAddingReview, setLoadingAddingReview] = useState(false);
@@ -74,7 +50,6 @@ export default function Client() {
   const [alert2, setAlert2] = useState(false);
   const [accept, setAccept] = useState(false);
   const [reason, setReason] = useState('');
-  const [reportResponse, setReportResponse] = useState('');
 
   const params = useParams();
   const { id } = params as { id: string };
@@ -83,7 +58,6 @@ export default function Client() {
     try {
       const res = await axios.post(`/api/account/report?id=${id}`, { reason });
       if (res.data) {
-        setReportResponse(res.data.message);
       }
     } catch (err) {
       console.error(err, 'Сервертэй холбогдож чадсангүй!');
@@ -213,98 +187,18 @@ export default function Client() {
           ref={contentRef}
           className="max-w-4xl mx-auto bg-background rounded-xl shadow-lg p-6 md:p-8 relative border border-gray-200"
         >
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-            <div className="flex items-center gap-4">
-              <div className=" flex justify-center items-center w-16 h-16 overflow-hidden rounded-full">
-                <Image
-                  src={`${user.pfp ? user.pfp : '/placeholder.png'}`}
-                  width={64}
-                  height={64}
-                  alt="Profile"
-                  className="rounded-full object-cover"
-                />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-bold text-foreground">
-                    {user.firstName}, {user.lastName}
-                  </h1>
-                  {user.emailVerified ? (
-                    <HiOutlineCheckBadge title="Баталгаажсан" className="text-foreground text-xl" />
-                  ) : (
-                    <GoUnverified title="Баталгаажаагүй" className="text-red-600 text-xl" />
-                  )}
-                  <Snackbar
-                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                    open={alert2}
-                    message={<div className=" text-center">{reportResponse}</div>}
-                  />
-                  {((avgRating() > 4.5 && user.reviewee.length > 2) ||
-                    (avgRating() > 4.0 && user.reviewee.length > 10)) && (
-                    <span className="px-2 py-1 text-xs text-white  rounded-full">
-                      Шилдэг үнэлгээтэй
-                    </span>
-                  )}
-                </div>
-                <p className="text-foreground text-sm">
-                  {user.skill.length} мэргэжилтэй · {user.gender === 'MALE' ? 'Эрэгтэй' : 'Эмэгтэй'}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 mt-4 md:mt-0">
-              {owner && !user.emailVerified && (
-                <Button
-                  disabled={loading2}
-                  onClick={sendMail}
-                  sx={{ color: 'red', fontSize: '12px' }}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  {loading2 ? 'Түр хүлээнэ үү!' : 'Хаягаа баталгаажуулах'}
-                </Button>
-              )}
-              <button
-                onClick={saveFavorite}
-                className="text-2xl text-foreground hover:text-foreground transition"
-              >
-                {isFavorite ? <MdFavorite className="text-foreground" /> : <MdFavoriteBorder />}
-              </button>
-              <button
-                onClick={copyURL}
-                className="text-sm text-foreground border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 transition"
-              >
-                Хуваалцах
-              </button>
-              <button
-                onClick={() => reactToPrintFn()}
-                className="text-sm text-foreground border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 transition"
-              >
-                Татах
-              </button>
-              {owner && (
-                <Link href="/account/settings/about">
-                  <button className="text-sm text-foreground border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-100 transition">
-                    Дашбоард
-                  </button>
-                </Link>
-              )}
-            </div>
-          </div>
+          <ProfileHeader
+            user={user}
+            owner={owner}
+            isFavorite={isFavorite}
+            loading2={loading2}
+            sendMail={sendMail}
+            saveFavorite={saveFavorite}
+            copyURL={copyURL}
+            reactToPrintFn={reactToPrintFn}
+          />
 
-          <div className="flex flex-wrap gap-4 text-sm text-foreground border-b pb-4 mb-6">
-            <span>
-              Энэ profile нийт <span className=" font-bold">{user.profileViews} </span>
-              үзэлттэй байна!
-            </span>
-            <span>·</span>
-            <span>
-              <strong>{user.reviewee.length}</strong> үнэлгээ
-            </span>
-            <span>·</span>
-            <span>
-              Дундаж үнэлгээ: <span className=" font-bold"> {avgRating()} </span>
-              /5
-            </span>
-          </div>
+          <ProfileStats user={user} avgRating={avgRating} />
 
           {!owner && user.role === 'FREELANCER' && (
             <div className=" border border-green-200 rounded-lg p-4 mb-6">
