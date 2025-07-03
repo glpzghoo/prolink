@@ -1,7 +1,6 @@
-"use client";
-import Image from "next/image";
-import { SessionProvider, signIn, signOut, useSession } from "next-auth/react";
-import { Button } from "@mui/material";
+'use client';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import { Button } from '@mui/material';
 
 export default function GoogleSession() {
   const { data: session } = useSession();
@@ -12,7 +11,7 @@ export default function GoogleSession() {
           onClick={() => {
             signOut();
           }}
-          sx={{ color: "green" }}
+          sx={{ color: 'green' }}
           className="w-full border bg-background text-foreground gap-2 hover:bg-secondary flex justify-around"
         >
           {/* <Image
@@ -25,9 +24,9 @@ export default function GoogleSession() {
         </Button>
       ) : (
         <Button
-          sx={{ color: "green" }}
+          sx={{ color: 'green' }}
           onClick={() => {
-            signIn("google");
+            signIn('google');
           }}
           className="w-full border bg-background text-foreground gap-2 hover:bg-secondary flex justify-around"
         >

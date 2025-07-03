@@ -1,5 +1,4 @@
-import { Skeleton } from "@mui/material";
-import Loading from "./loading";
+import Loading from './loading';
 
 export default function CustomSkeleton() {
   return (

@@ -1,31 +1,23 @@
-import Link from "next/link";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { HiOutlineCheckBadge } from "react-icons/hi2";
-import { IoMdCheckmark } from "react-icons/io";
-import { featuredSkills, review, skill, user } from "@prisma/client";
-import { CustomUser } from "../freelancer/FreelancerListClient";
+import Link from 'next/link';
+import { MdOutlineRemoveRedEye } from 'react-icons/md';
+import Image from 'next/image';
+import { HiOutlineCheckBadge } from 'react-icons/hi2';
+import { IoMdCheckmark } from 'react-icons/io';
+import { CustomUser } from '../freelancer/FreelancerListClient';
 
 type Favorite = {
   id: string;
   role: string;
 };
 
-export function ClientCard({
-  user,
-  favorites,
-}: {
-  user: CustomUser;
-  favorites?: Favorite[];
-}) {
+export function ClientCard({ user, favorites }: { user: CustomUser; favorites?: Favorite[] }) {
   const avrRating = () => {
-    if (!user?.reviewee || user.reviewee.length === 0) return "0.0";
+    if (!user?.reviewee || user.reviewee.length === 0) return '0.0';
     const total = user.reviewee.reduce((prev, acc) => prev + acc.rating, 0);
     return (total / user.reviewee.length / 20).toFixed(1);
   };
 
-  const formattedSalary = user.salary.toLocaleString("mn-MN");
+  const formattedSalary = user.salary.toLocaleString('mn-MN');
   const userSaved = favorites?.some((fav) => fav.id === user.id);
 
   return (
@@ -41,11 +33,9 @@ export function ClientCard({
           </div>
           {!user.companyName && (
             <div className="flex items-center gap-2 bg-green-50 px-2 py-1 rounded-md">
-              <span className="font-semibold text-green-700">
-                {formattedSalary} ₮
-              </span>
+              <span className="font-semibold text-green-700">{formattedSalary} ₮</span>
               <span className="text-xs text-gray-700 bg-green-100 px-1.5 py-0.5 rounded">
-                {user.salaryType === "HOUR" ? "цагт" : "сард"}
+                {user.salaryType === 'HOUR' ? 'цагт' : 'сард'}
               </span>
             </div>
           )}
@@ -53,7 +43,7 @@ export function ClientCard({
         <div className="flex flex-col items-center flex-1">
           <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border border-green-200 mb-3">
             <Image
-              src={user.pfp || "/default-profile.png"}
+              src={user.pfp || '/default-profile.png'}
               alt="Profile Picture"
               fill
               className="object-cover"
@@ -64,7 +54,7 @@ export function ClientCard({
           <div className="text-center">
             <div className="flex items-center justify-center gap-1">
               <h3
-                title={user.companyName || user.lastName + " " + user.firstName}
+                title={user.companyName || user.lastName + ' ' + user.firstName}
                 className="text-lg sm:text-xl font-semibold text-gray-900 truncate max-w-[250px]"
               >
                 {user.companyName || user.firstName}
@@ -110,9 +100,9 @@ export function ClientCard({
                 ))
               ) : (
                 <span className="text-xs text-gray-500 italic bg-gray-100 px-2 py-1 rounded-full">
-                  {user.role === "CLIENT"
-                    ? "Нээлттэй ажлын байр оруулаагүй байна"
-                    : "Ур чадвар оруулаагүй байна"}
+                  {user.role === 'CLIENT'
+                    ? 'Нээлттэй ажлын байр оруулаагүй байна'
+                    : 'Ур чадвар оруулаагүй байна'}
                 </span>
               )}
               {user.skill.length > 3 && (
