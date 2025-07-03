@@ -1,5 +1,4 @@
 'use client';
-import Loading from '@/app/_component/loading';
 import CustomSkeleton from '@/app/_component/skeleton';
 import MailDetail from '@/app/account/_components/maildetailbutton';
 import { CustomJob } from '@/app/job/types';
@@ -260,7 +259,6 @@ export default function Client() {
         <CustomSkeleton />
       ) : user ? (
         <div className="bg-background min-h-screen mb-20">
-          {loading2 && <Loading />}
           <div
             className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 border border-gray-200 rounded-xl bg-background shadow-lg relative"
             ref={contentRef}

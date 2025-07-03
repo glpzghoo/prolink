@@ -4,7 +4,6 @@ import { responseData } from '@/lib/types';
 import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
-import Loading from '../_component/loading';
 
 export default function App() {
   const searchParams = useSearchParams();
@@ -35,10 +34,10 @@ export default function App() {
     }
   };
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={'Tur huleene uu! (solino)'}>
       <div className="">
         {loading ? (
-          <Loading />
+          'Tur huleene uu! (solino)'
         ) : (
           <div className="flex min-h-screen items-center justify-center">{response?.message}</div>
         )}

@@ -1,9 +1,6 @@
-import Loading from './loading';
-
 export default function CustomSkeleton() {
   return (
     <div className="flex gap-20 justify-center items-center">
-      <Loading />
       {/* <Skeleton
           variant="rectangular"
           width={700}

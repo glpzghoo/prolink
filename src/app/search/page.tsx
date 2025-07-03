@@ -3,7 +3,6 @@
 import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
-import Loading from '../_component/loading';
 import { ClientCard } from '../_component/ ClientPostCard';
 import { CustomUser } from '../freelancer/FreelancerListClient';
 
@@ -14,11 +13,9 @@ export default function App() {
   const [clients, setClients] = useState<CustomUser[]>([]);
   const [freelancers, setFreelancers] = useState<CustomUser[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loading2, setLoading2] = useState(false);
   useEffect(() => {
     const fetch = async () => {
       if (search) {
-        setLoading2(true);
         try {
           const res = await axios.post(`/api/account/search?search=${search}`);
           if (res.data.success) {
@@ -37,7 +34,6 @@ export default function App() {
           console.error(err);
         } finally {
           setLoading(false);
-          setLoading2(false);
         }
       } else {
         router.back();
@@ -46,13 +42,12 @@ export default function App() {
     fetch();
   }, [search]);
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={'Tur huleene uu! (solino)'}>
       <div>
         {loading ? (
-          <Loading />
+          'Tur huleene uu! (solino)'
         ) : (
           <div>
-            {loading2 && <Loading />}
             <div className="text-center py-4">
               Таны хайлтын дүн:{' '}
               <span className=" font-semibold">

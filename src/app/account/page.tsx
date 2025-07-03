@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import GoogleSession from './_components/google';
 import { motion } from 'framer-motion';
 import { Button } from '@mui/material';
-import Loading from '../_component/loading';
 import { SessionProvider } from 'next-auth/react';
 
 const emailSchema = z.string().email();
@@ -52,7 +51,6 @@ export default function Account() {
   };
   return (
     <>
-      {loading && <Loading />}
       <div className="min-h-screen flex flex-col items-center justify-center bg-background">
         <motion.div
           initial={{ opacity: 0, y: 200 }}
