@@ -1,8 +1,8 @@
-"use client";
-import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { ImSpinner10 } from "react-icons/im";
+'use client';
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { ImSpinner10 } from 'react-icons/im';
 
 export default function App() {
   const router = useRouter();
@@ -11,6 +11,8 @@ export default function App() {
       signOut();
       router.replace(`/account`);
     }, 3000);
+
+    return () => clearTimeout(timeout);
   }, []);
   return (
     <div className="flex min-h-screen items-center justify-center gap-4">

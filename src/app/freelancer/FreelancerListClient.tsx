@@ -1,11 +1,10 @@
-"use client";
-import { Suspense, useEffect, useState } from "react";
-import { ClientCard } from "../_component/ ClientPostCard";
-import { review, skill, user } from "@prisma/client";
-import Loading from "../_component/loading";
-import CustomSkeleton from "../_component/skeleton";
-import { useSearchParams } from "next/navigation";
-import Badge from "../_component/skillBadge";
+'use client';
+import { Suspense, useEffect, useState } from 'react';
+import { ClientCard } from '../_component/ ClientPostCard';
+import { review, skill, user } from '@prisma/client';
+import Loading from '../_component/loading';
+import { useSearchParams } from 'next/navigation';
+import Badge from '../_component/skillBadge';
 export type CustomUser = user & {
   skill: skill[];
   reviewee: review[];
@@ -15,12 +14,11 @@ type favorite = {
   role: string;
 };
 export default function FreelancerListClient({ initialUsers }: { initialUsers: CustomUser[] }) {
-  const [users, setUsers] = useState<CustomUser[]>(initialUsers);
+  const users: CustomUser[] = initialUsers;
   const [filteredUsers, setFilteredUsers] = useState<CustomUser[]>([]);
   const [favorites, setFavorites] = useState<favorite[]>([]);
-  const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
-  const filter = searchParams.get("filter");
+  const filter = searchParams.get('filter');
   const allreviews = (data: CustomUser[]): number => {
     const total = data.reduce((prev, acc) => {
       const total1 = acc.reviewee.reduce((prev1, acc1) => {
@@ -47,29 +45,27 @@ export default function FreelancerListClient({ initialUsers }: { initialUsers: C
     setFilteredUsers(filterSkills);
   }, [filter, users]);
   useEffect(() => {
-    const fav = localStorage.getItem("favorites");
+    const fav = localStorage.getItem('favorites');
     const favoritesL = fav ? JSON.parse(fav) : [];
     setFavorites(favoritesL);
   }, []);
   return (
     <div>
-      {!loading ? (
-        <Suspense fallback={<Loading />}>
-          <Badge />
-          <div className="border border-solid max-w-[1250px] p-4 font-bold rounded-3xl mx-auto bg-white text-center mb-4">
-            Дундаж үнэлгээ: {allreviews(users) ? allreviews(users) + "/5" : "Үнэлгээ алга"}
+      (
+      <Suspense fallback={<Loading />}>
+        <Badge />
+        <div className="border border-solid max-w-[1250px] p-4 font-bold rounded-3xl mx-auto bg-white text-center mb-4">
+          Дундаж үнэлгээ: {allreviews(users) ? allreviews(users) + '/5' : 'Үнэлгээ алга'}
+        </div>
+        <div className=" flex justify-center">
+          <div className="flex flex-wrap max-w-[70%] gap-6">
+            {(filter ? filteredUsers : users).map((user) => (
+              <ClientCard favorites={favorites} key={user.id} user={user} />
+            ))}
           </div>
-          <div className=" flex justify-center">
-            <div className="flex flex-wrap max-w-[70%] gap-6">
-              {(filter ? filteredUsers : users).map((user) => (
-                <ClientCard favorites={favorites} key={user.id} user={user} />
-              ))}
-            </div>
-          </div>
-        </Suspense>
-      ) : (
-        <CustomSkeleton />
-      )}
+        </div>
+      </Suspense>
+      )
     </div>
   );
 }

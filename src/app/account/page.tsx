@@ -1,35 +1,29 @@
-"use client";
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import z from "zod";
-import axios from "axios";
-import { ImSpinner2 } from "react-icons/im";
-import { useRouter } from "next/navigation";
-import { responseData } from "@/lib/types";
-import GoogleSession from "./_components/google";
-import { motion } from "framer-motion";
-import { Button } from "@mui/material";
-import Loading from "../_component/loading";
-import { SessionProvider } from "next-auth/react";
+'use client';
+import { Input } from '@/components/ui/input';
+import { useEffect, useRef, useState } from 'react';
+import z from 'zod';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import GoogleSession from './_components/google';
+import { motion } from 'framer-motion';
+import { Button } from '@mui/material';
+import Loading from '../_component/loading';
+import { SessionProvider } from 'next-auth/react';
 
 const emailSchema = z.string().email();
 export default function Account() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [isValid, setIsValid] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<responseData>();
   const LoginButtonEvent = useRef<HTMLButtonElement>(null);
   const router = useRouter();
   useEffect(() => {
-    const emailFromLocalStorage = localStorage.getItem("email");
+    const emailFromLocalStorage = localStorage.getItem('email');
     if (emailFromLocalStorage) {
       setEmail(emailFromLocalStorage);
     }
   }, []);
   useEffect(() => {
-    setResponse(undefined);
-
     const result = emailSchema.safeParse(email);
     if (result.success) {
       setIsValid(false);
@@ -39,17 +33,16 @@ export default function Account() {
   }, [email]);
 
   const onClick = async () => {
-    setResponse(undefined);
     setLoading(true);
     const res = await axios.post(`/api/account`, { email });
     setLoading(false);
-    setResponse(res.data);
-    localStorage.setItem("email", email);
+
+    localStorage.setItem('email', email);
     if (res.data.userExist) {
-      localStorage.setItem("firstName", res.data.data.name);
+      localStorage.setItem('firstName', res.data.data.name);
       router.push(`/account/login`);
     } else {
-      router.push("/account/register");
+      router.push('/account/register');
     }
   };
   const handleLoginEvent = () => {
@@ -83,7 +76,7 @@ export default function Account() {
                       setEmail(e.target.value);
                     }}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
+                      if (e.key === 'Enter') {
                         handleLoginEvent();
                       }
                     }}
@@ -93,16 +86,14 @@ export default function Account() {
                 </div>
                 <div>
                   <Button
-                    sx={{ color: "green" }}
+                    sx={{ color: 'green' }}
                     onClick={onClick}
                     disabled={isValid || loading}
                     ref={LoginButtonEvent}
                     type="submit"
-                    className={`w-full  ${
-                      isValid ? `bg-foreground` : `bg-[#108A00]`
-                    }`}
+                    className={`w-full  ${isValid ? `bg-foreground` : `bg-[#108A00]`}`}
                   >
-                    {loading ? <>Түр хүлээнэ үү!</> : "Үргэлжлүүлэх"}
+                    {loading ? <>Түр хүлээнэ үү!</> : 'Үргэлжлүүлэх'}
                   </Button>
                 </div>
               </div>

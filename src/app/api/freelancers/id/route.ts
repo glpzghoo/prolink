@@ -1,11 +1,11 @@
-import { prisma } from "@/lib/prisma";
-import { CustomNextResponse } from "@/lib/responses";
-import { NextRequest } from "next/server";
+import { prisma } from '@/lib/prisma';
+import { CustomNextResponse } from '@/lib/responses';
+import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get("id");
+  const id = req.nextUrl.searchParams.get('id');
   if (!id) {
-    return CustomNextResponse(false, "WRONG_ID", "ID шаардлагатай!", null);
+    return CustomNextResponse(false, 'WRONG_ID', 'ID шаардлагатай!', null);
   }
   try {
     const user = await prisma.user.findUnique({
@@ -26,32 +26,27 @@ export async function GET(req: NextRequest) {
               omit: { password: true, email: true, phoneNumber: true },
             },
           },
-          orderBy: { createdAt: "desc" },
+          orderBy: { createdAt: 'desc' },
         },
         featuredSkills: {
           include: { skill: true },
-          orderBy: { startedAt: "desc" },
+          orderBy: { startedAt: 'desc' },
         },
         jobpost: {
-          where: { status: { in: ["ACTIVE", "CLOSED"] } },
+          where: { status: { in: ['ACTIVE', 'CLOSED'] } },
           orderBy: {
-            postedAt: "desc",
+            postedAt: 'desc',
           },
         },
       },
     });
     if (!user) {
-      return CustomNextResponse(
-        false,
-        "USER_NOT_FOUND",
-        "Хэрэглэгч олдсонгүй!",
-        null
-      );
+      return CustomNextResponse(false, 'USER_NOT_FOUND', 'Хэрэглэгч олдсонгүй!', null);
     }
-    return CustomNextResponse(true, "REQUEST_SUCCESS", "Хэрэглэгч олдлоо!", {
+    return CustomNextResponse(true, 'REQUEST_SUCCESS', 'Хэрэглэгч олдлоо!', {
       user,
     });
   } catch (err) {
-    console.error(err, "Сервер дээр алдаа гарлаа!");
+    console.error(err, 'Сервер дээр алдаа гарлаа!');
   }
 }

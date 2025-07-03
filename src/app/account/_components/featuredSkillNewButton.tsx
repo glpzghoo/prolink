@@ -1,20 +1,14 @@
-"use client";
-import { CustomFeaturedSkill } from "@/app/freelancer/[id]/ProfileClient";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { responseData } from "@/lib/types";
-import { Button, Input, Snackbar, Switch } from "@mui/material";
-import { skill } from "@prisma/client";
-import axios from "axios";
-import Link from "next/link";
-import React, {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
-import z from "zod";
+'use client';
+import { CustomFeaturedSkill } from '@/app/freelancer/[id]/ProfileClient';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { responseData } from '@/lib/types';
+import { Button, Input, Snackbar, Switch } from '@mui/material';
+import { skill } from '@prisma/client';
+import axios from 'axios';
+import Link from 'next/link';
+import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
+import z from 'zod';
 
 type Props = {
   setRefresh: Dispatch<SetStateAction<boolean>>;
@@ -25,31 +19,26 @@ type Props = {
 
 const formSchema = z
   .object({
-    skill: z.string().min(1, "Skill is required"),
-    detail: z.string().min(1, "Detail is required"),
-    startedAt: z.date({ required_error: "Start date is required" }),
+    skill: z.string().min(1, 'Skill is required'),
+    detail: z.string().min(1, 'Detail is required'),
+    startedAt: z.date({ required_error: 'Start date is required' }),
     present: z.boolean(),
     endedAt: z.date().optional(),
   })
   .superRefine((data, ctx) => {
     if (!data.present && !data.endedAt) {
       ctx.addIssue({
-        path: ["endedAt"],
-        code: "custom",
-        message: "Хүртэл огноо шаардлагатай (одоог хүртэл ажиллаагүй бол)",
+        path: ['endedAt'],
+        code: 'custom',
+        message: 'Хүртэл огноо шаардлагатай (одоог хүртэл ажиллаагүй бол)',
       });
     }
   });
 
-export const FeaturedSkillNewButton = ({
-  setRefresh,
-  setLoading,
-  refresh,
-  featured,
-}: Props) => {
+export const FeaturedSkillNewButton = ({ setRefresh, setLoading, refresh, featured }: Props) => {
   const [form, setForm] = useState({
-    skill: "",
-    detail: "",
+    skill: '',
+    detail: '',
     startedAt: undefined as Date | undefined,
     present: false,
     endedAt: undefined as Date | undefined,
@@ -77,7 +66,7 @@ export const FeaturedSkillNewButton = ({
           setResponse(res.data);
         }
       } catch (err) {
-        console.error("Хүсэлт илгээгээгүй", err);
+        console.error('Хүсэлт илгээгээгүй', err);
       } finally {
         setLoading(false);
       }
@@ -93,9 +82,7 @@ export const FeaturedSkillNewButton = ({
   }, [response]);
 
   const handleForm = (
-    event: ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = event.target;
     setForm((prev) => ({
@@ -113,15 +100,15 @@ export const FeaturedSkillNewButton = ({
       if (res.data.success) {
         setRefresh((prev) => !prev);
         setForm({
-          skill: "",
-          detail: "",
+          skill: '',
+          detail: '',
           startedAt: undefined,
           present: false,
           endedAt: undefined,
         });
       }
     } catch (err) {
-      console.error("Сервер дээр алдаа гарлаа!", err);
+      console.error('Сервер дээр алдаа гарлаа!', err);
     } finally {
       setLoading(false);
     }
@@ -135,13 +122,10 @@ export const FeaturedSkillNewButton = ({
         </Label>
         {skills?.length === 0 ? (
           <p className="text-sm text-gray-600">
-            Skill харагдахгүй байна уу?{" "}
-            <Link
-              href="/account/settings/about"
-              className="text-green-600 hover:underline"
-            >
+            Skill харагдахгүй байна уу?{' '}
+            <Link href="/account/settings/about" className="text-green-600 hover:underline">
               Энд дарж
-            </Link>{" "}
+            </Link>{' '}
             skill нэмээрэй!
           </p>
         ) : (
@@ -181,62 +165,50 @@ export const FeaturedSkillNewButton = ({
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <Label
-            htmlFor="startedAt"
-            className="text-sm font-medium text-gray-700"
-          >
+          <Label htmlFor="startedAt" className="text-sm font-medium text-gray-700">
             Эхлэсэн
           </Label>
           <Input
             id="startedAt"
             type="date"
             name="startedAt"
-            value={
-              form.startedAt ? form.startedAt.toISOString().split("T")[0] : ""
-            }
+            value={form.startedAt ? form.startedAt.toISOString().split('T')[0] : ''}
             onChange={(e) => {
               const date = new Date(e.target.value);
               setForm((prev) => ({ ...prev, startedAt: date }));
             }}
             className="w-full mt-1 rounded-md border border-gray-300 px-4 py-2 text-gray-700 focus:border-green-600 focus:outline-none"
-            sx={{ "& input": { padding: "8px 12px" } }}
+            sx={{ '& input': { padding: '8px 12px' } }}
           />
         </div>
 
         <div className="flex items-center gap-6">
           <div className="flex-1 flex flex-col gap-2">
-            <Label
-              htmlFor="endedAt"
-              className="text-sm font-medium text-gray-700"
-            >
+            <Label htmlFor="endedAt" className="text-sm font-medium text-gray-700">
               Хүртэл
             </Label>
             <Input
               id="endedAt"
               name="endedAt"
               type="date"
-              value={
-                form.endedAt ? form.endedAt.toISOString().split("T")[0] : ""
-              }
+              value={form.endedAt ? form.endedAt.toISOString().split('T')[0] : ''}
               onChange={(e) => {
                 const date = new Date(e.target.value);
                 setForm((prev) => ({ ...prev, endedAt: date }));
               }}
               disabled={form.present}
               className="w-full mt-1 rounded-md border border-gray-300 px-4 py-2 text-gray-700 focus:border-green-600 focus:outline-none disabled:bg-gray-100"
-              sx={{ "& input": { padding: "8px 12px" } }}
+              sx={{ '& input': { padding: '8px 12px' } }}
             />
           </div>
           <div className="flex items-center gap-2">
             <Switch
               checked={form.present}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, present: e.target.checked }))
-              }
+              onChange={(e) => setForm((prev) => ({ ...prev, present: e.target.checked }))}
               sx={{
-                "& .MuiSwitch-switchBase.Mui-checked": { color: "#16a34a" },
-                "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                  backgroundColor: "#16a34a",
+                '& .MuiSwitch-switchBase.Mui-checked': { color: '#16a34a' },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                  backgroundColor: '#16a34a',
                 },
               }}
             />
@@ -251,15 +223,15 @@ export const FeaturedSkillNewButton = ({
         onClick={sendData}
         disabled={!formValid}
         sx={{
-          width: "100%",
-          backgroundColor: formValid ? "#16a34a" : "#d1d5db",
-          color: "white",
+          width: '100%',
+          backgroundColor: formValid ? '#16a34a' : '#d1d5db',
+          color: 'white',
           fontWeight: 500,
-          padding: "12px 0",
-          borderRadius: "8px",
-          textTransform: "none",
-          "&:hover": { backgroundColor: formValid ? "#15803d" : "#d1d5db" },
-          "&:disabled": { backgroundColor: "#d1d5db", cursor: "not-allowed" },
+          padding: '12px 0',
+          borderRadius: '8px',
+          textTransform: 'none',
+          '&:hover': { backgroundColor: formValid ? '#15803d' : '#d1d5db' },
+          '&:disabled': { backgroundColor: '#d1d5db', cursor: 'not-allowed' },
         }}
       >
         Нэмэх
@@ -267,8 +239,8 @@ export const FeaturedSkillNewButton = ({
 
       {response?.message && (
         <Snackbar
-          sx={{ color: response.success ? "green" : "red" }}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          sx={{ color: response.success ? 'green' : 'red' }}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={Boolean(response.message)}
           message={response.message}
         />

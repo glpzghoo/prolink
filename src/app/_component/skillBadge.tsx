@@ -1,33 +1,27 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { ArrowLeftIcon, ArrowRightIcon } from "@mui/x-date-pickers";
-import { skill } from "@prisma/client";
-import axios from "axios";
-import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
-import { ImSpinner11, ImSpinner9 } from "react-icons/im";
+import { Button } from '@/components/ui/button';
+import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
+import { skill } from '@prisma/client';
+import axios from 'axios';
+import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { ImSpinner9 } from 'react-icons/im';
 
-import _, { uniq } from "lodash";
-import { Badge } from "@mui/material";
-import { CustomUser } from "../freelancer/FreelancerListClient";
+import _ from 'lodash';
+import { Badge } from '@mui/material';
+import { CustomUser } from '../freelancer/FreelancerListClient';
 type CustomSkill = skill & {
   user: CustomUser[];
-};
-type uniqUsers = {
-  FREELANCER: CustomUser[];
-  CLIENT: CustomUser[];
 };
 export default function SkillBadge() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const filter = searchParams.get("filter");
+  const filter = searchParams.get('filter');
   const divRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
-  // const [uniqUsers, setuniqUsers] = useState<uniqUsers>();
   const [skills, setSkills] = useState<CustomSkill[]>([]);
-  const [response, setResponse] = useState<CustomSkill[]>([]);
   const fetchSkills = async () => {
     let res;
     try {
@@ -36,12 +30,9 @@ export default function SkillBadge() {
         setSkills(res.data.data.skills);
       }
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
+      console.error(err, 'Сервертэй холбогдож чадсангүй!');
     } finally {
       setLoading(false);
-      if (res) {
-        setResponse(res.data);
-      }
     }
   };
   useEffect(() => {
@@ -49,12 +40,12 @@ export default function SkillBadge() {
   }, []);
   const handleLeftScroll = () => {
     if (divRef.current) {
-      divRef.current.scrollBy({ left: -800, behavior: "smooth" });
+      divRef.current.scrollBy({ left: -800, behavior: 'smooth' });
     }
   };
   const handleRightScroll = () => {
     if (divRef.current) {
-      divRef.current.scrollBy({ left: 800, behavior: "smooth" });
+      divRef.current.scrollBy({ left: 800, behavior: 'smooth' });
     }
   };
   if (skills.length > 0) {
@@ -62,14 +53,12 @@ export default function SkillBadge() {
 
   const filtered = () => {
     const find = skills.find((sk) => sk.id === filter);
-    return find?.name ? find?.name : "";
+    return find?.name ? find?.name : '';
   };
-  const uniqUsers = (
-    data: CustomSkill
-  ): { freelancerLength: number; clientLength: number } => {
+  const uniqUsers = (data: CustomSkill): { freelancerLength: number; clientLength: number } => {
     const users = data.user;
-    const uniqUsers = _.uniqBy(users, "id");
-    const group = _.groupBy(uniqUsers, "role");
+    const uniqUsers = _.uniqBy(users, 'id');
+    const group = _.groupBy(uniqUsers, 'role');
     const freelancerLength = group.FREELANCER ? group.FREELANCER.length : 0;
     const clientLength = group.CLIENT ? group.CLIENT.length : 0;
     return { freelancerLength, clientLength };
@@ -90,19 +79,12 @@ export default function SkillBadge() {
               <ArrowLeftIcon />
             </Button>
 
-            <div
-              ref={divRef}
-              className="flex w-3/4 overflow-hidden gap-3.5  py-5 text-background "
-            >
+            <div ref={divRef} className="flex w-3/4 overflow-hidden gap-3.5  py-5 text-background ">
               {skills.map((skill) => (
-                <Link
-                  className=""
-                  key={skill.id}
-                  href={`${pathname + `?filter=${skill.id}`}`}
-                >
+                <Link className="" key={skill.id} href={`${pathname + `?filter=${skill.id}`}`}>
                   <Badge
                     badgeContent={
-                      pathname === "/client"
+                      pathname === '/client'
                         ? uniqUsers(skill).clientLength
                         : uniqUsers(skill).freelancerLength
                     }
@@ -110,9 +92,7 @@ export default function SkillBadge() {
                   >
                     <Button
                       className={`bg-background ${
-                        filter === skill.id
-                          ? `bg-[#199500] text-background`
-                          : `text-foreground`
+                        filter === skill.id ? `bg-[#199500] text-background` : `text-foreground`
                       } border-green-500 border hover:text-background shadow-lg hover:bg-[#199500] text-xs rounded-full whitespace-nowrap px-3 cursor-pointer`}
                     >
                       {skill.name}

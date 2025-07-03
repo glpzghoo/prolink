@@ -1,5 +1,5 @@
-import cloudinary from "cloudinary";
-import { NextRequest, NextResponse } from "next/server";
+import cloudinary from 'cloudinary';
+import { NextResponse } from 'next/server';
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -20,6 +20,6 @@ export async function GET() {
       api_key: process.env.CLOUDINARY_API_KEY,
     });
   } catch (err) {
-    console.error(err, "route aldaa");
+    console.error(err, 'route aldaa');
   }
 }

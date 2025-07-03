@@ -1,22 +1,20 @@
-"use client";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Image from "next/image";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import z, { date } from "zod";
-import { useRouter } from "next/navigation";
-import { runInThisContext } from "node:vm";
-import { responseData } from "@/lib/types";
-import CircularProgress from "@mui/material/CircularProgress";
-import axios from "axios";
-import { Button, Checkbox, Select } from "@mui/material";
-import Loading from "@/app/_component/loading";
-import { ThemeProvider } from "@emotion/react";
-import { theme } from "@/lib/theme";
+'use client';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import Image from 'next/image';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import z from 'zod';
+import { useRouter } from 'next/navigation';
+import { responseData } from '@/lib/types';
+import CircularProgress from '@mui/material/CircularProgress';
+import axios from 'axios';
+import { Button, Checkbox } from '@mui/material';
+import Loading from '@/app/_component/loading';
+import { ThemeProvider } from '@emotion/react';
+import { theme } from '@/lib/theme';
 const RegisterFormSchema = z.object({
   email: z.string().email(),
   firstName: z.string().min(4),
@@ -36,38 +34,37 @@ const RegisterFormSchema = z.object({
       if (isValid > 18) return true;
       if (isValid === 18) {
         if (currentMonth > birthdateMonth) return true;
-        if (currentMonth === birthdateMonth && currentDay >= birthdateDay)
-          return true;
+        if (currentMonth === birthdateMonth && currentDay >= birthdateDay) return true;
       }
       return false;
     },
-    { message: "user must be 18+" }
+    { message: 'user must be 18+' }
   ),
   phoneNumber: z.string().min(8),
   password: z
     .string()
-    .min(8, "Дор хаяж 8-н оронтой байх ёстой")
-    .regex(/[0-9]/, "Дор хаяж 1 тоо агуулсан байх ёстой"),
+    .min(8, 'Дор хаяж 8-н оронтой байх ёстой')
+    .regex(/[0-9]/, 'Дор хаяж 1 тоо агуулсан байх ёстой'),
 });
 export default function Login() {
   const router = useRouter();
   const [isValid, setIsValid] = useState(false);
   const [progress, setProgress] = useState(0);
   const [imageUploading, setImageUploading] = useState(false);
-  const [roles, setRoles] = useState("FREELANCER");
-  const [gender, setGender] = useState("MALE");
+  const [roles, setRoles] = useState('FREELANCER');
+  const [gender, setGender] = useState('MALE');
   const [response, setResponse] = useState<responseData>();
   const [form, setForm] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    birthday: new Date(new Date().toISOString().split("T")[0]),
-    companyName: "",
-    phoneNumber: "",
+    email: '',
+    firstName: '',
+    lastName: '',
+    birthday: new Date(new Date().toISOString().split('T')[0]),
+    companyName: '',
+    phoneNumber: '',
     salary: 10000,
-    salaryType: "HOUR",
-    password: "",
-    pfp: "",
+    salaryType: 'HOUR',
+    password: '',
+    pfp: '',
   });
   const [error, setError] = useState({
     email: false,
@@ -83,8 +80,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const imageDiv = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    const emailFromLocalStorage = localStorage.getItem("email");
-    const formString = localStorage.getItem("form");
+    const emailFromLocalStorage = localStorage.getItem('email');
+    const formString = localStorage.getItem('form');
     const formLocalStrorage = formString ? JSON.parse(formString) : {};
     setForm({
       ...form,
@@ -128,20 +125,18 @@ export default function Login() {
       });
     }
   }, [form]);
-  const onChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const onChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const field = event.target.name;
     const { value } = event.target;
-    if (field === "birthday") {
+    if (field === 'birthday') {
       setForm((p) => ({ ...p, [field]: new Date(value) }));
     } else if (field === `salary`) {
       setForm((p) => ({ ...p, [field]: Number(value) }));
     } else {
       setForm((p) => ({ ...p, [field]: value }));
     }
-    const { password, ...withoutPass } = form;
-    localStorage.setItem("form", JSON.stringify(withoutPass));
+    const withoutPass = { ...form };
+    localStorage.setItem('form', JSON.stringify(withoutPass));
   };
   const sendData = async () => {
     setLoading(true);
@@ -152,8 +147,8 @@ export default function Login() {
         role: roles,
       });
       setLoading(false);
-      localStorage.removeItem("form");
-      localStorage.removeItem("email");
+      localStorage.removeItem('form');
+      localStorage.removeItem('email');
       setResponse(res.data);
       if (res.data.code === `NEW_USER`) {
         setTimeout(() => {
@@ -161,10 +156,10 @@ export default function Login() {
         }, 2000);
       }
     } catch (err) {
-      console.error(err, "server error");
+      console.error(err, 'server error');
       setLoading(false);
       setResponse({
-        message: "Сервертэй холбогдож чадсангүй!",
+        message: 'Сервертэй холбогдож чадсангүй!',
         success: false,
       });
     }
@@ -182,20 +177,18 @@ export default function Login() {
       const response1 = await fetch(`/api/sign-cloudinary`);
       const { timestamp, signature, api_key } = await response1.json();
       const data = new FormData();
-      data.append("file", file);
-      data.append("timestamp", timestamp.toString());
-      data.append("signature", signature);
-      data.append("api_key", api_key);
-      data.append("resource_type", "image");
+      data.append('file', file);
+      data.append('timestamp', timestamp.toString());
+      data.append('signature', signature);
+      data.append('api_key', api_key);
+      data.append('resource_type', 'image');
       const response2 = await axios.post(
         `https://api.cloudinary.com/v1_1/de1g2bwml/image/upload`,
         data,
         {
           onUploadProgress: (progress) => {
             if (progress.total) {
-              const percent = Math.round(
-                (progress.loaded * 100) / progress.total
-              );
+              const percent = Math.round((progress.loaded * 100) / progress.total);
               setProgress(percent);
             }
           },
@@ -204,14 +197,14 @@ export default function Login() {
 
       if (response2.data) {
         setForm((p) => ({ ...p, pfp: response2.data.secure_url }));
-        const { password, ...withoutPass } = form;
-        localStorage.setItem("form", JSON.stringify(withoutPass));
+        const withoutPass = { ...form };
+        localStorage.setItem('form', JSON.stringify(withoutPass));
         setImageUploading(false);
         return;
       }
       setImageUploading(false);
     } catch (err) {
-      console.error(err, "server error");
+      console.error(err, 'server error');
     }
   };
   return (
@@ -238,9 +231,7 @@ export default function Login() {
                       <div className="flex flex-col justify-center items-center ">
                         <div className="text-lg font-semibold">
                           {!form.pfp && (
-                            <div className={` text-red-600`}>
-                              Profile зураг оруулна уу!
-                            </div>
+                            <div className={` text-red-600`}>Profile зураг оруулна уу!</div>
                           )}
                         </div>
                         <Input
@@ -250,9 +241,7 @@ export default function Login() {
                           accept="image/png, image/jpg, image/jpeg"
                           className="hidden"
                         />
-                        {imageUploading && (
-                          <div>Зураг оруулж байна... {progress}%</div>
-                        )}
+                        {imageUploading && <div>Зураг оруулж байна... {progress}%</div>}
                         <div
                           onClick={imageD}
                           className="rounded-full border w-25 h-25 flex border-gray-600 overflow-hidden relative"
@@ -277,15 +266,13 @@ export default function Login() {
                             height={100}
                           />
                         </div>
-                        <div className="text-xs">
-                          Зурагны 4-н тал тэнцүү бол зохино.
-                        </div>
+                        <div className="text-xs">Зурагны 4-н тал тэнцүү бол зохино.</div>
                       </div>
                     </div>
                     <div className="relative w-full">
                       <Input
                         id="lastName"
-                        defaultValue={form.lastName || ""}
+                        defaultValue={form.lastName || ''}
                         onChange={onChange}
                         name="lastName"
                         className={cn(
@@ -297,7 +284,7 @@ export default function Login() {
                         className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
         peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
-          form.lastName && "top-1 text-[10px] text-[#108A00]"
+          form.lastName && 'top-1 text-[10px] text-[#108A00]'
         }`)}
                       >
                         Овог
@@ -306,7 +293,7 @@ export default function Login() {
                     <div className="relative w-full">
                       <Input
                         id="firstName"
-                        defaultValue={form.firstName || ""}
+                        defaultValue={form.firstName || ''}
                         onChange={onChange}
                         name="firstName"
                         className={cn(
@@ -318,17 +305,14 @@ export default function Login() {
                         className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
         peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
-          form.firstName && "top-1 text-[10px] text-[#108A00]"
+          form.firstName && 'top-1 text-[10px] text-[#108A00]'
         }`)}
                       >
                         Нэр
                       </Label>
-                      {(form.firstName || form.lastName) &&
-                        (error.firstName || error.lastName) && (
-                          <div className="text-red-400">
-                            Овог, Нэрээ оруулна уу!
-                          </div>
-                        )}
+                      {(form.firstName || form.lastName) && (error.firstName || error.lastName) && (
+                        <div className="text-red-400">Овог, Нэрээ оруулна уу!</div>
+                      )}
                     </div>
                   </div>
                   <div>
@@ -338,17 +322,15 @@ export default function Login() {
                       onChange={onChange}
                       defaultValue={
                         form.birthday instanceof String
-                          ? form.birthday.split("T")[0]
-                          : new Date().toISOString().split("T")[0]
+                          ? form.birthday.split('T')[0]
+                          : new Date().toISOString().split('T')[0]
                       }
                       name="birthday"
                       placeholder="Төрсөн өдөр"
-                      max={new Date().toISOString().split("T")[0]}
+                      max={new Date().toISOString().split('T')[0]}
                     />
                     <div
-                      className={` text-xs ${
-                        error.birthday ? ` text-red-400` : `text-[#717171]`
-                      }`}
+                      className={` text-xs ${error.birthday ? ` text-red-400` : `text-[#717171]`}`}
                     >
                       Манайд бүртгүүлэхэд заавал 18 хүрсэн байх ёстой.
                     </div>
@@ -382,26 +364,24 @@ export default function Login() {
                   <ThemeProvider theme={theme}>
                     <div>
                       <div className="flex justify-start gap-12">
-                        {["FREELANCER", "CLIENT"].map((role) => (
+                        {['FREELANCER', 'CLIENT'].map((role) => (
                           <div key={role} className="flex items-center gap-1">
                             <Checkbox
                               checked={roles === role}
-                              onChange={(e) => setRoles(role)}
+                              onChange={() => setRoles(role)}
                               name={role}
                               id={role}
                               defaultValue={roles}
                             />
                             <Label htmlFor={role}>
-                              {role !== "CLIENT"
-                                ? "Хувь хүн"
-                                : "Байгууллага/Компани/Үйлчлүүлэгч"}
+                              {role !== 'CLIENT' ? 'Хувь хүн' : 'Байгууллага/Компани/Үйлчлүүлэгч'}
                             </Label>
                           </div>
                         ))}
                       </div>
-                      {roles === "FREELANCER" && (
+                      {roles === 'FREELANCER' && (
                         <div className="flex justify-start gap-12">
-                          {["MALE", "FEMALE"].map((gen) => (
+                          {['MALE', 'FEMALE'].map((gen) => (
                             <div key={gen} className="flex items-center gap-1">
                               <Checkbox
                                 checked={gender === gen}
@@ -410,9 +390,7 @@ export default function Login() {
                                 id={gen}
                                 defaultValue={gender}
                               />
-                              <Label htmlFor={gen}>
-                                {gen === "MALE" ? "Эрэгтэй" : "Эмэгтэй"}
-                              </Label>
+                              <Label htmlFor={gen}>{gen === 'MALE' ? 'Эрэгтэй' : 'Эмэгтэй'}</Label>
                             </div>
                           ))}
                         </div>
@@ -426,22 +404,22 @@ export default function Login() {
                       className="rounded-none peer w-full border border-gray-300 px-3 pt-5 pb-2 text-lg focus:border-[#108A00] focus:outline-none"
                       onChange={onChange}
                       name="phoneNumber"
-                      defaultValue={form.phoneNumber || ""}
+                      defaultValue={form.phoneNumber || ''}
                     />
                     <Label
                       htmlFor="phoneNumber"
                       className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
         peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
-          form.phoneNumber && "top-1 text-[10px] text-[#108A00]"
+          form.phoneNumber && 'top-1 text-[10px] text-[#108A00]'
         }`)}
                     >
                       Утасны дугаар
                     </Label>
                     <div className=" text-[#717171] text-xs">
-                      {roles === "FREELANCER"
-                        ? "Компани тантай холбогдох болно."
-                        : "Талент тантай холбогдох болно."}
+                      {roles === 'FREELANCER'
+                        ? 'Компани тантай холбогдох болно.'
+                        : 'Талент тантай холбогдох болно.'}
                     </div>
                     {form.phoneNumber && (
                       <div>
@@ -453,14 +431,14 @@ export default function Login() {
                       </div>
                     )}
                   </div>
-                  {roles === "CLIENT" && (
+                  {roles === 'CLIENT' && (
                     <div className="relative w-full">
                       <Input
                         id="companyName"
                         type="text"
                         className="rounded-none peer w-full border border-gray-300 px-3 pt-5 pb-2 text-lg focus:border-[#108A00] focus:outline-none"
                         onChange={onChange}
-                        defaultValue={form.companyName || ""}
+                        defaultValue={form.companyName || ''}
                         name="companyName"
                       />
                       <Label
@@ -468,7 +446,7 @@ export default function Login() {
                         className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
         peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
-          form.companyName && "top-1 text-[10px] text-[#108A00]"
+          form.companyName && 'top-1 text-[10px] text-[#108A00]'
         }`)}
                       >
                         Компаний нэр
@@ -476,7 +454,7 @@ export default function Login() {
                     </div>
                   )}
 
-                  {roles === "FREELANCER" && (
+                  {roles === 'FREELANCER' && (
                     <div className="relative w-full">
                       <div className=" flex">
                         <Input
@@ -485,7 +463,7 @@ export default function Login() {
                           className="rounded-none peer w-full border border-gray-300 px-3 pt-5 pb-2 text-lg focus:border-[#108A00] focus:outline-none"
                           onChange={onChange}
                           name="salary"
-                          value={form.salary || ""}
+                          value={form.salary || ''}
                         />
                         <select
                           onChange={onChange}
@@ -502,14 +480,13 @@ export default function Login() {
                         className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
         peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
-          form.salary && "top-1 text-[10px] text-[#108A00]"
+          form.salary && 'top-1 text-[10px] text-[#108A00]'
         }`)}
                       >
                         Таны цалингийн хүлээлт
                       </Label>
                       <div className=" text-[#717171] text-xs">
-                        <span className=" italic">оруулаагүй бол : </span>{" "}
-                        10000/цаг
+                        <span className=" italic">оруулаагүй бол : </span> 10000/цаг
                       </div>
                       {form.salary ? (
                         <div>
@@ -538,7 +515,7 @@ export default function Login() {
                       className={cn(`absolute left-3 top-1 text-gray-500 text-md transition-all 
         peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 
         peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-[#108A00] ${
-          form.password && "top-2 text-[10px] text-[#108A00]"
+          form.password && 'top-2 text-[10px] text-[#108A00]'
         }`)}
                     >
                       Нууц үг
@@ -547,8 +524,7 @@ export default function Login() {
                       <div>
                         {form.password && (
                           <div className="text-xs text-red-400">
-                            Нууц үг заавал 8+ дээш оронтой бас тоо агуулсан байх
-                            ёстой
+                            Нууц үг заавал 8+ дээш оронтой бас тоо агуулсан байх ёстой
                           </div>
                         )}
                       </div>
@@ -560,22 +536,16 @@ export default function Login() {
                     disabled={!isValid || loading}
                     onClick={sendData}
                     type="submit"
-                    className={`w-full  ${
-                      isValid ? `bg-[#108A00]` : ` bg-foreground`
-                    }`}
+                    className={`w-full  ${isValid ? `bg-[#108A00]` : ` bg-foreground`}`}
                   >
-                    {loading ? <>Түр хүлээнэ үү!</> : "Зөвшөөрөөд үргэлжлүүлэх"}
+                    {loading ? <>Түр хүлээнэ үү!</> : 'Зөвшөөрөөд үргэлжлүүлэх'}
                   </Button>
                   {response && (
                     <div className="flex justify-between">
-                      <div
-                        className={`${
-                          response.success ? `text-green-500 ` : `text-red-400`
-                        } `}
-                      >
+                      <div className={`${response.success ? `text-green-500 ` : `text-red-400`} `}>
                         {response.message}
                       </div>
-                      {response?.code === "USER_EXISTS" && (
+                      {response?.code === 'USER_EXISTS' && (
                         <Link href={`/account/login`}>Нэвтрэх</Link>
                       )}
                     </div>

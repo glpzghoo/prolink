@@ -1,32 +1,25 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import {
-  Search,
-  Menu,
-  CheckCircle,
-  CircleX,
-  Verified,
-  LogOut,
-} from "lucide-react";
-import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
-import axios from "axios";
-import { responseData } from "@/lib/types";
-import { usePathname, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { signOut } from "next-auth/react";
-import { MdDashboard } from "react-icons/md";
+import Image from 'next/image';
+import { Search, Menu, CircleX, Verified, LogOut } from 'lucide-react';
+import Link from 'next/link';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import axios from 'axios';
+import { responseData } from '@/lib/types';
+import { usePathname, useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { signOut } from 'next-auth/react';
+import { MdDashboard } from 'react-icons/md';
 const navLinks = [
-  { href: "/freelancer", label: "Талентууд" },
-  { href: "/job", label: "Ажлын санал" },
-  { href: "/client", label: "Манайд бүртгэлтэй байгууллагууд" },
-  { href: "/saved", label: "Хадгалсан" },
+  { href: '/freelancer', label: 'Талентууд' },
+  { href: '/job', label: 'Ажлын санал' },
+  { href: '/client', label: 'Манайд бүртгэлтэй байгууллагууд' },
+  { href: '/saved', label: 'Хадгалсан' },
 ];
 
 const navVariants = {
   hidden: { opacity: 0, y: -20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
 };
 
 const hoverVariants = {
@@ -35,13 +28,13 @@ const hoverVariants = {
 
 const mobileMenuVariants = {
   hidden: { opacity: 0, height: 0 },
-  visible: { opacity: 1, height: "auto", transition: { duration: 0.3 } },
+  visible: { opacity: 1, height: 'auto', transition: { duration: 0.3 } },
 };
 
 export function Navigation() {
   const [response, setUserInfo] = useState<responseData>();
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearch] = useState("");
+  const [searchQuery, setSearch] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout>(null);
   const router = useRouter();
@@ -57,7 +50,7 @@ export function Navigation() {
     try {
       getInfo();
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
+      console.error(err, 'Сервертэй холбогдож чадсангүй!');
     } finally {
       setLoading(false);
     }
@@ -114,8 +107,8 @@ export function Navigation() {
                 <motion.div
                   className={`py-2 px-3 rounded-md transition-all duration-300 ${
                     pathname === link.href
-                      ? "border-b-2 border-[#14A800] text-[#14A800] bg-green-50"
-                      : "hover:border-b-2 hover:border-[#14A800] hover:text-[#14A800]"
+                      ? 'border-b-2 border-[#14A800] text-[#14A800] bg-green-50'
+                      : 'hover:border-b-2 hover:border-[#14A800] hover:text-[#14A800]'
                   }`}
                   variants={hoverVariants}
                   whileHover="hover"
@@ -150,11 +143,11 @@ export function Navigation() {
 
             {loading ? (
               <span className="text-sm text-gray-600">Түр хүлээнэ үү...</span>
-            ) : response?.code === "SUCCESS" ? (
+            ) : response?.code === 'SUCCESS' ? (
               <div className="flex items-center gap-3">
                 <Link
                   href={
-                    response.data?.informations?.role === "CLIENT"
+                    response.data?.informations?.role === 'CLIENT'
                       ? `/client/${response.data?.informations?.id}`
                       : `/freelancer/${response.data?.informations?.id}`
                   }
@@ -187,10 +180,7 @@ export function Navigation() {
                     </span>
                   </motion.div>
                 </Link>
-                <Link
-                  href={`/account/settings/about`}
-                  className=" cursor-pointer"
-                >
+                <Link href={`/account/settings/about`} className=" cursor-pointer">
                   <motion.div
                     className="p-2.5 bg-gray-100 rounded-full hover:bg-gray-200 transition-all duration-300"
                     variants={hoverVariants}
@@ -211,7 +201,7 @@ export function Navigation() {
                     <LogOut className="text-[#14A800] text-xl" />
                   </span>
                 </motion.button>
-                {response?.data?.informations?.role === "CLIENT" && (
+                {response?.data?.informations?.role === 'CLIENT' && (
                   <Link href="/job/new">
                     <motion.div
                       className="px-4 py-2 bg-[#14A800] text-white rounded-full text-sm font-medium hover:bg-green-700 transition-all duration-300"
@@ -250,8 +240,8 @@ export function Navigation() {
                   <motion.div
                     className={`py-2 px-3 rounded-md text-sm font-medium transition-all duration-300 ${
                       pathname === link.href
-                        ? "border-b-2 border-[#14A800] text-[#14A800] bg-green-50"
-                        : "hover:border-b-2 hover:border-[#14A800] hover:text-[#14A800]"
+                        ? 'border-b-2 border-[#14A800] text-[#14A800] bg-green-50'
+                        : 'hover:border-b-2 hover:border-[#14A800] hover:text-[#14A800]'
                     }`}
                     variants={hoverVariants}
                     whileHover="hover"
@@ -274,7 +264,7 @@ export function Navigation() {
                 />
               </motion.div>
 
-              {response?.code === "SUCCESS" && (
+              {response?.code === 'SUCCESS' && (
                 <div className="flex flex-col gap-4">
                   <div className=" flex justify-around">
                     <Link
@@ -326,7 +316,7 @@ export function Navigation() {
                       </motion.div>
                     </Link>
                   </div>
-                  {response?.data?.informations?.role === "CLIENT" && (
+                  {response?.data?.informations?.role === 'CLIENT' && (
                     <div>
                       <Link href="/job/new">
                         <motion.div

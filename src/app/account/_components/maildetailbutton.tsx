@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
-import { responseData } from "@/lib/types";
-import { Snackbar } from "@mui/material";
-import axios from "axios";
-import { useParams } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { ImSpinner10 } from "react-icons/im";
+import { responseData } from '@/lib/types';
+import { Snackbar } from '@mui/material';
+import axios from 'axios';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { ImSpinner10 } from 'react-icons/im';
 type Props = {
   id: string;
   setChange: Dispatch<SetStateAction<boolean>>;
@@ -19,11 +18,11 @@ export default function MailDetail({ id, setChange, change }: Props) {
   const sendDetails = async () => {
     setLoading(true);
     try {
-      const res = await axios.post("/api/sendMail", { id });
+      const res = await axios.post('/api/sendMail', { id });
 
       setResponse(res.data);
       if (res.data.success) {
-        localStorage.setItem("sendMailToUser", id);
+        localStorage.setItem('sendMailToUser', id);
         setChange((p) => !p);
       }
       setAlert(true);
@@ -34,7 +33,7 @@ export default function MailDetail({ id, setChange, change }: Props) {
     }
   };
   useEffect(() => {
-    const sendMailToUser = localStorage.getItem("sendMailToUser");
+    const sendMailToUser = localStorage.getItem('sendMailToUser');
     if (sendMailToUser === id) {
       setSentMail(true);
     } else {
@@ -54,13 +53,13 @@ export default function MailDetail({ id, setChange, change }: Props) {
       disabled={loading || sentMail}
       onClick={sendDetails}
       className={` ${
-        loading || sentMail ? " bg-muted" : `bg-green-600 hover:bg-green-700`
+        loading || sentMail ? ' bg-muted' : `bg-green-600 hover:bg-green-700`
       } cursor-pointer  px-4 py-2 rounded  text-sm`}
     >
       {alert && res && (
         <Snackbar
-          sx={{ color: res?.success ? "green" : "red" }}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          sx={{ color: res?.success ? 'green' : 'red' }}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={res?.message ? true : false}
           message={res?.message}
         />
@@ -70,9 +69,7 @@ export default function MailDetail({ id, setChange, change }: Props) {
           <div>
             <ImSpinner10 className=" animate-spin" />
           </div>
-          <div>
-            {sentMail ? `Урилга илгээсэн байна!` : `Урилга илгээж байна`}
-          </div>
+          <div>{sentMail ? `Урилга илгээсэн байна!` : `Урилга илгээж байна`}</div>
         </div>
       ) : sentMail ? (
         `Урилга илгээсэн байна!`

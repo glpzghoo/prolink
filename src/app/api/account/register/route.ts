@@ -1,14 +1,14 @@
-import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
+import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import bcrypt from 'bcrypt';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
   if (!process.env.SALT) {
     return NextResponse.json({
       success: false,
-      message: "Сервэрийн тохиргооны алдаа (ENV)",
-      code: "NO_ENV",
+      message: 'Сервэрийн тохиргооны алдаа (ENV)',
+      code: 'NO_ENV',
       data: {},
     });
   }
@@ -25,16 +25,16 @@ export async function POST(req: NextRequest) {
     if (existingUser1) {
       return NextResponse.json({
         success: false,
-        code: "USER_EXISTS",
-        message: "Email бүртгэлтэй байна!",
+        code: 'USER_EXISTS',
+        message: 'Email бүртгэлтэй байна!',
         data: { name: existingUser1.id },
       });
     }
     if (existingUser2) {
       return NextResponse.json({
         success: false,
-        code: "USER_EXISTS",
-        message: "Утасны дугаар бүртгэлтэй байна!",
+        code: 'USER_EXISTS',
+        message: 'Утасны дугаар бүртгэлтэй байна!',
         data: { name: existingUser2.id },
       });
     }
@@ -50,29 +50,17 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({
       success: true,
-      message: "Амжилттай бүртгэгдлээ!",
-      code: "NEW_USER",
+      message: 'Амжилттай бүртгэгдлээ!',
+      code: 'NEW_USER',
       data: { userId: newUser.id },
     });
   } catch (err) {
-    console.error("Сервер дээр алдаа гарлаа!");
+    console.error('Сервер дээр алдаа гарлаа!', err);
     return NextResponse.json({
       success: false,
-      message: "Сервер дээр алдаа гарлаа!",
-      code: "API_ERROR",
+      message: 'Сервер дээр алдаа гарлаа!',
+      code: 'API_ERROR',
       data: null,
-    });
-  }
-}
-export async function PATCH(req: NextRequest) {
-  try {
-    const { about, skills } = await req.json();
-  } catch (err) {
-    console.error(err, "Сервер дээр асуудал гарлаа");
-    return NextResponse.json({
-      success: false,
-      code: "SOMETHING_WENt_WRONG",
-      message: "Сервер эсвэл логик дээр асуудал гарлаа",
     });
   }
 }

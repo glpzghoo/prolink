@@ -1,9 +1,8 @@
-"use client";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+'use client';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
 type StepFourProps = {
   setCurrentStep: (step: number) => void;
@@ -19,24 +18,18 @@ type StepFourProps = {
 
 export function StepFour({
   setCurrentStep,
-  setScope,
   scope,
   duration,
-  setDuration,
   experience,
   setExperience,
   fullTime,
-  setFullTime,
 }: StepFourProps) {
   const isNextDisabled = !scope || !duration || !experience || !fullTime;
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold">
-        Туршлагын түвшнийг тодорхойлно уу
-      </h2>
+      <h2 className="text-2xl font-semibold">Туршлагын түвшнийг тодорхойлно уу</h2>
       <p className="text-gray-600 mb-4">
-        Энэ нь эцсийн үр дүн биш бөгөөд таны хэрэгцээнд тохирох зөв хүнийг
-        олоход тусална.
+        Энэ нь эцсийн үр дүн биш бөгөөд таны хэрэгцээнд тохирох зөв хүнийг олоход тусална.
       </p>
 
       <Card className="mb-6">
@@ -46,12 +39,8 @@ export function StepFour({
             <Label htmlFor="entry" className="flex items-center space-x-2">
               <RadioGroupItem id="entry" value="entry" /> <span>Үгүй</span>
             </Label>
-            <Label
-              htmlFor="intermediate"
-              className="flex items-center space-x-2"
-            >
-              <RadioGroupItem id="intermediate" value="intermediate" />{" "}
-              <span>Тийм</span>
+            <Label htmlFor="intermediate" className="flex items-center space-x-2">
+              <RadioGroupItem id="intermediate" value="intermediate" /> <span>Тийм</span>
             </Label>
           </RadioGroup>
         </CardContent>
@@ -66,8 +55,8 @@ export function StepFour({
           disabled={isNextDisabled}
           className={`font-semibold ${
             isNextDisabled
-              ? "bg-gray-400 text-white cursor-not-allowed"
-              : "bg-[#129b00] text-white hover:bg-[#129b00]/90"
+              ? 'bg-gray-400 text-white cursor-not-allowed'
+              : 'bg-[#129b00] text-white hover:bg-[#129b00]/90'
           }`}
         >
           Үргэлжлүүлэх

@@ -1,46 +1,34 @@
-"use client";
-import Loading from "@/app/_component/loading";
-import CustomSkeleton from "@/app/_component/skeleton";
-import MailDetail from "@/app/account/_components/maildetailbutton";
-import { CustomJob } from "@/app/job/[id]/page";
-import { Textarea } from "@/components/ui/textarea";
-import { calculateTime } from "@/lib/helper";
-import { theme } from "@/lib/theme";
-import { responseData } from "@/lib/types";
-import { MdOutlineReportGmailerrorred } from "react-icons/md";
+'use client';
+import Loading from '@/app/_component/loading';
+import CustomSkeleton from '@/app/_component/skeleton';
+import MailDetail from '@/app/account/_components/maildetailbutton';
+import { CustomJob } from '@/app/job/[id]/page';
+import { Textarea } from '@/components/ui/textarea';
+import { calculateTime } from '@/lib/helper';
+import { theme } from '@/lib/theme';
+import { responseData } from '@/lib/types';
+import { MdOutlineReportGmailerrorred } from 'react-icons/md';
 
-import {
-  Box,
-  Button,
-  Checkbox,
-  Snackbar,
-  ThemeProvider,
-  Typography,
-} from "@mui/material";
-import Rating from "@mui/material/Rating";
-import { featuredSkills, job, review, skill, user } from "@prisma/client";
-import axios from "axios";
-import { motion } from "framer-motion";
-import _ from "lodash";
-import { EyeIcon, StarIcon } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { FaCircleArrowLeft, FaCircleArrowRight } from "react-icons/fa6";
-import { GoDotFill, GoUnverified } from "react-icons/go";
-import { HiOutlineCheckBadge } from "react-icons/hi2";
-import { ImNewTab, ImSpinner10 } from "react-icons/im";
-import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
-import z from "zod";
-import { useReactToPrint } from "react-to-print";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
+import { Button, Checkbox, Snackbar, ThemeProvider } from '@mui/material';
+import Rating from '@mui/material/Rating';
+import { featuredSkills, review, skill, user } from '@prisma/client';
+import axios from 'axios';
+import { motion } from 'framer-motion';
+import _ from 'lodash';
+import { EyeIcon } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { FaCircleArrowLeft, FaCircleArrowRight } from 'react-icons/fa6';
+import { GoDotFill, GoUnverified } from 'react-icons/go';
+import { HiOutlineCheckBadge } from 'react-icons/hi2';
+import { ImNewTab, ImSpinner10 } from 'react-icons/im';
+import { MdFavorite, MdFavoriteBorder } from 'react-icons/md';
+import z from 'zod';
+import { useReactToPrint } from 'react-to-print';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 type CustomUser = user & {
   skill: CustomSkill[];
   reviewee: CustomReviewee[];
@@ -89,8 +77,8 @@ export default function Client() {
   const [alert, setAlert] = useState(false);
   const [alert2, setAlert2] = useState(false);
   const [accept, setAccept] = useState(false);
-  const [reason, setReason] = useState("");
-  const [reportResponse, setReportResponse] = useState("");
+  const [reason, setReason] = useState('');
+  const [reportResponse, setReportResponse] = useState('');
 
   const div = useRef<HTMLDivElement>(null);
 
@@ -100,12 +88,12 @@ export default function Client() {
   const textDiv = useRef<HTMLDivElement>(null);
   const handleLeftScroll = () => {
     if (div.current) {
-      div.current.scrollBy({ left: -400, behavior: "smooth" });
+      div.current.scrollBy({ left: -400, behavior: 'smooth' });
     }
   };
   const handleRightScroll = () => {
     if (div.current) {
-      div.current.scrollBy({ left: 400, behavior: "smooth" });
+      div.current.scrollBy({ left: 400, behavior: 'smooth' });
     }
   };
   const params = useParams();
@@ -122,7 +110,7 @@ export default function Client() {
         setReportResponse(res.data.message);
       }
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
+      console.error(err, 'Сервертэй холбогдож чадсангүй!');
     } finally {
       setAlert2(true);
     }
@@ -134,18 +122,16 @@ export default function Client() {
         if (res1.data.success) {
           setUser(res1.data.data.user);
           const userr: CustomUser = res1.data.data.user;
-          const similar = _.uniqBy(userr.skill, "id");
+          const similar = _.uniqBy(userr.skill, 'id');
           const flat = similar.flatMap((a) => a.user);
-          const uniqs = _.uniqBy(flat, "id");
-          const filter = uniqs.filter(
-            (s) => s.id !== id && s.role === "CLIENT"
-          );
+          const uniqs = _.uniqBy(flat, 'id');
+          const filter = uniqs.filter((s) => s.id !== id && s.role === 'CLIENT');
           setSimilarUsers(filter);
-          document.title = userr.companyName + " - ProLink";
+          document.title = userr.companyName + ' - ProLink';
         }
         setLoading(false);
       } catch (err) {
-        console.error(err, "Сервертэй холбогдож чадсангүй!");
+        console.error(err, 'Сервертэй холбогдож чадсангүй!');
         setLoading(false);
       }
     };
@@ -197,8 +183,8 @@ export default function Client() {
   const copyURL = () => {
     navigator.clipboard
       .writeText(window.location.href)
-      .then(() => console.log("url copied!"))
-      .catch((err) => console.error("fail: ", err));
+      .then(() => console.log('url copied!'))
+      .catch((err) => console.error('fail: ', err));
     setAlert(true);
   };
   const sendRating = async () => {
@@ -214,13 +200,13 @@ export default function Client() {
       }
       setloadingAddingReview(false);
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
+      console.error(err, 'Сервертэй холбогдож чадсангүй!');
     }
   };
 
   // fav
   useEffect(() => {
-    const favoritesString = localStorage.getItem("favorites");
+    const favoritesString = localStorage.getItem('favorites');
     const storedFavorites = favoritesString ? JSON.parse(favoritesString) : [];
     setFavorites(storedFavorites);
     const fav = storedFavorites.some((a: { id: string }) => a.id === id);
@@ -232,7 +218,7 @@ export default function Client() {
     const fav = favorites.some((a: { id: string }) => a.id === id);
     if (fav) {
       const updated = favorites.filter((fav) => fav.id !== id);
-      localStorage.setItem("favorites", JSON.stringify(updated));
+      localStorage.setItem('favorites', JSON.stringify(updated));
 
       setFavorites(updated);
 
@@ -241,7 +227,7 @@ export default function Client() {
 
     if (user) {
       const updated = [...favorites, { id, role: user.role }];
-      localStorage.setItem("favorites", JSON.stringify(updated));
+      localStorage.setItem('favorites', JSON.stringify(updated));
 
       setFavorites(updated);
     }
@@ -283,7 +269,7 @@ export default function Client() {
               <div className="flex items-center space-x-3">
                 <div className=" flex justify-center items-center w-16 h-16 overflow-hidden rounded-full">
                   <Image
-                    src={`${user.pfp ? user.pfp : "/placeholder.png"}`}
+                    src={`${user.pfp ? user.pfp : '/placeholder.png'}`}
                     width={64}
                     height={64}
                     alt="pfp"
@@ -291,49 +277,43 @@ export default function Client() {
                 </div>
 
                 <Snackbar
-                  anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                   open={alert}
-                  message={"Линк амжилттай хууллаа!"}
+                  message={'Линк амжилттай хууллаа!'}
                 />
                 <Snackbar
-                  anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                   open={alert2}
                   message={<div className=" text-center">{reportResponse}</div>}
                 />
                 {verifyMailResponse?.message && (
                   <Snackbar
-                    sx={{ color: verifyMailResponse.success ? "green" : "red" }}
-                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    sx={{ color: verifyMailResponse.success ? 'green' : 'red' }}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                     open={Boolean(verifyMailResponse.message)}
-                    message={
-                      <div className=" text-center">
-                        {verifyMailResponse.message}
-                      </div>
-                    }
+                    message={<div className=" text-center">{verifyMailResponse.message}</div>}
                   />
                 )}
                 <div>
                   <div className="flex space-x-2">
                     {user.companyName ? (
-                      <h1 className="text-xl font-semibold">
-                        {user.companyName}
-                      </h1>
+                      <h1 className="text-xl font-semibold">{user.companyName}</h1>
                     ) : (
                       <h1 className="text-xl font-semibold">
                         {user.firstName}, {user.lastName}
                       </h1>
-                    )}{" "}
+                    )}{' '}
                     {user.emailVerified ? (
                       <HiOutlineCheckBadge
                         title="Баталгаажсан"
                         className="text-green-700 text-lg cursor-pointer"
-                        onMouseOver={() => "asdf"}
+                        onMouseOver={() => 'asdf'}
                       />
                     ) : (
                       <GoUnverified
                         title="Баталгаажаагүй"
                         className="text-red-700 text-lg cursor-pointer"
-                        onMouseOver={() => "asdf"}
+                        onMouseOver={() => 'asdf'}
                       />
                     )}
                     {((avgRating() > 4.5 && user.reviewee.length > 2) ||
@@ -352,7 +332,7 @@ export default function Client() {
                 <Button
                   disabled={loading2}
                   onClick={sendmail}
-                  sx={{ fontSize: "11px", color: "red" }}
+                  sx={{ fontSize: '11px', color: 'red' }}
                   className=" text-red-400 text-xs"
                 >
                   {loading2
@@ -364,11 +344,7 @@ export default function Client() {
 
               <div className="flex gap-1">
                 {owner && (
-                  <Link
-                    href={`/account/settings/${
-                      user.role === "CLIENT" ? `jobs` : `skills`
-                    }`}
-                  >
+                  <Link href={`/account/settings/${user.role === 'CLIENT' ? `jobs` : `skills`}`}>
                     <button className="text-gray-600 hover:text-gray-800 text-sm border cursor-pointer border-gray-300 rounded px-3 py-2">
                       Дашбоард
                     </button>
@@ -378,11 +354,7 @@ export default function Client() {
                   onClick={saveFavorite}
                   className=" absolute top-0 right-0 p-2 text-2xl cursor-pointer"
                 >
-                  {isItFavorite ? (
-                    <MdFavorite className=" text-green-600" />
-                  ) : (
-                    <MdFavoriteBorder />
-                  )}
+                  {isItFavorite ? <MdFavorite className=" text-green-600" /> : <MdFavoriteBorder />}
                 </div>
                 <button
                   onClick={copyURL}
@@ -404,19 +376,17 @@ export default function Client() {
 
               <div className="hidden lg:flex items-center gap-4 text-sm text-gray-500">
                 <div>
-                  Энэ profile нийт{" "}
-                  <span className="font-bold">{user.profileViews}</span>{" "}
-                  үзэлттэй байна!
+                  Энэ profile нийт <span className="font-bold">{user.profileViews}</span> үзэлттэй
+                  байна!
                 </div>
                 <div>-</div>
                 <div>
-                  <span className="font-bold">{user.reviewee.length}</span> удаа
-                  үнэлгээ авсан байна.
+                  <span className="font-bold">{user.reviewee.length}</span> удаа үнэлгээ авсан
+                  байна.
                 </div>
                 <div>-</div>
                 <div>
-                  Дундаж үнэлгээ:{" "}
-                  <span className="font-bold">{avgRating()}</span> /5
+                  Дундаж үнэлгээ: <span className="font-bold">{avgRating()}</span> /5
                 </div>
               </div>
 
@@ -444,7 +414,7 @@ export default function Client() {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  <span className="font-bold">{user.reviewee.length}</span>{" "}
+                  <span className="font-bold">{user.reviewee.length}</span>{' '}
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-bold">{avgRating()}</span> /5
@@ -452,7 +422,7 @@ export default function Client() {
               </div>
             </div>
 
-            {!owner && user.role === "FREELANCER" && (
+            {!owner && user.role === 'FREELANCER' && (
               <div className="border-b pb-7">
                 <div className="bg-green-50 border border-green-300 rounded mt-4 p-4 flex flex-col md:flex-row items-start md:items-center md:justify-between">
                   <div className="mb-2 md:mb-0">
@@ -469,16 +439,12 @@ export default function Client() {
             <div className="mt-6 pb-4 border-b">
               <div className=" py-5">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-[#129600]">
-                    Манай байгууллагын тухай
-                  </h2>
+                  <h2 className="text-lg font-semibold text-[#129600]">Манай байгууллагын тухай</h2>
                   {/* <p className="text-gray-600 text-sm">
                     {user.salary}/{user.salaryType === "HOUR" ? `цаг` : `сар`}
                   </p> */}
                 </div>
-                <p className="text-gray-700 mt-2 whitespace-pre-wrap">
-                  {user.about}
-                </p>
+                <p className="text-gray-700 mt-2 whitespace-pre-wrap">{user.about}</p>
               </div>
             </div>
             <div className="mt-4 border-b pb-4">
@@ -486,10 +452,10 @@ export default function Client() {
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-md">Үнэлгээ</h3>
                   <div className="flex gap-4">
-                    <Button sx={{ color: "green" }} onClick={handleLeftScroll}>
+                    <Button sx={{ color: 'green' }} onClick={handleLeftScroll}>
                       <FaCircleArrowLeft className=" text-xl" />
                     </Button>
-                    <Button sx={{ color: "green" }} onClick={handleRightScroll}>
+                    <Button sx={{ color: 'green' }} onClick={handleRightScroll}>
                       <FaCircleArrowRight className=" text-xl" />
                     </Button>
                   </div>
@@ -548,10 +514,10 @@ export default function Client() {
                 {showFullReview > 0 && (
                   <motion.div
                     key={showFullReview}
-                    initial={{ opacity: 0, height: "auto" }}
-                    animate={{ opacity: 1, height: "auto" }}
+                    initial={{ opacity: 0, height: 'auto' }}
+                    animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    transition={{ duration: 0.8, ease: 'easeInOut' }}
                     className="py-4 "
                   >
                     <div className=" font-semibold flex gap-3">
@@ -559,17 +525,12 @@ export default function Client() {
                       <Link
                         target="blank"
                         className=""
-                        href={`/freelancer/${
-                          user.reviewee[showFullReview - 1].reviewer.id
-                        }`}
+                        href={`/freelancer/${user.reviewee[showFullReview - 1].reviewer.id}`}
                       >
                         <div className=" font-bold flex gap-1 items-center">
-                          {user.reviewee[showFullReview - 1].reviewer
-                            .companyName
-                            ? user.reviewee[showFullReview - 1].reviewer
-                                .companyName
-                            : user.reviewee[showFullReview - 1].reviewer
-                                .firstName}
+                          {user.reviewee[showFullReview - 1].reviewer.companyName
+                            ? user.reviewee[showFullReview - 1].reviewer.companyName
+                            : user.reviewee[showFullReview - 1].reviewer.firstName}
                           <ImNewTab className="text-xs" />
                         </div>
                       </Link>
@@ -619,47 +580,36 @@ export default function Client() {
                   <DialogContent>
                     <DialogTitle>
                       <div className=" text-sm">
-                        Та {user.role === "CLIENT" ? "байгууллага" : "талент"} "
-                        {user.companyName ||
-                          user.lastName + " " + user.firstName}
-                        " -ыг мэдэгдэх гэж байна.
+                        Та {user.role === 'CLIENT' ? 'байгууллага' : 'талент'} "
+                        {user.companyName || user.lastName + ' ' + user.firstName}" -ыг мэдэгдэх гэж
+                        байна.
                       </div>
                     </DialogTitle>
                     <div className=" text-xs">
-                      Бид хэн энэ мэдэгдлийг хийснийг чанд нууцлаж, зохистой
-                      арга хэмжээ авах болно.
+                      Бид хэн энэ мэдэгдлийг хийснийг чанд нууцлаж, зохистой арга хэмжээ авах болно.
                     </div>
                     <Label className="" htmlFor="reason">
                       Доор шалтгааныг бичнэ үү!
                     </Label>
-                    <Textarea
-                      id="reason"
-                      onChange={(e) => setReason(e.target.value)}
-                    />
+                    <Textarea id="reason" onChange={(e) => setReason(e.target.value)} />
                     <div className="flex ">
                       <Checkbox
                         onClick={() => setAccept((p) => !p)}
                         checked={accept}
                         id="accept"
                         sx={{
-                          borderColor: accept ? "green" : "red",
-                          color: accept ? "green" : "red",
+                          borderColor: accept ? 'green' : 'red',
+                          color: accept ? 'green' : 'red',
                         }}
                       />
                       <Label
                         htmlFor="accept"
-                        className={` text-xs ${
-                          accept ? `text-green-400` : `text-red-400`
-                        }`}
+                        className={` text-xs ${accept ? `text-green-400` : `text-red-400`}`}
                       >
                         Уг мэдэгдлийг зохистой гэж үзэж байна.
                       </Label>
                     </div>
-                    <Button
-                      onClick={sendReport}
-                      disabled={!accept}
-                      sx={{ color: "green" }}
-                    >
+                    <Button onClick={sendReport} disabled={!accept} sx={{ color: 'green' }}>
                       Илгээх
                     </Button>
                   </DialogContent>
@@ -682,9 +632,7 @@ export default function Client() {
                   <Button
                     onClick={sendRating}
                     disabled={!isValidRatingForm || loadingAddingReview}
-                    className={` ${
-                      loadingAddingReview ? ` text-accent` : `text-[#129600]`
-                    }`}
+                    className={` ${loadingAddingReview ? ` text-accent` : `text-[#129600]`}`}
                     type="submit"
                   >
                     {loadingAddingReview ? (
@@ -734,9 +682,7 @@ export default function Client() {
                 <div> Ажлын зар байхгүй байна.</div>
               ) : (
                 <>
-                  <div className="text-lg font-semibold mb-3 text-[#129600]">
-                    Ажлын зарууд
-                  </div>
+                  <div className="text-lg font-semibold mb-3 text-[#129600]">Ажлын зарууд</div>
                   {user.jobpost.map((ski) => (
                     <div
                       key={ski.id}
@@ -751,7 +697,7 @@ export default function Client() {
                             {ski.title}
                           </Link>
                         </h3>
-                        <div>{ski.postedAt.split("T")[0]}</div>
+                        <div>{ski.postedAt.split('T')[0]}</div>
                       </div>
                       <div
                         ref={textDiv}
@@ -763,10 +709,10 @@ export default function Client() {
                       </div>
                       {expand && (
                         <Button
-                          sx={{ color: "green", textTransform: "lowercase" }}
+                          sx={{ color: 'green', textTransform: 'lowercase' }}
                           onClick={() => setExpand2(!expand2)}
                         >
-                          {expand2 ? "хураах" : "дэлгэх"}
+                          {expand2 ? 'хураах' : 'дэлгэх'}
                         </Button>
                       )}
                     </div>
@@ -781,9 +727,7 @@ export default function Client() {
                 {similarUsers.length > 0 ? (
                   similarUsers.map((skil) => (
                     <li className="" key={skil.id}>
-                      <Link href={`/client/${skil.id}`}>
-                        {skil.companyName}
-                      </Link>
+                      <Link href={`/client/${skil.id}`}>{skil.companyName}</Link>
                     </li>
                   ))
                 ) : (

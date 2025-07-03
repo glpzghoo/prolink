@@ -1,17 +1,16 @@
-import { job } from "@prisma/client";
-import Link from "next/link";
-import { CustomJob } from "../job/[id]/page";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { GoDotFill } from "react-icons/go";
-import { calculateTime } from "@/lib/helper";
-import { Building } from "lucide-react";
+import Link from 'next/link';
+import { CustomJob } from '../job/[id]/page';
+import { MdOutlineRemoveRedEye } from 'react-icons/md';
+import { GoDotFill } from 'react-icons/go';
+import { calculateTime } from '@/lib/helper';
+import { Building } from 'lucide-react';
 
 type Props = {
   post: CustomJob;
 };
 
 export default function CompanyCard({ post }: Props) {
-  const formattedSalary = Number(post.salary).toLocaleString("mn-MN");
+  const formattedSalary = Number(post.salary).toLocaleString('mn-MN');
 
   return (
     <Link href={`/job/${post.id}`} className="block">
@@ -24,12 +23,10 @@ export default function CompanyCard({ post }: Props) {
             >
               {post.title}
             </h3>
-            <p className="text-gray-600 text-xs mt-1">
-              {calculateTime(post.postedAt)}
-            </p>
+            <p className="text-gray-600 text-xs mt-1">{calculateTime(post.postedAt)}</p>
           </div>
           <div className="flex items-center gap-1 text-xs font-medium whitespace-nowrap">
-            {post.status === "ACTIVE" ? (
+            {post.status === 'ACTIVE' ? (
               <div className="text-green-600 flex items-center gap-1">
                 <GoDotFill className="animate-pulse text-sm" />
                 <span>Идэвхитэй</span>
@@ -49,15 +46,9 @@ export default function CompanyCard({ post }: Props) {
             <span className="font-semibold">{post.poster.companyName}</span>
           </div>
           <div className="flex items-center gap-2 bg-green-50 px-2 py-1 rounded-md">
-            <span className="text-md font-bold text-green-700">
-              {formattedSalary} ₮
-            </span>
+            <span className="text-md font-bold text-green-700">{formattedSalary} ₮</span>
             <span className="text-xs text-gray-700 font-medium bg-green-100 px-1.5 py-0.5 rounded overflow-ellipsis">
-              {post.salaryRate === "MONTH"
-                ? "сард"
-                : post.salaryRate === "DAY"
-                ? "өдөрт"
-                : "цагт"}
+              {post.salaryRate === 'MONTH' ? 'сард' : post.salaryRate === 'DAY' ? 'өдөрт' : 'цагт'}
             </span>
           </div>
         </div>
@@ -71,9 +62,7 @@ export default function CompanyCard({ post }: Props) {
 
         <div className="flex flex-wrap gap-2">
           {post.skill.length === 0 ? (
-            <span className="text-xs text-gray-500 italic">
-              Ур чадварын шаардлага байхгүй
-            </span>
+            <span className="text-xs text-gray-500 italic">Ур чадварын шаардлага байхгүй</span>
           ) : (
             post.skill.slice(0, 3).map((ski) => (
               <span
@@ -85,9 +74,7 @@ export default function CompanyCard({ post }: Props) {
             ))
           )}
           {post.skill.length > 3 && (
-            <span className="text-xs text-gray-600">
-              +{post.skill.length - 3}
-            </span>
+            <span className="text-xs text-gray-600">+{post.skill.length - 3}</span>
           )}
         </div>
         <div className="flex items-center justify-end gap-1 text-gray-600 mt-auto">

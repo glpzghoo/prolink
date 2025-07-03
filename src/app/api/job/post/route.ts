@@ -1,21 +1,16 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from '@/lib/prisma';
 import {
   CustomNextResponse,
   NextResponse_CatchError,
   NextResponse_NoCookie,
   NextResponse_NoEnv,
-} from "@/lib/responses";
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+} from '@/lib/responses';
+import { NextRequest } from 'next/server';
+import jwt from 'jsonwebtoken';
 export async function GET(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get("id");
+  const id = req.nextUrl.searchParams.get('id');
   if (!id) {
-    return CustomNextResponse(
-      false,
-      "NO_ID_PROVIDED",
-      "Таних тэмдэг байхгүй байна!",
-      null
-    );
+    return CustomNextResponse(false, 'NO_ID_PROVIDED', 'Таних тэмдэг байхгүй байна!', null);
   }
   try {
     const post = await prisma.job.findUnique({
@@ -33,38 +28,32 @@ export async function GET(req: NextRequest) {
       },
     });
     if (post) {
-      const updateView = await prisma.job.update({
+      await prisma.job.update({
         where: { id },
         data: { jobPostView: post.jobPostView + 1 },
       });
 
-      return CustomNextResponse(true, "REQUEST_SUCESS", "Хүсэлт амжилттай!", {
+      return CustomNextResponse(true, 'REQUEST_SUCESS', 'Хүсэлт амжилттай!', {
         post,
       });
     }
-    return CustomNextResponse(
-      false,
-      "REQUEST_FAILED",
-      "Хүсэлт амжилтгүй! Пост олдсонгүй!",
-      null
-    );
+    return CustomNextResponse(false, 'REQUEST_FAILED', 'Хүсэлт амжилтгүй! Пост олдсонгүй!', null);
   } catch (err) {
-    console.error(err, "Сервер дээр асуудал гарлаа");
+    console.error(err, 'Сервер дээр асуудал гарлаа');
     return NextResponse_CatchError(err);
   }
 }
 export async function DELETE(req: NextRequest) {
   try {
-    const id = req.nextUrl.searchParams.get("id");
+    const id = req.nextUrl.searchParams.get('id');
     if (!id) {
-      return CustomNextResponse(false, "NO_ID", "Таних тэмдэг алга", null);
+      return CustomNextResponse(false, 'NO_ID', 'Таних тэмдэг алга', null);
     }
-    // return NextResponse.json({ id });
     if (!process.env.ACCESS_TOKEN) {
-      return NextResponse_NoEnv("ACCESS_TOKEN");
+      return NextResponse_NoEnv('ACCESS_TOKEN');
     }
 
-    const accessToken = req.cookies.get("accessToken")?.value;
+    const accessToken = req.cookies.get('accessToken')?.value;
     if (!accessToken) {
       return NextResponse_NoCookie();
     }
@@ -75,63 +64,45 @@ export async function DELETE(req: NextRequest) {
     const user = await prisma.user.findUnique({ where: { id: verified.id } });
     const job = await prisma.job.findUnique({ where: { id } });
     if (!user) {
-      return CustomNextResponse(
-        false,
-        "USER_NOT_FOUND",
-        "Хэрэглэгч олдсонгүй!",
-        null
-      );
+      return CustomNextResponse(false, 'USER_NOT_FOUND', 'Хэрэглэгч олдсонгүй!', null);
     }
     if (!job) {
-      return CustomNextResponse(false, "JOB_NOT_FOUND", "Зар олдсонгүй!", null);
+      return CustomNextResponse(false, 'JOB_NOT_FOUND', 'Зар олдсонгүй!', null);
     }
-    if (user.role === "FREELANCER") {
-      return CustomNextResponse(
-        false,
-        "NOT_PERMITTED",
-        "Зөвшөөрөлгүй үйлдэл!",
-        null
-      );
+    if (user.role === 'FREELANCER') {
+      return CustomNextResponse(false, 'NOT_PERMITTED', 'Зөвшөөрөлгүй үйлдэл!', null);
     }
 
     if (user.id !== job.posterId) {
-      return CustomNextResponse(
-        false,
-        "NOT_PERMITTED",
-        "Зөвшөөрөлгүй үйлдэл!",
-        null
-      );
+      return CustomNextResponse(false, 'NOT_PERMITTED', 'Зөвшөөрөлгүй үйлдэл!', null);
     }
 
     const updateJobStatus = await prisma.job.update({
       where: { id: job.id },
-      data: { status: job.status === "ACTIVE" ? "CLOSED" : "ACTIVE" },
+      data: { status: job.status === 'ACTIVE' ? 'CLOSED' : 'ACTIVE' },
     });
 
-    return CustomNextResponse(
-      true,
-      "REQUEST_SUCCESS",
-      "Төлөв амжилттай өөрчлөгдлөө!",
-      { job: updateJobStatus }
-    );
+    return CustomNextResponse(true, 'REQUEST_SUCCESS', 'Төлөв амжилттай өөрчлөгдлөө!', {
+      job: updateJobStatus,
+    });
   } catch (err) {
-    console.error(err, "Сервер дээр алдаа гарлаа!");
+    console.error(err, 'Сервер дээр алдаа гарлаа!');
     NextResponse_CatchError(err);
   }
 }
 export async function POST(req: NextRequest) {
   try {
-    const id = req.nextUrl.searchParams.get("id");
+    const id = req.nextUrl.searchParams.get('id');
     const { description, title } = await req.json();
     if (!id) {
-      return CustomNextResponse(false, "NO_ID", "Таних тэмдэг алга", null);
+      return CustomNextResponse(false, 'NO_ID', 'Таних тэмдэг алга', null);
     }
     // return NextResponse.json({ id });
     if (!process.env.ACCESS_TOKEN) {
-      return NextResponse_NoEnv("ACCESS_TOKEN");
+      return NextResponse_NoEnv('ACCESS_TOKEN');
     }
 
-    const accessToken = req.cookies.get("accessToken")?.value;
+    const accessToken = req.cookies.get('accessToken')?.value;
     if (!accessToken) {
       return NextResponse_NoCookie();
     }
@@ -145,32 +116,17 @@ export async function POST(req: NextRequest) {
     });
     const job = await prisma.job.findUnique({ where: { id } });
     if (!user) {
-      return CustomNextResponse(
-        false,
-        "USER_NOT_FOUND",
-        "Хэрэглэгч олдсонгүй!",
-        null
-      );
+      return CustomNextResponse(false, 'USER_NOT_FOUND', 'Хэрэглэгч олдсонгүй!', null);
     }
     if (!job) {
-      return CustomNextResponse(false, "JOB_NOT_FOUND", "Зар олдсонгүй!", null);
+      return CustomNextResponse(false, 'JOB_NOT_FOUND', 'Зар олдсонгүй!', null);
     }
-    if (user.role === "FREELANCER") {
-      return CustomNextResponse(
-        false,
-        "NOT_PERMITTED",
-        "Зөвшөөрөлгүй үйлдэл!",
-        null
-      );
+    if (user.role === 'FREELANCER') {
+      return CustomNextResponse(false, 'NOT_PERMITTED', 'Зөвшөөрөлгүй үйлдэл!', null);
     }
 
     if (user.id !== job.posterId) {
-      return CustomNextResponse(
-        false,
-        "NOT_PERMITTED",
-        "Зөвшөөрөлгүй үйлдэл!",
-        null
-      );
+      return CustomNextResponse(false, 'NOT_PERMITTED', 'Зөвшөөрөлгүй үйлдэл!', null);
     }
 
     const updateJob = await prisma.job.update({
@@ -180,7 +136,7 @@ export async function POST(req: NextRequest) {
         ...(description ? { description } : {}),
       },
     });
-    return CustomNextResponse(true, "REQUEST_SUCCESS", "Амжилттай засагдлаа!", {
+    return CustomNextResponse(true, 'REQUEST_SUCCESS', 'Амжилттай засагдлаа!', {
       job: updateJob,
     });
   } catch (err) {

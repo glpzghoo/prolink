@@ -1,36 +1,32 @@
-"use client";
-import Image from "next/image";
-import GoogleSession from "../_components/google";
-import { useEffect, useRef, useState } from "react";
-import { Input } from "@/components/ui/input";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import z from "zod";
-import { responseData } from "@/lib/types";
-import { Alert } from "@/components/ui/alert";
-import { motion } from "framer-motion";
+'use client';
+import GoogleSession from '../_components/google';
+import { useEffect, useRef, useState } from 'react';
+import { Input } from '@/components/ui/input';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import z from 'zod';
+import { responseData } from '@/lib/types';
+import { Alert } from '@/components/ui/alert';
+import { motion } from 'framer-motion';
 
-import { Button } from "@mui/material";
-import Loading from "@/app/_component/loading";
-import { SessionProvider } from "next-auth/react";
-const passwordSchema = z
-  .string()
-  .min(8)
-  .regex(/[0-9]/, "Дор хаяж 1 тоо агуулсан байх ёстой");
+import { Button } from '@mui/material';
+import Loading from '@/app/_component/loading';
+import { SessionProvider } from 'next-auth/react';
+const passwordSchema = z.string().min(8).regex(/[0-9]/, 'Дор хаяж 1 тоо агуулсан байх ёстой');
 export default function Login() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [otp, setOTP] = useState(0);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [resetPassLoading, setResetPass] = useState(false);
   const [response, setResponse] = useState<responseData>();
   const LoginButtonEvent = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    const EmailString = localStorage.getItem("email");
-    const NameString = localStorage.getItem("firstName");
+    const EmailString = localStorage.getItem('email');
+    const NameString = localStorage.getItem('firstName');
     if (NameString) {
       setName(NameString);
     }
@@ -43,7 +39,7 @@ export default function Login() {
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
-    if (response?.code !== "CODE_SUCCESSFULLY_SENT") {
+    if (response?.code !== 'CODE_SUCCESSFULLY_SENT') {
       timeout = setTimeout(() => {
         setResponse(undefined);
       }, 5000);
@@ -63,8 +59,8 @@ export default function Login() {
   const login = async () => {
     setLoading(true);
     try {
-      if (response?.code === "CODE_SUCCESSFULLY_SENT") {
-        const otpId = localStorage.getItem("otpId");
+      if (response?.code === 'CODE_SUCCESSFULLY_SENT') {
+        const otpId = localStorage.getItem('otpId');
         const res = await axios.patch(`/api/account/password-reset`, {
           otp,
           id: otpId,
@@ -73,7 +69,7 @@ export default function Login() {
         });
         setResponse(res.data);
         setLoading(false);
-        if (res.data.code === "OTP_MATCHED") {
+        if (res.data.code === 'OTP_MATCHED') {
           setTimeout(() => {
             router.refresh();
           }, 2000);
@@ -91,11 +87,11 @@ export default function Login() {
         } else {
           router.push(`/client/${res.data.data.user.id}`);
         }
-        sessionStorage.removeItem("hasRun");
+        sessionStorage.removeItem('hasRun');
       }
       setLoading(false);
     } catch (err) {
-      console.error(err, "Сервэрийн асуудал");
+      console.error(err, 'Сервэрийн асуудал');
       setLoading(false);
     }
   };
@@ -105,10 +101,10 @@ export default function Login() {
     try {
       const res = await axios.post(`/api/account/password-reset`, { email });
       setResponse(res.data);
-      localStorage.setItem("otpId", res.data.data.id);
+      localStorage.setItem('otpId', res.data.data.id);
       setResetPass(false);
     } catch (err) {
-      console.error(err, "server aldaa");
+      console.error(err, 'server aldaa');
       setResetPass(false);
     }
   };
@@ -146,7 +142,7 @@ export default function Login() {
                       setPassword(e.target.value);
                     }}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
+                      if (e.key === 'Enter') {
                         LoginEvent();
                       }
                     }}
@@ -154,11 +150,11 @@ export default function Login() {
                     placeholder="Нууц үг"
                   />
                 </div>
-                {response?.code === "CODE_SUCCESSFULLY_SENT" && (
+                {response?.code === 'CODE_SUCCESSFULLY_SENT' && (
                   <div>
                     <Input
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") {
+                        if (e.key === 'Enter') {
                           LoginEvent();
                         }
                       }}
@@ -172,40 +168,34 @@ export default function Login() {
                   </div>
                 )}
                 {response?.code === "OTP_DIDN'T_MATCHED" && (
-                  <div className=" text-red-400">
-                    Нэг удаагийн код таарсангүй!
-                  </div>
+                  <div className=" text-red-400">Нэг удаагийн код таарсангүй!</div>
                 )}
-                {response?.code === "INCORRECT_PASSWORD" && (
+                {response?.code === 'INCORRECT_PASSWORD' && (
                   <div className=" text-red-400">Нууц үг таарсангүй!</div>
                 )}
 
                 <div>
                   <Button
-                    sx={{ color: "green" }}
+                    sx={{ color: 'green' }}
                     ref={LoginButtonEvent}
                     onClick={login}
                     disabled={!isValid || loading}
                     type="submit"
-                    className={`w-full  ${
-                      !isValid ? `bg-foreground` : `bg-[#108A00]`
-                    }`}
+                    className={`w-full  ${!isValid ? `bg-foreground` : `bg-[#108A00]`}`}
                   >
-                    {loading ? <>Түр хүлээнэ үү!</> : "Үргэлжлүүлэх"}
+                    {loading ? <>Түр хүлээнэ үү!</> : 'Үргэлжлүүлэх'}
                   </Button>
                   <Button
-                    sx={{ color: "green", fontSize: "10px" }}
+                    sx={{ color: 'green', fontSize: '10px' }}
                     disabled={resetPassLoading}
                     className=" cursor-pointer"
                     onClick={resetPassword}
                   >
                     {resetPassLoading ? (
-                      <div className="flex items-center">
-                        Код илгээж байна...
-                      </div>
+                      <div className="flex items-center">Код илгээж байна...</div>
                     ) : (
                       <div>
-                        {response?.code === "CODE_SUCCESSFULLY_SENT" ? (
+                        {response?.code === 'CODE_SUCCESSFULLY_SENT' ? (
                           <div>Ахиж код авах</div>
                         ) : (
                           <>Нууц үгээ мартсан уу?</>
@@ -213,7 +203,7 @@ export default function Login() {
                       </div>
                     )}
                   </Button>
-                  {response?.code === "OTP_MATCHED" && (
+                  {response?.code === 'OTP_MATCHED' && (
                     <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform h-full w-full bg-secondary/70">
                       <Alert className=" transition-all whitespace-nowrap flex justify-center fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform w-1/4 ">
                         <div>Нууц үг амжилттай солигдлоо!</div>

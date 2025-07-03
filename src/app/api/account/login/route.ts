@@ -1,14 +1,14 @@
-import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 export async function POST(req: NextRequest) {
   const { email, password1 } = await req.json();
   if (!process.env.ACCESS_TOKEN || !process.env.REFRESH_TOKEN) {
     return NextResponse.json({
       success: false,
-      message: "Сервэрийн тохиргооны алдаа (ENV)",
-      code: "NO_ENV",
+      message: 'Сервэрийн тохиргооны алдаа (ENV)',
+      code: 'NO_ENV',
       data: {},
     });
   }
@@ -22,50 +22,50 @@ export async function POST(req: NextRequest) {
     if (!user) {
       return NextResponse.json({
         success: false,
-        message: "Хэрэглэгч олдсонгүй",
-        code: "USER_NOT_FOUND",
+        message: 'Хэрэглэгч олдсонгүй',
+        code: 'USER_NOT_FOUND',
       });
     }
     const validPass = await bcrypt.compare(password1, user.password);
     if (!validPass) {
       return NextResponse.json({
         success: false,
-        message: "Нууц үг буруу байна!",
-        code: "INCORRECT_PASSWORD",
+        message: 'Нууц үг буруу байна!',
+        code: 'INCORRECT_PASSWORD',
       });
     }
     const accessToken = jwt.sign(
       { id: user.id, companyName: user.companyName, role: user.role },
       process.env.ACCESS_TOKEN,
-      { expiresIn: "1h" }
+      { expiresIn: '1h' }
     );
     const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_TOKEN, {
-      expiresIn: "48h",
+      expiresIn: '48h',
     });
     const { password, ...userInfo } = user;
     const response = NextResponse.json({
       success: true,
-      message: "Тавтай морил",
+      message: 'Тавтай морил',
       data: { user: userInfo },
     });
-    response.cookies.set("accessToken", accessToken, {
+    response.cookies.set('accessToken', accessToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: 'strict',
       maxAge: 60 * 60,
     });
-    response.cookies.set("refreshToken", refreshToken, {
+    response.cookies.set('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: 'strict',
       maxAge: 60 * 60 * 48,
     });
     return response;
   } catch (err) {
-    console.error(err, "Серверийн алдаа");
+    console.error(err, 'Серверийн алдаа');
     return NextResponse.json({
       success: false,
-      message: "Серверийн алдаа",
+      message: 'Серверийн алдаа',
     });
   }
 }

@@ -1,4 +1,4 @@
-import { review } from "@prisma/client";
+import { review } from '@prisma/client';
 
 export const calculateTime = (data: string) => {
   const timeago = (new Date().getTime() - new Date(data).getTime()) / 1000;
@@ -12,21 +12,21 @@ export const calculateTime = (data: string) => {
   const years = 365 * days;
 
   if (timeago >= years) {
-    return Math.floor(timeago / years) + " жилийн өмнө";
+    return Math.floor(timeago / years) + ' жилийн өмнө';
   } else if (timeago >= months) {
-    return Math.floor(timeago / months) + " сарын өмнө";
+    return Math.floor(timeago / months) + ' сарын өмнө';
   } else if (timeago >= weeks) {
-    return Math.floor(timeago / weeks) + " долоо хоногийн өмнө";
+    return Math.floor(timeago / weeks) + ' долоо хоногийн өмнө';
   } else if (timeago >= days) {
-    return Math.floor(timeago / days) + " хоногийн өмнө";
+    return Math.floor(timeago / days) + ' хоногийн өмнө';
   } else if (timeago >= hours) {
-    return Math.floor(timeago / hours) + " цагийн өмнө";
+    return Math.floor(timeago / hours) + ' цагийн өмнө';
   } else if (timeago >= minutes) {
-    return Math.floor(timeago / minutes) + " минутын өмнө";
+    return Math.floor(timeago / minutes) + ' минутын өмнө';
   } else if (timeago >= seconds) {
-    return Math.floor(timeago) + " секундийн өмнө";
+    return Math.floor(timeago) + ' секундийн өмнө';
   } else {
-    return "дөнгөж сая";
+    return 'дөнгөж сая';
   }
 };
 

@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { responseData } from "@/lib/types";
-import axios from "axios";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
-import Loading from "../_component/loading";
+import { responseData } from '@/lib/types';
+import axios from 'axios';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+import Loading from '../_component/loading';
 
 export default function App() {
   const searchParams = useSearchParams();
-  const otp = searchParams.get("otp");
+  const otp = searchParams.get('otp');
   const router = useRouter();
 
   const [response, setResponse] = useState<responseData>();
@@ -40,9 +40,7 @@ export default function App() {
         {loading ? (
           <Loading />
         ) : (
-          <div className="flex min-h-screen items-center justify-center">
-            {response?.message}
-          </div>
+          <div className="flex min-h-screen items-center justify-center">{response?.message}</div>
         )}
       </div>
     </Suspense>

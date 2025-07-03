@@ -1,24 +1,23 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from '@/lib/prisma';
 import {
   CustomNextResponse,
   NextResponse_CatchError,
   NextResponse_NoCookie,
   NextResponse_NoEnv,
-} from "@/lib/responses";
-import { skill } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+} from '@/lib/responses';
+import { NextRequest } from 'next/server';
+import jwt from 'jsonwebtoken';
 export async function POST(req: NextRequest) {
   const { about, skills } = await req.json();
   if (!process.env.ACCESS_TOKEN) {
-    return NextResponse_NoEnv("ACCESS_TOKEN");
+    return NextResponse_NoEnv('ACCESS_TOKEN');
   }
-  const accessToken = req.cookies.get("accessToken")?.value;
+  const accessToken = req.cookies.get('accessToken')?.value;
   if (!accessToken) {
     return NextResponse_NoCookie();
   }
   if (!about && !skills) {
-    return CustomNextResponse(false, "LACK_OF_INFO", "Мэдээлэл дутуу байна!", {
+    return CustomNextResponse(false, 'LACK_OF_INFO', 'Мэдээлэл дутуу байна!', {
       about,
       skills,
     });
@@ -34,12 +33,7 @@ export async function POST(req: NextRequest) {
       omit: { password: true, phoneNumber: true, email: true },
     });
     if (!user) {
-      return CustomNextResponse(
-        false,
-        "USER_NOT_FOUND",
-        "Хэрэглэгч олдсонгүй!",
-        null
-      );
+      return CustomNextResponse(false, 'USER_NOT_FOUND', 'Хэрэглэгч олдсонгүй!', null);
     }
     if (!about && skills) {
       const updateUser = await prisma.user.update({
@@ -53,7 +47,7 @@ export async function POST(req: NextRequest) {
         omit: { password: true, email: true, phoneNumber: true },
       });
       if (updateUser) {
-        return CustomNextResponse(true, "SKILL_SUCCESS", "Хүсэлт амжилттай!", {
+        return CustomNextResponse(true, 'SKILL_SUCCESS', 'Хүсэлт амжилттай!', {
           updateUser,
         });
       }
@@ -68,7 +62,7 @@ export async function POST(req: NextRequest) {
         omit: { password: true, email: true, phoneNumber: true },
       });
       if (updateUser) {
-        return CustomNextResponse(true, "ABOUT_SUCCESS", "Хүсэлт амжилттай!", {
+        return CustomNextResponse(true, 'ABOUT_SUCCESS', 'Хүсэлт амжилттай!', {
           updateUser,
         });
       }
@@ -85,13 +79,13 @@ export async function POST(req: NextRequest) {
       omit: { password: true, phoneNumber: true, email: true },
     });
     if (updateUser) {
-      return CustomNextResponse(true, "SUCCESS", "Хүсэлт амжилттай! ", {
+      return CustomNextResponse(true, 'SUCCESS', 'Хүсэлт амжилттай! ', {
         updateUser,
       });
     }
-    return CustomNextResponse(false, "FAILED", "Хүсэлт амжилтгүй!", null);
+    return CustomNextResponse(false, 'FAILED', 'Хүсэлт амжилтгүй!', null);
   } catch (err) {
-    console.error(err, "Сервер дээр асуудал гарлаа");
+    console.error(err, 'Сервер дээр асуудал гарлаа');
     return NextResponse_CatchError(err);
   }
 }

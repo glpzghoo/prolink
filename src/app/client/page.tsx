@@ -1,9 +1,9 @@
-import { Metadata } from "next";
-import ClientListClient, { CustomUser } from "./ClientListClient";
+import { Metadata } from 'next';
+import ClientListClient, { CustomUser } from './ClientListClient';
 
 export const metadata: Metadata = {
-  title: "Clients - ProLink",
-  description: "Компаниудын жагсаалт",
+  title: 'Clients - ProLink',
+  description: 'Компаниудын жагсаалт',
 };
 
 export default async function ClientPage() {
@@ -12,7 +12,7 @@ export default async function ClientPage() {
   if (res.ok) {
     const data = await res.json();
     if (data.success) {
-      const filtered = data.data.users.filter((user: CustomUser) => user.role === "CLIENT");
+      const filtered = data.data.users.filter((user: CustomUser) => user.role === 'CLIENT');
       users = filtered.sort((a: CustomUser, b: CustomUser) => b.profileViews - a.profileViews);
     }
   }

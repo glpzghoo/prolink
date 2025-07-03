@@ -1,13 +1,10 @@
-"use client";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { ClientCard } from "../_component/ ClientPostCard";
-import CustomSkeleton from "../_component/skeleton";
-import { CustomUser } from "../freelancer/FreelancerListClient";
-type favorite = {
-  id: string;
-  role: string;
-};
+'use client';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { ClientCard } from '../_component/ ClientPostCard';
+import CustomSkeleton from '../_component/skeleton';
+import { CustomUser } from '../freelancer/FreelancerListClient';
+
 export default function Saved() {
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState<CustomUser[]>([]);
@@ -16,18 +13,16 @@ export default function Saved() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const favoritesString = localStorage.getItem("favorites");
-        const storedFavorites = favoritesString
-          ? JSON.parse(favoritesString)
-          : [];
+        const favoritesString = localStorage.getItem('favorites');
+        const storedFavorites = favoritesString ? JSON.parse(favoritesString) : [];
         if (storedFavorites.length === 0) {
           return;
         }
         const res = await axios.post(`/api/saved`, storedFavorites);
         if (res.data.success) {
           const allusers: CustomUser[] = res.data.data;
-          const clients = allusers.filter((user) => user.role === "CLIENT");
-          const freelancers = allusers.filter((user) => user.role !== "CLIENT");
+          const clients = allusers.filter((user) => user.role === 'CLIENT');
+          const freelancers = allusers.filter((user) => user.role !== 'CLIENT');
           setClients(clients);
           setFreelancers(freelancers);
         }
