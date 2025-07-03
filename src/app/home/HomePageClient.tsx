@@ -33,7 +33,7 @@ export default function HomePageClient({ skills, freelancers, clients, jobs }: P
   const jFiltered = useMemo(() => filterBySkill(jobs), [jobs, selected]);
 
   return (
-    <div className="space-y-10 px-4 py-6 max-w-6xl mx-auto">
+    <div className="space-y-10 px-4 py-6 max-w-7xl mx-auto">
       <SkillFilter skills={skills} />
       <FreelancerSection users={fFiltered} />
       <JobSection posts={jFiltered} />
