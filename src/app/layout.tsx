@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { Montserrat } from 'next/font/google';
+import { Roboto } from 'next/font/google';
 import './globals.css';
 import { Navigation } from './account/_components/navigation';
 import Footer from './account/_components/footer';
 import { Suspense } from 'react';
 import Loading from './_component/loading';
 
-const montserrat = Montserrat({
+const montserrat = Roboto({
   variable: '--font-montserrat',
   subsets: ['latin', 'cyrillic'],
   weight: ['400', '500', '600', '700'],

@@ -3,7 +3,7 @@ import JobListClient from './JobListClient';
 import { CustomJob } from './[id]/page';
 
 export const metadata: Metadata = {
-  title: 'Jobs - ProLink',
+  title: 'Ажлын зарууд - ProLink',
   description: 'Ажлын зарууд',
 };
 
