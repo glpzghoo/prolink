@@ -3,7 +3,6 @@ import { Roboto } from 'next/font/google';
 import './globals.css';
 import Footer from './account/_components/footer';
 import { Suspense } from 'react';
-import Loading from './_component/loading';
 import Navigation from './account/_components/navigation';
 
 const montserrat = Roboto({
@@ -29,7 +28,7 @@ export default function RootLayout({
           <Navigation />
         </div>
         <div className=" min-h-screen">
-          <Suspense fallback={<Loading />}>{children}</Suspense>
+          <Suspense>{children}</Suspense>
         </div>
         <div className=" mt-6">
           <Footer />

@@ -1,5 +1,4 @@
 'use client';
-import Loading from '@/app/_component/loading';
 import { Textarea } from '@/components/ui/textarea';
 import { calculateTime } from '@/lib/helper';
 import { responseData } from '@/lib/types';
@@ -126,7 +125,7 @@ export default function AboutSettings() {
             open={Boolean(response?.message)}
             message={response?.message}
           />
-          {waiting && <Loading />}
+          {waiting && 'Tur huleene uu! (solino)'}
           <div className="bg-background w-1/2 shadow-lg p-4">
             <h2 className="font-bold mb-4">Таны оруулсан ажлын саналууд:</h2>
             {user.jobpost.length > 0 ? (
@@ -256,6 +255,6 @@ export default function AboutSettings() {
       )}
     </div>
   ) : (
-    <Loading />
+    'Tur huleene uu! (solino)'
   );
 }

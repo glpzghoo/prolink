@@ -1,5 +1,4 @@
 'use client';
-import Loading from '@/app/_component/loading';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -169,6 +168,6 @@ export default function AboutSettings() {
       )}
     </div>
   ) : (
-    <Loading />
+    'Tur huleene uu! (solino)'
   );
 }

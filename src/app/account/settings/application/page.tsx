@@ -1,6 +1,5 @@
 'use client';
 
-import Loading from '@/app/_component/loading';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Rating, Snackbar } from '@mui/material';
@@ -166,7 +165,7 @@ export default function ProposalDetails() {
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading) return 'Tur huleene uu! (solino)';
   if (!applicationData.length) {
     return (
       <div className="min-h-screen flex items-center justify-center text-foreground text-lg">
@@ -177,7 +176,6 @@ export default function ProposalDetails() {
 
   return (
     <div className="min-h-screen bg-background py-8">
-      {loading2 && <Loading />}
       <div className="max-w-6xl mx-auto space-y-6">
         {applicationData.map((application) => (
           <div

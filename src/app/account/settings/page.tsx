@@ -1,6 +1,5 @@
 'use client';
 
-import Loading from '@/app/_component/loading';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { responseData } from '@/lib/types';
@@ -162,7 +161,6 @@ export default function AccountSettings() {
           message={response.message}
         />
       )}
-      {loading && <Loading />}
       <div className=" bg-background w-1/2 flex flex-col gap-12 h-screen rounded-xl shadow-md p-6 mx-auto my-10 border border-gray-200">
         {/* <Button onClick={handleOpen}>asdfasd</Button> */}
         <div className="p-20 mx-auto flex flex-col items-center justify-center gap-4">

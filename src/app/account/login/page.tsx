@@ -8,9 +8,7 @@ import z from 'zod';
 import { responseData } from '@/lib/types';
 import { Alert } from '@/components/ui/alert';
 import { motion } from 'framer-motion';
-
 import { Button } from '@mui/material';
-import Loading from '@/app/_component/loading';
 import { SessionProvider } from 'next-auth/react';
 const passwordSchema = z.string().min(8).regex(/[0-9]/, 'Дор хаяж 1 тоо агуулсан байх ёстой');
 export default function Login() {
@@ -116,7 +114,6 @@ export default function Login() {
 
   return (
     <>
-      {loading && <Loading />}
       <div className="min-h-screen flex items-center justify-center">
         <div className="">
           <motion.div

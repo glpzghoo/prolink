@@ -2,7 +2,6 @@
 import { Suspense, useEffect, useState } from 'react';
 import { ClientCard } from '../_component/ ClientPostCard';
 import { review, skill, user } from '@prisma/client';
-import Loading from '../_component/loading';
 import { useSearchParams } from 'next/navigation';
 import Badge from '../_component/skillBadge';
 export type CustomUser = user & {
@@ -58,7 +57,7 @@ export default function ClientListClient({ initialUsers }: { initialUsers: Custo
   }, []);
   return (
     <div>
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={'Tur huleene uu! (solino)'}>
         <Badge />
         <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto mb-4">
           Дундаж үнэлгээ: {allreviews(users) ? allreviews(users) + '/5' : 'Үнэлгээ алга'}

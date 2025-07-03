@@ -3,7 +3,6 @@ import { FeaturedSkillsetup } from '../../_components/featuredSkillChange';
 import { FeaturedSkillNewButton } from '../../_components/featuredSkillNewButton';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import Loading from '@/app/_component/loading';
 import { responseData } from '@/lib/types';
 import { CustomFeaturedSkill } from '@/app/freelancer/[id]/types';
 
@@ -62,7 +61,7 @@ export default function Settings() {
   return (
     <div className="bg-background flex items-center justify-center">
       {loading ? (
-        <Loading />
+        'Tur huleene uu! (solino)'
       ) : (
         <div className="w-full max-w-6xl mx-auto py-8">
           <div className="bg-background rounded-xl shadow-md p-6 border border-gray-200">

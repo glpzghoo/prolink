@@ -77,15 +77,6 @@ const footerLinks = [
   },
 ];
 
-const sectionVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: 'easeOut' },
-  },
-};
-
 const hoverVariants = {
   hover: { scale: 1.05, transition: { duration: 0.3 } },
 };
@@ -99,7 +90,6 @@ export default function Footer() {
             <motion.div
               key={index}
               className="space-y-3 sm:space-y-4"
-              variants={sectionVariants}
               initial="hidden"
               animate="visible"
               viewport={{ once: true }}
@@ -127,7 +117,6 @@ export default function Footer() {
 
         <motion.div
           className="mt-6 sm:mt-8 lg:mt-10 pt-4 sm:pt-6 border-t border-gray-400"
-          variants={sectionVariants}
           initial="hidden"
           animate="visible"
           viewport={{ once: true }}

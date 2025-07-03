@@ -12,7 +12,6 @@ import { responseData } from '@/lib/types';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import { Button, Checkbox } from '@mui/material';
-import Loading from '@/app/_component/loading';
 import { ThemeProvider } from '@emotion/react';
 import { theme } from '@/lib/theme';
 const RegisterFormSchema = z.object({
@@ -209,7 +208,6 @@ export default function Login() {
   };
   return (
     <div className="min-h-screen">
-      {loading && <Loading />}
       <div className="min-h-screen flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 200 }}

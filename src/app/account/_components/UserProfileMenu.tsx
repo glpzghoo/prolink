@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Verified, CircleX, LogOut } from 'lucide-react';
 import { MdDashboard } from 'react-icons/md';
+import AddJobDialog from '@/app/job/_components/AddJobDialog';
 
 type Props = {
   user: {
@@ -70,16 +71,7 @@ export default function UserProfileMenu({ user, onLogout }: Props) {
       </motion.button>
 
       {/* Post Job (for clients only) */}
-      {user.role === 'CLIENT' && (
-        <Link href="/job/new">
-          <motion.div
-            className="px-4 py-2 bg-primary text-background rounded-full text-sm font-medium hover:opacity-90 transition-all duration-300"
-            whileHover={{ scale: 1.02 }}
-          >
-            Ажлын санал оруулах
-          </motion.div>
-        </Link>
-      )}
+      {user.role === 'CLIENT' && <AddJobDialog />}
     </div>
   );
 }
