@@ -3,10 +3,10 @@ import {
   NextResponse_CatchError,
   NextResponse_NoCookie,
   NextResponse_NoEnv,
-} from "@/lib/responses";
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import { prisma } from "@/lib/prisma";
+} from '@/lib/responses';
+import { NextRequest } from 'next/server';
+import jwt from 'jsonwebtoken';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,8 +34,8 @@ export async function POST(req: NextRequest) {
       if (existingFeature) {
         return CustomNextResponse(
           false,
-          "FEATUREDSKILL_ALREADY_EXIST",
-          "Онцгойлсон skill аль хэдийн оруулсан байна!",
+          'FEATUREDSKILL_ALREADY_EXIST',
+          'Онцгойлсон skill аль хэдийн оруулсан байна!',
           null
         );
       }
@@ -53,8 +53,8 @@ export async function POST(req: NextRequest) {
           });
           return CustomNextResponse(
             true,
-            "FEATURED_SKILL_ADDED",
-            "Онцгой ур чадварыг амжилттай нэмлээ!",
+            'FEATURED_SKILL_ADDED',
+            'Онцгой ур чадварыг амжилттай нэмлээ!',
             { NewFeaturedSkill }
           );
         }
@@ -71,20 +71,15 @@ export async function POST(req: NextRequest) {
         });
         return CustomNextResponse(
           true,
-          "FEATURED_SKILL_ADDED",
-          "Онцгой ур чадварыг амжилттай нэмлээ!",
+          'FEATURED_SKILL_ADDED',
+          'Онцгой ур чадварыг амжилттай нэмлээ!',
           { NewFeaturedSkill }
         );
       }
     }
-    return CustomNextResponse(
-      false,
-      "FEATURED_SKILL_NOT_ADDED",
-      "Мэдээлэл дутуу байна!",
-      null
-    );
+    return CustomNextResponse(false, 'FEATURED_SKILL_NOT_ADDED', 'Мэдээлэл дутуу байна!', null);
   } catch (err) {
-    console.error(err, "Сервер дээр асуудал гарлаа!");
+    console.error(err, 'Сервер дээр асуудал гарлаа!');
     return NextResponse_CatchError(err);
   }
 }
@@ -115,29 +110,29 @@ export async function GET(req: NextRequest) {
       },
       omit: { password: true, phoneNumber: true, email: true },
     });
-    return CustomNextResponse(true, "REQUEST_SUCCESS", "Хүсэлт амжилттай!", {
+    return CustomNextResponse(true, 'REQUEST_SUCCESS', 'Хүсэлт амжилттай!', {
       user: UserFeaturedSkills,
     });
   } catch (err) {
-    console.error(err, "Сервер дээр асуудал гарлаа!");
+    console.error(err, 'Сервер дээр асуудал гарлаа!');
   }
 }
 export async function DELETE(req: NextRequest) {
   try {
-    const id = req.nextUrl.searchParams.get("id");
+    const id = req.nextUrl.searchParams.get('id');
     if (!id) {
       return CustomNextResponse(
         false,
-        "NO_ID_PROVIDED",
-        "Хүсэлт амжилтгүй! Таних тэмдэг олдсонгүй!",
+        'NO_ID_PROVIDED',
+        'Хүсэлт амжилтгүй! Таних тэмдэг олдсонгүй!',
         null
       );
     }
     if (!process.env.ACCESS_TOKEN) {
-      return NextResponse_NoEnv("ACCESS_TOKEN");
+      return NextResponse_NoEnv('ACCESS_TOKEN');
     }
 
-    const accessToken = req.cookies.get("accessToken")?.value;
+    const accessToken = req.cookies.get('accessToken')?.value;
     if (!accessToken) {
       return NextResponse_NoCookie();
     }
@@ -151,21 +146,18 @@ export async function DELETE(req: NextRequest) {
     if (featuredSkill?.userId === verify.id) {
       const deleteskill = await prisma.featuredSkills.delete({ where: { id } });
 
-      return CustomNextResponse(
-        true,
-        "SKILL_SUCCESSFULLY_DELETED",
-        "Хүсэлт амжилттай",
-        { skill: deleteskill }
-      );
+      return CustomNextResponse(true, 'SKILL_SUCCESSFULLY_DELETED', 'Хүсэлт амжилттай', {
+        skill: deleteskill,
+      });
     }
     return CustomNextResponse(
       false,
-      "NOT_AUTHORIZED",
-      "Таньд энэ үйлдлийг хийх эрх байхгүй байна!",
+      'NOT_AUTHORIZED',
+      'Таньд энэ үйлдлийг хийх эрх байхгүй байна!',
       null
     );
   } catch (err) {
-    console.error(err, "Сервер дээр алдаа гарлаа");
+    console.error(err, 'Сервер дээр алдаа гарлаа');
     return NextResponse_CatchError(err);
   }
 }

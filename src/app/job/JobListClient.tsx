@@ -1,8 +1,8 @@
-"use client";
-import CompanyCard from "@/app/_component/CompanyCard";
-import { CustomJob } from "./[id]/page";
-import CustomSkeleton from "../_component/skeleton";
-import { useState } from "react";
+'use client';
+import CompanyCard from '@/app/_component/CompanyCard';
+import { CustomJob } from './[id]/page';
+import CustomSkeleton from '../_component/skeleton';
+import { useState } from 'react';
 
 export default function JobListClient({ posts }: { posts: CustomJob[] }) {
   const [loading] = useState(false);
@@ -15,9 +15,7 @@ export default function JobListClient({ posts }: { posts: CustomJob[] }) {
       ) : (
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 text-center">
-              Идэвхитэй ажлын зарууд
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-800 text-center">Идэвхитэй ажлын зарууд</h1>
           </div>
 
           {posts.length > 0 ? (
@@ -33,9 +31,7 @@ export default function JobListClient({ posts }: { posts: CustomJob[] }) {
             </div>
           ) : (
             <div className="text-center py-16 bg-white rounded-lg shadow-md">
-              <p className="text-gray-500 text-lg">
-                Идэвхитэй ажлын зар байхгүй байна.
-              </p>
+              <p className="text-gray-500 text-lg">Идэвхитэй ажлын зар байхгүй байна.</p>
             </div>
           )}
         </div>

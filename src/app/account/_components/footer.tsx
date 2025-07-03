@@ -1,5 +1,4 @@
 'use client';
-import { useState } from 'react';
 import { IoLogoFacebook, IoLogoInstagram, IoLogoTwitter } from 'react-icons/io';
 import {
   Accordion,

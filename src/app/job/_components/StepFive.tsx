@@ -1,10 +1,8 @@
-"use client";
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { LuClock5, LuCircleDollarSign } from "react-icons/lu";
+'use client';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
 type StepFiveProps = {
   setCurrentStep: (step: number) => void;
@@ -18,19 +16,12 @@ type StepFiveProps = {
   salaryRate: string;
 };
 
-export function StepFive({
-  setCurrentStep,
-  salary,
-  setSalary,
-  setSalaryRate,
-  salaryRate,
-}: StepFiveProps) {
+export function StepFive({ setCurrentStep, setSalary, setSalaryRate, salaryRate }: StepFiveProps) {
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-6">
       <h2 className="text-2xl font-semibold">Таны төсөв ямар байх вэ?</h2>
       <p className="text-gray-600">
-        Энэ нь таны боломжит авьяастнуудтай нийцэх төслүүдийг тохируулахад
-        тусална.
+        Энэ нь таны боломжит авьяастнуудтай нийцэх төслүүдийг тохируулахад тусална.
       </p>
 
       <Card className="mb-6">

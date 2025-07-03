@@ -1,9 +1,9 @@
-import { Metadata } from "next";
-import FreelancerListClient, { CustomUser } from "./FreelancerListClient";
+import { Metadata } from 'next';
+import FreelancerListClient, { CustomUser } from './FreelancerListClient';
 
 export const metadata: Metadata = {
-  title: "Freelancers - ProLink",
-  description: "Шилдэг чөлөөт ажилчдын жагсаалт",
+  title: 'Freelancers - ProLink',
+  description: 'Шилдэг чөлөөт ажилчдын жагсаалт',
 };
 
 export default async function FreelancePage() {

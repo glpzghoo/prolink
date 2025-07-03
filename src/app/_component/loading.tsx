@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { LinearProgress, ThemeProvider } from "@mui/material";
-import { LoaderCircle } from "lucide-react";
-import { theme } from "@/lib/theme";
-import { motion } from "framer-motion";
+import { LinearProgress, ThemeProvider } from '@mui/material';
+import { LoaderCircle } from 'lucide-react';
+import { theme } from '@/lib/theme';
+import { motion } from 'framer-motion';
 
 const loadingVariants = {
   initial: { opacity: 0, scale: 0.8 },
   animate: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: 'easeOut' },
   },
 };
 
 const pulseVariants = {
   animate: {
     scale: [1, 1.1, 1],
-    transition: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
+    transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' },
   },
 };
 
@@ -31,10 +31,10 @@ export default function Loading() {
             sx={{
               height: 6,
               borderRadius: 3,
-              backgroundColor: "rgba(0, 128, 0, 0.2)",
-              "& .MuiLinearProgress-bar": {
-                backgroundColor: "#14A800",
-                transition: "transform 0.5s ease-in-out",
+              backgroundColor: 'rgba(0, 128, 0, 0.2)',
+              '& .MuiLinearProgress-bar': {
+                backgroundColor: '#14A800',
+                transition: 'transform 0.5s ease-in-out',
               },
             }}
           />
@@ -58,7 +58,7 @@ export default function Loading() {
           <span className="text-lg font-medium">Түр хүлээнэ үү!</span>
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           >
             <LoaderCircle className="w-6 h-6 text-[#14A800]" />
           </motion.div>

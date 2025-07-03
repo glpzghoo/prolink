@@ -136,7 +136,6 @@ export default function Login() {
       setForm((p) => ({ ...p, [field]: value }));
     }
     const withoutPass = { ...form };
-    delete withoutPass.password;
     localStorage.setItem('form', JSON.stringify(withoutPass));
   };
   const sendData = async () => {
@@ -199,7 +198,6 @@ export default function Login() {
       if (response2.data) {
         setForm((p) => ({ ...p, pfp: response2.data.secure_url }));
         const withoutPass = { ...form };
-        delete withoutPass.password;
         localStorage.setItem('form', JSON.stringify(withoutPass));
         setImageUploading(false);
         return;

@@ -1,19 +1,18 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { FeaturedSkillsetup } from "../../_components/featuredSkillChange";
-import { FeaturedSkillNewButton } from "../../_components/featuredSkillNewButton";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import Loading from "@/app/_component/loading";
-import { responseData } from "@/lib/types";
-import { CustomFeaturedSkill } from "@/app/freelancer/[id]/ProfileClient";
+'use client';
+import { FeaturedSkillsetup } from '../../_components/featuredSkillChange';
+import { FeaturedSkillNewButton } from '../../_components/featuredSkillNewButton';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Loading from '@/app/_component/loading';
+import { responseData } from '@/lib/types';
+import { CustomFeaturedSkill } from '@/app/freelancer/[id]/ProfileClient';
 
 export default function Settings() {
   const [featured, setFeatured] = useState<CustomFeaturedSkill[]>([]);
   const [response, setResponse] = useState<responseData>();
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(false);
-  const [deletingItem, setDeletingItem] = useState("");
+  const [deletingItem, setDeletingItem] = useState('');
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
@@ -28,10 +27,10 @@ export default function Settings() {
           setFeatured([]);
         }
       } catch (err) {
-        console.error("Fetch Error:", err);
+        console.error('Fetch Error:', err);
         setResponse({
           success: false,
-          message: "Сервертэй холбогдож чадсангүй",
+          message: 'Сервертэй холбогдож чадсангүй',
         });
         setFeatured([]);
       } finally {
@@ -52,11 +51,11 @@ export default function Settings() {
         setResponse(res.data);
       }
     } catch (err) {
-      console.error("Delete Error:", err);
-      setResponse({ success: false, message: "Устгахад алдаа гарлаа" });
+      console.error('Delete Error:', err);
+      setResponse({ success: false, message: 'Устгахад алдаа гарлаа' });
     } finally {
       setLoading2(false);
-      setDeletingItem("");
+      setDeletingItem('');
     }
   };
 
@@ -87,7 +86,6 @@ export default function Settings() {
                       key={skill.id}
                       skill={skill}
                       deleteSkill={deleteSkill}
-                      setLoading2={setLoading2}
                       loading2={loading2}
                       setdeletingItem={setDeletingItem}
                       deletingItem={deletingItem}
@@ -102,9 +100,7 @@ export default function Settings() {
             </div>
           </div>
           {response?.message && (
-            <div className="mt-4 text-center text-sm text-red-600">
-              {response.message}
-            </div>
+            <div className="mt-4 text-center text-sm text-red-600">{response.message}</div>
           )}
         </div>
       )}

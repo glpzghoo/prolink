@@ -33,9 +33,6 @@ export default function SkillBadge() {
       console.error(err, 'Сервертэй холбогдож чадсангүй!');
     } finally {
       setLoading(false);
-      if (res) {
-        setResponse(res.data);
-      }
     }
   };
   useEffect(() => {

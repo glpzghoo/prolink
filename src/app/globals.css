@@ -1,12 +1,12 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: "Montserrat", sans-serif;
-  --font-mono: "Montserrat", monospace;
+  --font-sans: 'Montserrat', sans-serif;
+  --font-mono: 'Montserrat', monospace;
 }
 
 :root {
@@ -125,6 +125,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Montserrat", sans-serif;
+    font-family: 'Montserrat', sans-serif;
   }
 }

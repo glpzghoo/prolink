@@ -1,4 +1,4 @@
-import Dashboard from "../../account/_components/CompanyDashboard";
+import Dashboard from '../../account/_components/CompanyDashboard';
 
 export default function CompanyPage() {
   return (

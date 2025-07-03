@@ -1,10 +1,10 @@
-"use client";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { X } from "lucide-react";
-import axios from "axios";
+'use client';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { useEffect, useState } from 'react';
+import { X } from 'lucide-react';
+import axios from 'axios';
 
 type StepThreeProps = {
   setCurrentStep: (step: number) => void;
@@ -12,11 +12,7 @@ type StepThreeProps = {
   selectedSkills: string[];
 };
 
-export function StepThree({
-  setCurrentStep,
-  setSelectedSkills,
-  selectedSkills,
-}: StepThreeProps) {
+export function StepThree({ setCurrentStep, setSelectedSkills, selectedSkills }: StepThreeProps) {
   // const skills = [
   // 	"График дизайн",
   // 	"Англи хэл",
@@ -26,13 +22,10 @@ export function StepThree({
   // ];\
 
   const [skills, setSkills] = useState<any>();
-  const [loading, setLoading] = useState(true);
 
   const toggleSkill = (skill: string) => {
     setSelectedSkills((prev: any) =>
-      prev.includes(skill)
-        ? prev.filter((s: any) => s !== skill)
-        : [...prev, skill]
+      prev.includes(skill) ? prev.filter((s: any) => s !== skill) : [...prev, skill]
     );
   };
 
@@ -44,9 +37,7 @@ export function StepThree({
         setSkills(res.data.data.skills);
       }
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
-    } finally {
-      setLoading(false);
+      console.error(err, 'Сервертэй холбогдож чадсангүй!');
     }
   };
 
@@ -92,9 +83,7 @@ export function StepThree({
                 key={skill.id}
                 variant="outline"
                 className={`rounded-full transition-colors ${
-                  selectedSkills.includes(skill.name)
-                    ? "bg-green-500 text-white"
-                    : ""
+                  selectedSkills.includes(skill.name) ? 'bg-green-500 text-white' : ''
                 }`}
                 onClick={() => toggleSkill(skill.name)}
               >
@@ -111,8 +100,8 @@ export function StepThree({
               disabled={selectedSkills.length === 0}
               className={`font-semibold px-6 transition-opacity ${
                 selectedSkills.length === 0
-                  ? "opacity-50 cursor-not-allowed"
-                  : "bg-[#129b00] text-white hover:bg-[#129b00]/90"
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'bg-[#129b00] text-white hover:bg-[#129b00]/90'
               }`}
             >
               Үргэлжлүүлэх

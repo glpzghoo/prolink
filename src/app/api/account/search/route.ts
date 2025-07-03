@@ -1,16 +1,16 @@
-import { prisma } from "@/lib/prisma";
-import { CustomNextResponse } from "@/lib/responses";
-import { NextRequest } from "next/server";
+import { prisma } from '@/lib/prisma';
+import { CustomNextResponse } from '@/lib/responses';
+import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
-    const search = req.nextUrl.searchParams.get("search");
+    const search = req.nextUrl.searchParams.get('search');
 
     if (!search) {
       return CustomNextResponse(
         false,
-        "REQUEST_FAILED",
-        "Хайлтын түлхүүр үг илгээгүй байна!",
+        'REQUEST_FAILED',
+        'Хайлтын түлхүүр үг илгээгүй байна!',
         null
       );
     }
@@ -18,12 +18,12 @@ export async function POST(req: NextRequest) {
       where: {
         AND: [
           {
-            role: "CLIENT",
+            role: 'CLIENT',
           },
           {
             OR: [
-              { about: { contains: search, mode: "insensitive" } },
-              { companyName: { contains: search, mode: "insensitive" } },
+              { about: { contains: search, mode: 'insensitive' } },
+              { companyName: { contains: search, mode: 'insensitive' } },
             ],
           },
         ],
@@ -35,15 +35,15 @@ export async function POST(req: NextRequest) {
       where: {
         AND: [
           {
-            role: "FREELANCER",
+            role: 'FREELANCER',
           },
           {
             OR: [
               {
-                firstName: { contains: search, mode: "insensitive" },
+                firstName: { contains: search, mode: 'insensitive' },
               },
-              { lastName: { contains: search, mode: "insensitive" } },
-              { about: { contains: search, mode: "insensitive" } },
+              { lastName: { contains: search, mode: 'insensitive' } },
+              { about: { contains: search, mode: 'insensitive' } },
             ],
           },
         ],
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       omit: { password: true },
     });
     if (resultclient.length === 0 && resultfreelancer.length === 0) {
-      return CustomNextResponse(false, "NO_RESULT", "Илэрц олдсонгүй", [
+      return CustomNextResponse(false, 'NO_RESULT', 'Илэрц олдсонгүй', [
         ...resultfreelancer,
         ...resultclient,
       ]);
@@ -60,8 +60,8 @@ export async function POST(req: NextRequest) {
 
     return CustomNextResponse(
       true,
-      "RESULTS_FOUND",
-      "Илэрц амжилттай олдлоо!",
+      'RESULTS_FOUND',
+      'Илэрц амжилттай олдлоо!',
 
       [...resultfreelancer, ...resultclient]
     );

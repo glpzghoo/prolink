@@ -1,33 +1,22 @@
-"use client";
-import Loading from "@/app/_component/loading";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { calculateTime } from "@/lib/helper";
-import { responseData } from "@/lib/types";
-import { cn } from "@/lib/utils";
-import { Button, Input, Snackbar, ThemeProvider } from "@mui/material";
-import { job, skill, user } from "@prisma/client";
-import axios from "axios";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { GoDotFill } from "react-icons/go";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Slide from "@mui/material/Slide";
-import { TransitionProps } from "@mui/material/transitions";
-import { theme } from "@/lib/theme";
+'use client';
+import Loading from '@/app/_component/loading';
+import { Textarea } from '@/components/ui/textarea';
+import { calculateTime } from '@/lib/helper';
+import { responseData } from '@/lib/types';
+import { Button, Input, Snackbar, ThemeProvider } from '@mui/material';
+import { job } from '@prisma/client';
+import axios from 'axios';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { GoDotFill } from 'react-icons/go';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
+import { theme } from '@/lib/theme';
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -52,11 +41,10 @@ export default function AboutSettings() {
   const [loading, setLoading] = useState(true);
   const [waiting, setWaiting] = useState(false);
   const [refresh, setRefresh] = useState(false);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const router = useRouter();
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [open, setOpen] = useState(false);
-  const [postId, setPostId] = useState("");
+  const [postId, setPostId] = useState('');
 
   const handleClickOpen = (id: string) => {
     setOpen(true);
@@ -90,12 +78,12 @@ export default function AboutSettings() {
   useEffect(() => {
     const getInfo = async () => {
       try {
-        const res = await axios.get("/api/account");
+        const res = await axios.get('/api/account');
         if (res.data.success) {
           setUser(res.data.data.informations);
         }
       } catch (err) {
-        console.error("Сервертэй холбогдож чадсангүй!", err);
+        console.error('Сервертэй холбогдож чадсангүй!', err);
       } finally {
         setLoading(false);
       }
@@ -114,7 +102,7 @@ export default function AboutSettings() {
         setRefresh(!refresh);
       }
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
+      console.error(err, 'Сервертэй холбогдож чадсангүй!');
     } finally {
       setWaiting(false);
     }
@@ -130,11 +118,11 @@ export default function AboutSettings() {
 
   return !loading && user ? (
     <div className="bg-secondary flex flex-col items-center">
-      {user?.role === "CLIENT" ? (
+      {user?.role === 'CLIENT' ? (
         <>
           <Snackbar
-            sx={{ color: response?.success ? "green" : "red" }}
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            sx={{ color: response?.success ? 'green' : 'red' }}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             open={Boolean(response?.message)}
             message={response?.message}
           />
@@ -157,10 +145,10 @@ export default function AboutSettings() {
                       <div className="flex justify-end font-semibold text-green-700  absolute top-0 right-0">
                         <div>Таны амласан цалин: {post.salary}</div>/
                         <div>
-                          {post.salaryRate === "MONTH"
+                          {post.salaryRate === 'MONTH'
                             ? `сар`
-                            : post.salaryRate === "DAY"
-                            ? "өдөр"
+                            : post.salaryRate === 'DAY'
+                            ? 'өдөр'
                             : `цаг`}
                         </div>
                       </div>
@@ -169,17 +157,14 @@ export default function AboutSettings() {
                       <React.Fragment>
                         <Button
                           sx={{
-                            justifyContent: "start",
-                            textTransform: "none",
+                            justifyContent: 'start',
+                            textTransform: 'none',
                           }}
                           className="flex justify-start text-start"
                           color="inherit"
                           onClick={() => handleClickOpen(post.id)}
                         >
-                          <div className=" whitespace-pre-wrap">
-                            {" "}
-                            {post.description}
-                          </div>
+                          <div className=" whitespace-pre-wrap"> {post.description}</div>
                         </Button>
                         <Dialog
                           open={open && post.id === postId}
@@ -211,9 +196,7 @@ export default function AboutSettings() {
                           </DialogContent>
                           <DialogActions>
                             <Button onClick={handleClickClose}>Болих</Button>
-                            <Button onClick={() => sendChanges(post.id)}>
-                              Засах
-                            </Button>
+                            <Button onClick={() => sendChanges(post.id)}>Засах</Button>
                           </DialogActions>
                         </Dialog>
                       </React.Fragment>
@@ -222,7 +205,7 @@ export default function AboutSettings() {
                     <div>Байршил: {post.jobLocation}</div>
                     <div className="flex justify-between">
                       <div className="text-gray-400/70 text-xs absolute bottom-2 left-0">
-                        Зар үүссэн огноо: {post.postedAt.split("T")[0]} (
+                        Зар үүссэн огноо: {post.postedAt.split('T')[0]} (
                         {calculateTime(post.postedAt)})
                       </div>
                       <div className="flex  absolute bottom-2 right-0">
@@ -232,12 +215,12 @@ export default function AboutSettings() {
                     </div>
                     <div>{post.experienced}</div>
                     <div>
-                      {post.status === "ACTIVE" ? (
+                      {post.status === 'ACTIVE' ? (
                         <div className=" text-[#14A800] text-sm font-semibold absolute top-0 left-0 flex items-center gap-1">
                           <GoDotFill className="animate-ping duration-4000" />
                           <p>идэвхитэй пост</p>
                         </div>
-                      ) : post.status === "CLOSED" ? (
+                      ) : post.status === 'CLOSED' ? (
                         <div className=" text-pink-400/70 text-sm font-semibold absolute top-0 left-0 flex items-center gap-1">
                           <p>идэвхигүй пост</p>
                         </div>
@@ -252,17 +235,13 @@ export default function AboutSettings() {
                         deActivate(post.id);
                       }}
                       sx={{
-                        color: post.status === "CLOSED" ? "green" : "red",
+                        color: post.status === 'CLOSED' ? 'green' : 'red',
                       }}
                       className={` ${
-                        post.status === "ACTIVE"
-                          ? " text-green-500"
-                          : "text-red-500"
+                        post.status === 'ACTIVE' ? ' text-green-500' : 'text-red-500'
                       }`}
                     >
-                      {post.status == "ACTIVE"
-                        ? "Идэвхигүй болгох"
-                        : "Идэвхитэй болгох"}
+                      {post.status == 'ACTIVE' ? 'Идэвхигүй болгох' : 'Идэвхитэй болгох'}
                     </Button>
                   </div>
                 ))}
@@ -273,9 +252,7 @@ export default function AboutSettings() {
           </div>
         </>
       ) : (
-        <div className="text-center min-h-screen content-center">
-          Холбоос буруу байна!
-        </div>
+        <div className="text-center min-h-screen content-center">Холбоос буруу байна!</div>
       )}
     </div>
   ) : (

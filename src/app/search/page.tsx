@@ -1,15 +1,14 @@
-"use client";
+'use client';
 
-import { user } from "@prisma/client";
-import axios from "axios";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
-import Loading from "../_component/loading";
-import { ClientCard } from "../_component/ ClientPostCard";
-import { CustomUser } from "../freelancer/FreelancerListClient";
+import axios from 'axios';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+import Loading from '../_component/loading';
+import { ClientCard } from '../_component/ ClientPostCard';
+import { CustomUser } from '../freelancer/FreelancerListClient';
 
 export default function App() {
-  const search = useSearchParams().get("search");
+  const search = useSearchParams().get('search');
   const router = useRouter();
   const [user, setUser] = useState<CustomUser[]>([]);
   const [clients, setClients] = useState<CustomUser[]>([]);
@@ -27,8 +26,8 @@ export default function App() {
 
             const users: CustomUser[] = res.data.data;
 
-            const freelancer = users.filter((use) => use.role === "FREELANCER");
-            const client = users.filter((use) => use.role === "CLIENT");
+            const freelancer = users.filter((use) => use.role === 'FREELANCER');
+            const client = users.filter((use) => use.role === 'CLIENT');
             setClients(client);
             setFreelancers(freelancer);
           } else {
@@ -55,7 +54,7 @@ export default function App() {
           <div>
             {loading2 && <Loading />}
             <div className="text-center py-4">
-              Таны хайлтын дүн:{" "}
+              Таны хайлтын дүн:{' '}
               <span className=" font-semibold">
                 "{search}" ({user.length})
               </span>

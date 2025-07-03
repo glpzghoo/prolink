@@ -1,38 +1,28 @@
-"use client";
+'use client';
 
-import Loading from "@/app/_component/loading";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { responseData } from "@/lib/types";
-import {
-  Button,
-  Checkbox,
-  Dialog,
-  DialogTitle,
-  Input,
-  List,
-  ListItem,
-  Snackbar,
-} from "@mui/material";
-import { user } from "@prisma/client";
-import axios from "axios";
-import Image from "next/image";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import Loading from '@/app/_component/loading';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { responseData } from '@/lib/types';
+import { Button, Checkbox, Input, Snackbar } from '@mui/material';
+import { user } from '@prisma/client';
+import axios from 'axios';
+import Image from 'next/image';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 
 export default function AccountSettings() {
-  const [salaryType, setSalaryType] = useState("");
-  const [password, setPassword] = useState("");
+  const [salaryType, setSalaryType] = useState('');
+  const [password, setPassword] = useState('');
   const [salary, setSalary] = useState(0);
-  const [pfp, setPfp] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
+  const [pfp, setPfp] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [email, setEmail] = useState('');
   const [response, setResponse] = useState<responseData>();
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<user>();
   const [name, setName] = useState({
-    firstName: user?.firstName ? user.firstName : "",
-    lastName: user?.lastName ? user.lastName : "",
+    firstName: user?.firstName ? user.firstName : '',
+    lastName: user?.lastName ? user.lastName : '',
   });
   const inputRef = useRef<HTMLInputElement>(null);
   const clickInput = () => {
@@ -56,7 +46,7 @@ export default function AccountSettings() {
         setSalaryType(res.data.data.informations.salaryType);
       }
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
+      console.error(err, 'Сервертэй холбогдож чадсангүй!');
     } finally {
       setLoading(false);
     }
@@ -78,11 +68,11 @@ export default function AccountSettings() {
       const { timestamp, signature, api_key } = response.data;
 
       const data = new FormData();
-      data.append("timestamp", timestamp.toString());
-      data.append("signature", signature);
-      data.append("api_key", api_key);
-      data.append("file", event.target.files[0]);
-      data.append("resource_type", "image");
+      data.append('timestamp', timestamp.toString());
+      data.append('signature', signature);
+      data.append('api_key', api_key);
+      data.append('file', event.target.files[0]);
+      data.append('resource_type', 'image');
 
       const response2 = await axios.post(
         `https://api.cloudinary.com/v1_1/de1g2bwml/image/upload`,
@@ -100,7 +90,7 @@ export default function AccountSettings() {
       });
       setResponse(res.data);
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
+      console.error(err, 'Сервертэй холбогдож чадсангүй!');
     } finally {
       setLoading(false);
     }
@@ -114,7 +104,7 @@ export default function AccountSettings() {
       });
       setResponse(res.data);
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
+      console.error(err, 'Сервертэй холбогдож чадсангүй!');
     } finally {
       setLoading(false);
     }
@@ -128,7 +118,7 @@ export default function AccountSettings() {
       });
       setResponse(res.data);
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
+      console.error(err, 'Сервертэй холбогдож чадсангүй!');
     } finally {
       setLoading(false);
     }
@@ -142,7 +132,7 @@ export default function AccountSettings() {
       });
       setResponse(res.data);
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
+      console.error(err, 'Сервертэй холбогдож чадсангүй!');
     } finally {
       setLoading(false);
     }
@@ -157,7 +147,7 @@ export default function AccountSettings() {
       });
       setResponse(res.data);
     } catch (err) {
-      console.error(err, "Сервертэй холбогдож чадсангүй!");
+      console.error(err, 'Сервертэй холбогдож чадсангүй!');
     } finally {
       setLoading(false);
     }
@@ -166,8 +156,8 @@ export default function AccountSettings() {
     <div className="flex flex-col items-center justify-center border border-gray-200 bg-white">
       {response?.message && (
         <Snackbar
-          sx={{ color: response.success ? "green" : "red" }}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          sx={{ color: response.success ? 'green' : 'red' }}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={response.message ? true : false}
           message={response.message}
         />
@@ -176,10 +166,8 @@ export default function AccountSettings() {
       <div className=" bg-white w-1/2 flex flex-col gap-12 h-screen rounded-xl shadow-md p-6 mx-auto my-10 border border-gray-200">
         {/* <Button onClick={handleOpen}>asdfasd</Button> */}
         <div className="p-20 mx-auto flex flex-col items-center justify-center gap-4">
-          Хэрэглэгчийн Статус:{" "}
-          {user?.role === "CLIENT"
-            ? "Компани/Үйлчлүүлэгч"
-            : "Freelancer/Ажил горилогч/Талент"}
+          Хэрэглэгчийн Статус:{' '}
+          {user?.role === 'CLIENT' ? 'Компани/Үйлчлүүлэгч' : 'Freelancer/Ажил горилогч/Талент'}
         </div>
         <div className="flex justify-center items-center gap-4">
           <Tabs defaultValue="pfp" className="w-full items-center">
@@ -204,9 +192,7 @@ export default function AccountSettings() {
               <div className=" flex flex-col gap-7 items-center justify-center">
                 <Image
                   onClick={clickInput}
-                  src={`${
-                    pfp ? pfp : user?.pfp ? user.pfp : `/placeholder.png`
-                  }`}
+                  src={`${pfp ? pfp : user?.pfp ? user.pfp : `/placeholder.png`}`}
                   width={100}
                   height={100}
                   alt="pfp"
@@ -226,13 +212,13 @@ export default function AccountSettings() {
                     placeholder="Нууц үг"
                     type="password"
                   />
-                  <Button sx={{ color: "green" }} onClick={changePfp}>
+                  <Button sx={{ color: 'green' }} onClick={changePfp}>
                     Солих
                   </Button>
                   <Button
-                    sx={{ color: "green" }}
+                    sx={{ color: 'green' }}
                     onClick={() => {
-                      setPfp("");
+                      setPfp('');
                     }}
                   >
                     Болих
@@ -256,7 +242,7 @@ export default function AccountSettings() {
                       }}
                       id="lastName"
                       name="lastName"
-                      defaultValue={name?.lastName ? name.lastName : ""}
+                      defaultValue={name?.lastName ? name.lastName : ''}
                       disabled={loading}
                       placeholder="Овог"
                     />
@@ -276,7 +262,7 @@ export default function AccountSettings() {
                       }}
                       id="firstName"
                       name="firstName"
-                      defaultValue={name?.firstName ? name.firstName : ""}
+                      defaultValue={name?.firstName ? name.firstName : ''}
                       disabled={loading}
                       placeholder="Нэр"
                     />
@@ -289,15 +275,15 @@ export default function AccountSettings() {
                     placeholder="Нууц үг"
                     type="password"
                   />
-                  <Button sx={{ color: "green" }} onClick={changeName}>
+                  <Button sx={{ color: 'green' }} onClick={changeName}>
                     Солих
                   </Button>
                   <Button
-                    sx={{ color: "green" }}
+                    sx={{ color: 'green' }}
                     onClick={() => {
                       setName({
-                        firstName: "",
-                        lastName: "",
+                        firstName: '',
+                        lastName: '',
                       });
                     }}
                   >
@@ -311,7 +297,7 @@ export default function AccountSettings() {
                 onChange={(e) => {
                   setPhoneNumber(e.target.value);
                 }}
-                value={phoneNumber ? phoneNumber : ""}
+                value={phoneNumber ? phoneNumber : ''}
                 disabled={loading}
                 placeholder="Утасны дугаар"
               />
@@ -322,13 +308,13 @@ export default function AccountSettings() {
                   placeholder="Нууц үг"
                   type="password"
                 />
-                <Button sx={{ color: "green" }} onClick={changePhoneNumber}>
+                <Button sx={{ color: 'green' }} onClick={changePhoneNumber}>
                   Солих
                 </Button>
                 <Button
-                  sx={{ color: "green" }}
+                  sx={{ color: 'green' }}
                   onClick={() => {
-                    setPhoneNumber("");
+                    setPhoneNumber('');
                   }}
                 >
                   Болих
@@ -338,7 +324,7 @@ export default function AccountSettings() {
             <TabsContent value="email">
               <div className="flex gap-3">
                 <Input
-                  value={email ? email : ""}
+                  value={email ? email : ''}
                   disabled={loading}
                   placeholder="Емайл"
                   onChange={(e) => {
@@ -353,13 +339,13 @@ export default function AccountSettings() {
                   placeholder="Нууц үг"
                   type="password"
                 />
-                <Button sx={{ color: "green" }} onClick={changeEmail}>
+                <Button sx={{ color: 'green' }} onClick={changeEmail}>
                   Солих
                 </Button>
                 <Button
-                  sx={{ color: "green" }}
+                  sx={{ color: 'green' }}
                   onClick={() => {
-                    setEmail("");
+                    setEmail('');
                   }}
                 >
                   Болих
@@ -379,10 +365,10 @@ export default function AccountSettings() {
                     type="number"
                   />
                   <div className="flex gap-1">
-                    {["MONTH", "DAY", "HOUR"].map((type) => (
+                    {['MONTH', 'DAY', 'HOUR'].map((type) => (
                       <div key={type} className="flex">
                         <Checkbox
-                          sx={{ color: "green" }}
+                          sx={{ color: 'green' }}
                           onChange={() => {
                             setSalaryType(type);
                           }}
@@ -391,11 +377,7 @@ export default function AccountSettings() {
                           name="SalaryType"
                         />
                         <Label htmlFor={type}>
-                          {type === "MONTH"
-                            ? "Сар"
-                            : type === "HOUR"
-                            ? "Цаг"
-                            : "Өдөр"}
+                          {type === 'MONTH' ? 'Сар' : type === 'HOUR' ? 'Цаг' : 'Өдөр'}
                         </Label>
                       </div>
                     ))}
@@ -408,14 +390,14 @@ export default function AccountSettings() {
                     placeholder="Нууц үг"
                     type="password"
                   />
-                  <Button sx={{ color: "green" }} onClick={changeSalary}>
+                  <Button sx={{ color: 'green' }} onClick={changeSalary}>
                     Солих
                   </Button>
                   <Button
-                    sx={{ color: "green" }}
+                    sx={{ color: 'green' }}
                     onClick={() => {
                       setSalary(user?.salary ? user.salary : 0);
-                      setSalaryType(user?.salaryType ? user.salaryType : "");
+                      setSalaryType(user?.salaryType ? user.salaryType : '');
                     }}
                   >
                     Болих

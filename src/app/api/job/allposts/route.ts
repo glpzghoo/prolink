@@ -1,11 +1,11 @@
-import { prisma } from "@/lib/prisma";
-import { CustomNextResponse, NextResponse_CatchError } from "@/lib/responses";
-import { NextRequest } from "next/server";
+import { prisma } from '@/lib/prisma';
+import { CustomNextResponse, NextResponse_CatchError } from '@/lib/responses';
+import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
   try {
     const allposts = await prisma.job.findMany({
-      where: { status: "ACTIVE" },
+      where: { status: 'ACTIVE' },
       include: {
         skill: true,
         poster: {
@@ -17,14 +17,14 @@ export async function GET(req: NextRequest) {
         },
         jobApplication: true,
       },
-      orderBy: { postedAt: "desc" },
+      orderBy: { postedAt: 'desc' },
     });
 
-    return CustomNextResponse(true, "REQUEST_SUCCESS", "Хүсэлт амжилттай!", {
+    return CustomNextResponse(true, 'REQUEST_SUCCESS', 'Хүсэлт амжилттай!', {
       posts: allposts,
     });
   } catch (err) {
-    console.error(err, "Сервер дээр асуудал гарлаа");
+    console.error(err, 'Сервер дээр асуудал гарлаа');
     return NextResponse_CatchError(err);
   }
 }

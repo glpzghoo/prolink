@@ -3,13 +3,13 @@ import {
   NextResponse_CatchError,
   NextResponse_NoCookie,
   NextResponse_NoEnv,
-} from "@/lib/responses";
-import { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
-import { prisma } from "@/lib/prisma";
+} from '@/lib/responses';
+import { NextRequest } from 'next/server';
+import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
+import { prisma } from '@/lib/prisma';
 const transporter = nodemailer.createTransport({
-  host: "smtp.zoho.com",
+  host: 'smtp.zoho.com',
   port: 465,
   secure: true,
   auth: {
@@ -25,9 +25,9 @@ export async function GET(req: NextRequest) {
   });
   try {
     if (!process.env.ACCESS_TOKEN) {
-      return NextResponse_NoEnv("ACCESS_TOKEN");
+      return NextResponse_NoEnv('ACCESS_TOKEN');
     }
-    const accessToken = req.cookies.get("accessToken")?.value;
+    const accessToken = req.cookies.get('accessToken')?.value;
 
     if (!accessToken) {
       return NextResponse_NoCookie();
@@ -38,12 +38,7 @@ export async function GET(req: NextRequest) {
     };
     const user = await prisma.user.findUnique({ where: { id: verify.id } });
     if (!user) {
-      return CustomNextResponse(
-        false,
-        "REQUEST_FAILED",
-        "Хэрэглэгч олдсолгүй",
-        null
-      );
+      return CustomNextResponse(false, 'REQUEST_FAILED', 'Хэрэглэгч олдсолгүй', null);
     }
     const otp = Math.round(Math.random() * 899999999 + 100000000);
     const newOtp = await prisma.otp.create({
@@ -52,16 +47,16 @@ export async function GET(req: NextRequest) {
     await transporter.sendMail({
       from: `"Team HexaCode" <${process.env.EMAIL}>`, // sender address
       to: user.email, // list of receivers
-      subject: "ProLink - Таны баталгаажуулах линк", // Subject line
-      text: "Freelancing App / Team HexaCode", // plain text body
+      subject: 'ProLink - Таны баталгаажуулах линк', // Subject line
+      text: 'Freelancing App / Team HexaCode', // plain text body
       html: `<b>Сайн байна уу! ${
-        user.role === "CLIENT" ? user.companyName : user.firstName
+        user.role === 'CLIENT' ? user.companyName : user.firstName
       }.</b><p>Та уг линкээр орон хаягаа баталгаажуулаарай! Линк 10 минут л хүчинтэй! ${
         process.env.BASE_URL
       }/verify?otp=${otp}
         }</p>`, // html body
     });
-    return CustomNextResponse(true, "REQUEST_SUCCESS", "Майл илгээлээ~!", {
+    return CustomNextResponse(true, 'REQUEST_SUCCESS', 'Майл илгээлээ~!', {
       id: newOtp.id,
     });
   } catch (err) {
@@ -71,30 +66,20 @@ export async function GET(req: NextRequest) {
 }
 export async function POST(req: NextRequest) {
   try {
-    const otp = req.nextUrl.searchParams.get("otp");
+    const otp = req.nextUrl.searchParams.get('otp');
     const tenMinAgo = new Date(new Date().getTime() - 600000);
 
     await prisma.otp.deleteMany({
       where: { createdAt: { lte: tenMinAgo } },
     });
     if (!otp) {
-      return CustomNextResponse(
-        false,
-        "REQUEST FAILED",
-        "Код олдсонгүй!",
-        null
-      );
+      return CustomNextResponse(false, 'REQUEST FAILED', 'Код олдсонгүй!', null);
     }
 
     const find = await prisma.otp.findUnique({ where: { otp: Number(otp) } });
 
     if (!find) {
-      return CustomNextResponse(
-        false,
-        "REQUEST FAILED",
-        "Хүчингүй линк!",
-        null
-      );
+      return CustomNextResponse(false, 'REQUEST FAILED', 'Хүчингүй линк!', null);
     }
 
     const user = await prisma.user.update({
@@ -102,12 +87,7 @@ export async function POST(req: NextRequest) {
       data: { emailVerified: true },
       omit: { password: true, email: true, phoneNumber: true },
     });
-    return CustomNextResponse(
-      true,
-      "REQUEST_SUCCESS",
-      "Амжилттай баталгаажлаа!",
-      { user }
-    );
+    return CustomNextResponse(true, 'REQUEST_SUCCESS', 'Амжилттай баталгаажлаа!', { user });
   } catch (err) {
     console.error(err);
     return NextResponse_CatchError(err);
