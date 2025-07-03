@@ -1,19 +1,10 @@
 "use client";
-
-import Loading from "@/app/_component/loading";
 import CustomSkeleton from "@/app/_component/skeleton";
 import MailDetail from "@/app/account/_components/maildetailbutton";
 import { Textarea } from "@/components/ui/textarea";
 import { calculateTime } from "@/lib/helper";
 import { responseData } from "@/lib/types";
-import {
-  Box,
-  Button,
-  Checkbox,
-  Snackbar,
-  ThemeProvider,
-  Typography,
-} from "@mui/material";
+import { Button, Checkbox, Snackbar, ThemeProvider } from "@mui/material";
 import Rating from "@mui/material/Rating";
 import { featuredSkills, review, skill, user } from "@prisma/client";
 import axios from "axios";

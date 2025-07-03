@@ -12,8 +12,6 @@ import { Navigation } from "./account/_components/navigation";
 import Footer from "./account/_components/footer";
 import { Suspense } from "react";
 import Loading from "./_component/loading";
-import { ThemeProvider } from "@mui/material";
-import { theme } from "@/lib/theme";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",

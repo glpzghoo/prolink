@@ -1,7 +1,6 @@
 "use client";
 
 import Loading from "@/app/_component/loading";
-import { CustomUser } from "@/app/client/page";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Rating, Snackbar } from "@mui/material";
@@ -22,6 +21,7 @@ import { responseData } from "@/lib/types";
 import { ImNewTab } from "react-icons/im";
 import { avgRating } from "@/lib/helper";
 import { CircleX, Verified } from "lucide-react";
+import { CustomUser } from "@/app/client/ClientListClient";
 
 type CustomJobApplication = jobApplication & {
   job: CustomJob;

@@ -5,8 +5,8 @@ import { FeaturedSkillNewButton } from "../../_components/featuredSkillNewButton
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Loading from "@/app/_component/loading";
-import { CustomFeaturedSkill } from "@/app/freelancer/[id]/page";
 import { responseData } from "@/lib/types";
+import { CustomFeaturedSkill } from "@/app/freelancer/[id]/ProfileClient";
 
 export default function Settings() {
   const [featured, setFeatured] = useState<CustomFeaturedSkill[]>([]);

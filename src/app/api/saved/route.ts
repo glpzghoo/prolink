@@ -1,4 +1,4 @@
-import { CustomUser } from "@/app/freelancer/page";
+import { CustomUser } from "@/app/freelancer/FreelancerListClient";
 import { prisma } from "@/lib/prisma";
 import { CustomNextResponse, NextResponse_CatchError } from "@/lib/responses";
 import { NextRequest, NextResponse } from "next/server";

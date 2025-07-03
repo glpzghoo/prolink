@@ -1,19 +1,14 @@
 "use client";
-
-import { user } from "@prisma/client";
 import { useEffect, useState } from "react";
-import { CustomUser } from "../freelancer/page";
 import axios from "axios";
 import { ClientCard } from "../_component/ ClientPostCard";
-import Loading from "../_component/loading";
 import CustomSkeleton from "../_component/skeleton";
+import { CustomUser } from "../freelancer/FreelancerListClient";
 type favorite = {
   id: string;
   role: string;
 };
 export default function Saved() {
-  //   const [favorites, setFavorites] = useState<favorite[]>([]);
-  //   const [users, setUsers] = useState<CustomUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState<CustomUser[]>([]);
   const [freelancers, setFreelancers] = useState<CustomUser[]>([]);

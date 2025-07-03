@@ -1,4 +1,4 @@
-import { CustomFeaturedSkill } from "@/app/freelancer/[id]/page";
+import { CustomFeaturedSkill } from "@/app/freelancer/[id]/ProfileClient";
 import { Button } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
 
