@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import JobListClient from './JobListClient';
-import { CustomJob } from './[id]/page';
+import { CustomJob } from './types';
 
 export const metadata: Metadata = {
   title: 'Ажлын зарууд - ProLink',

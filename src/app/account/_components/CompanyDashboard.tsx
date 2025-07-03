@@ -2,7 +2,7 @@
 import Loading from '@/app/_component/loading';
 import CustomSkeleton from '@/app/_component/skeleton';
 import MailDetail from '@/app/account/_components/maildetailbutton';
-import { CustomJob } from '@/app/job/[id]/page';
+import { CustomJob } from '@/app/job/types';
 import { Textarea } from '@/components/ui/textarea';
 import { calculateTime } from '@/lib/helper';
 import { theme } from '@/lib/theme';
