@@ -7,6 +7,7 @@ import { job, jobApplication, skill } from '@prisma/client';
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import LoadingIndicator from '@/components/loading-indicator';
 import {
   Select,
   SelectContent,
@@ -165,7 +166,7 @@ export default function ProposalDetails() {
     }
   };
 
-  if (loading) return 'Tur huleene uu! (solino)';
+  if (loading) return <LoadingIndicator />;
   if (!applicationData.length) {
     return (
       <div className="min-h-screen flex items-center justify-center text-foreground text-lg">

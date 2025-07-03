@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
+import LoadingIndicator from '@/components/loading-indicator';
 import { ClientCard } from '../_component/ ClientPostCard';
 import { CustomUser } from '../freelancer/FreelancerListClient';
 
@@ -42,10 +43,10 @@ export default function App() {
     fetch();
   }, [search]);
   return (
-    <Suspense fallback={'Tur huleene uu! (solino)'}>
+    <Suspense fallback={<LoadingIndicator />}>
       <div>
         {loading ? (
-          'Tur huleene uu! (solino)'
+          <LoadingIndicator />
         ) : (
           <div>
             <div className="text-center py-4">

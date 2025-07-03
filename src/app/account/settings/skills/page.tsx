@@ -2,6 +2,7 @@
 import { FeaturedSkillsetup } from '../../_components/featuredSkillChange';
 import { FeaturedSkillNewButton } from '../../_components/featuredSkillNewButton';
 import { useEffect, useState } from 'react';
+import LoadingIndicator from '@/components/loading-indicator';
 import axios from 'axios';
 import { responseData } from '@/lib/types';
 import { CustomFeaturedSkill } from '@/app/freelancer/[id]/types';
@@ -61,7 +62,7 @@ export default function Settings() {
   return (
     <div className="bg-background flex items-center justify-center">
       {loading ? (
-        'Tur huleene uu! (solino)'
+        <LoadingIndicator />
       ) : (
         <div className="w-full max-w-6xl mx-auto py-8">
           <div className="bg-background rounded-xl shadow-md p-6 border border-gray-200">

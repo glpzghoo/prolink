@@ -7,6 +7,7 @@ import { job } from '@prisma/client';
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import LoadingIndicator from '@/components/loading-indicator';
 import { GoDotFill } from 'react-icons/go';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -125,7 +126,7 @@ export default function AboutSettings() {
             open={Boolean(response?.message)}
             message={response?.message}
           />
-          {waiting && 'Tur huleene uu! (solino)'}
+          {waiting && <LoadingIndicator />}
           <div className="bg-background w-1/2 shadow-lg p-4">
             <h2 className="font-bold mb-4">Таны оруулсан ажлын саналууд:</h2>
             {user.jobpost.length > 0 ? (
@@ -255,6 +256,6 @@ export default function AboutSettings() {
       )}
     </div>
   ) : (
-    'Tur huleene uu! (solino)'
+    <LoadingIndicator />
   );
 }

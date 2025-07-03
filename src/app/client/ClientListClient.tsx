@@ -1,5 +1,6 @@
 'use client';
 import { Suspense, useEffect, useState } from 'react';
+import LoadingIndicator from '@/components/loading-indicator';
 import { ClientCard } from '../_component/ ClientPostCard';
 import { review, skill, user } from '@prisma/client';
 import { useSearchParams } from 'next/navigation';
@@ -57,7 +58,7 @@ export default function ClientListClient({ initialUsers }: { initialUsers: Custo
   }, []);
   return (
     <div>
-      <Suspense fallback={'Tur huleene uu! (solino)'}>
+      <Suspense fallback={<LoadingIndicator />}>
         <Badge />
         <div className="border border-solid max-w-[1250px] text-center p-4 font-bold rounded-3xl mx-auto mb-4">
           Дундаж үнэлгээ: {allreviews(users) ? allreviews(users) + '/5' : 'Үнэлгээ алга'}

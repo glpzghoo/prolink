@@ -7,6 +7,7 @@ import { Snackbar } from '@mui/material';
 import { skill, user } from '@prisma/client';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import LoadingIndicator from '@/components/loading-indicator';
 import { ImSpinner2 } from 'react-icons/im';
 
 type form = {
@@ -168,6 +169,6 @@ export default function AboutSettings() {
       )}
     </div>
   ) : (
-    'Tur huleene uu! (solino)'
+    <LoadingIndicator />
   );
 }
