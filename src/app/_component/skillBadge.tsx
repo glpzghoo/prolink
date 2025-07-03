@@ -8,10 +8,10 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { ImSpinner11, ImSpinner9 } from "react-icons/im";
-import { CustomUser } from "../freelancer/page";
 
 import _, { uniq } from "lodash";
 import { Badge } from "@mui/material";
+import { CustomUser } from "../freelancer/FreelancerListClient";
 type CustomSkill = skill & {
   user: CustomUser[];
 };
@@ -44,7 +44,6 @@ export default function SkillBadge() {
       }
     }
   };
-  //   const data = await fetchSkills();
   useEffect(() => {
     fetchSkills();
   }, []);

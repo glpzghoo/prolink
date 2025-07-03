@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { CustomUser } from "../freelancer/page";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
 import { IoMdCheckmark } from "react-icons/io";
+import { featuredSkills, review, skill, user } from "@prisma/client";
+import { CustomUser } from "../freelancer/FreelancerListClient";
 
 type Favorite = {
   id: string;

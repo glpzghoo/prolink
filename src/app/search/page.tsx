@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import Loading from "../_component/loading";
 import { ClientCard } from "../_component/ ClientPostCard";
-import { CustomUser } from "../freelancer/page";
+import { CustomUser } from "../freelancer/FreelancerListClient";
 
 export default function App() {
   const search = useSearchParams().get("search");
