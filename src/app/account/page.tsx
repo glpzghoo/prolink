@@ -12,24 +12,6 @@ import { motion } from "framer-motion";
 import { Button } from "@mui/material";
 import Loading from "../_component/loading";
 import { SessionProvider } from "next-auth/react";
-type LoginForm = {
-  email: string;
-  password: string;
-};
-type RegisterForm = {
-  email: string;
-  firstName: string;
-  lastName: string;
-  birthday: Date;
-  role: "CLIENT" | "FREELANCER";
-  companyName: string;
-  phoneNumber: number;
-  password: string;
-};
-const LoginFromSchema = z.object({
-  email: z.string(),
-  password: z.string(),
-});
 
 const emailSchema = z.string().email();
 export default function Account() {

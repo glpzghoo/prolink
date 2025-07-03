@@ -44,7 +44,6 @@ export default function SkillBadge() {
       }
     }
   };
-  //   const data = await fetchSkills();
   useEffect(() => {
     fetchSkills();
   }, []);
