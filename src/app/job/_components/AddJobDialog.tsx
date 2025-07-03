@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTrigger,
@@ -41,6 +41,7 @@ const formSchema = z.object({
   salary: z.coerce.number().min(0, 'Цалин оруулна уу'),
   salaryRate: z.enum(['HOUR', 'DAY', 'MONTH']),
   exp: z.boolean(),
+  selectedSkills: z.array(z.string()).min(1, 'Ур чадвар сонгоно уу'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -54,19 +55,34 @@ export default function AddJobDialog() {
       salary: 0,
       salaryRate: 'HOUR',
       exp: true,
+      selectedSkills: [],
     },
   });
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [skills, setSkills] = useState<{ id: string; name: string }[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    async function fetchSkills() {
+      try {
+        const res = await axios.get('/api/skills');
+        if (res.data.success) {
+          setSkills(res.data.data.skills);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    if (open) {
+      fetchSkills();
+    }
+  }, [open]);
 
   async function handleSubmit(values: FormValues) {
     setLoading(true);
     try {
-      const res = await axios.post('/api/job/create', {
-        ...values,
-        selectedSkills: [],
-      });
+      const res = await axios.post('/api/job/create', values);
       if (res.data.success) {
         setOpen(false);
         router.push(`/job/${res.data.data.newJob.id}`);
@@ -154,6 +170,35 @@ export default function AddJobDialog() {
                     <Checkbox checked={field.value} onCheckedChange={field.onChange} id="exp" />
                   </FormControl>
                   <FormLabel htmlFor="exp">Туршлага шаардах</FormLabel>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="selectedSkills"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ур чадвар</FormLabel>
+                  <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-1 border rounded-md">
+                    {skills.map((skill) => (
+                      <label key={skill.id} className="flex items-center space-x-2 text-sm">
+                        <Checkbox
+                          id={skill.id}
+                          checked={field.value.includes(skill.name)}
+                          onCheckedChange={(checked) => {
+                            const value = field.value as string[];
+                            if (checked) {
+                              field.onChange([...value, skill.name]);
+                            } else {
+                              field.onChange(value.filter((v) => v !== skill.name));
+                            }
+                          }}
+                        />
+                        <span>{skill.name}</span>
+                      </label>
+                    ))}
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
