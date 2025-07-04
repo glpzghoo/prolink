@@ -1,10 +1,17 @@
 'use client';
 
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import { Verified, CircleX, LogOut, FilePlus2, User } from 'lucide-react';
+import { MdDashboard } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Verified, CircleX, LogOut } from 'lucide-react';
-import { MdDashboard } from 'react-icons/md';
 import AddJobDialog from '@/app/job/_components/AddJobDialog';
 
 type Props = {
@@ -22,12 +29,12 @@ type Props = {
 
 export default function UserProfileMenu({ user, onLogout }: Props) {
   const profileHref = user.role === 'CLIENT' ? `/client/${user.id}` : `/freelancer/${user.id}`;
+  const displayName = user.companyName || `${user.lastName} ${user.firstName}`;
 
   return (
-    <div className="flex items-center gap-3">
-      {/* Profile Link */}
-      <Link href={profileHref}>
-        <motion.div
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <motion.button
           className="flex items-center gap-2 bg-muted p-2 rounded-full shadow-sm hover:bg-accent transition-all duration-300"
           whileHover={{ scale: 1.02 }}
         >
@@ -35,7 +42,7 @@ export default function UserProfileMenu({ user, onLogout }: Props) {
             <Image src={user.pfp || '/default-profile.png'} width={32} height={32} alt="Профайл" />
           </div>
           <span className="text-sm font-medium text-foreground whitespace-nowrap hidden sm:inline">
-            {user.companyName || `${user.lastName} ${user.firstName}`}
+            {displayName}
             {user.emailVerified ? (
               <span title="Баталгаажсан">
                 <Verified className="inline ml-1 text-primary text-lg" />
@@ -46,32 +53,44 @@ export default function UserProfileMenu({ user, onLogout }: Props) {
               </span>
             )}
           </span>
-        </motion.div>
-      </Link>
+        </motion.button>
+      </DropdownMenuTrigger>
 
-      {/* Dashboard */}
-      <Link href="/account/settings/about">
-        <motion.div
-          className="p-2.5 bg-muted rounded-full hover:bg-accent transition-all duration-300"
-          whileHover={{ scale: 1.05 }}
-          title="Дашбоард"
-        >
-          <MdDashboard className="text-primary text-xl" />
-        </motion.div>
-      </Link>
+      <DropdownMenuContent align="end" className="w-56">
+        {/* Profile */}
+        <DropdownMenuItem asChild>
+          <Link href={profileHref} className="flex items-center gap-2">
+            <User className="w-4 h-4 text-muted-foreground" />
+            Профайл
+          </Link>
+        </DropdownMenuItem>
 
-      {/* Logout */}
-      <motion.button
-        onClick={onLogout}
-        className="p-2.5 bg-muted rounded-full hover:bg-accent transition-all duration-300"
-        whileHover={{ scale: 1.05 }}
-        title="Гарах"
-      >
-        <LogOut className="text-primary text-xl" />
-      </motion.button>
+        {/* Dashboard */}
+        <DropdownMenuItem asChild>
+          <Link href="/account/settings/about" className="flex items-center gap-2">
+            <MdDashboard className="text-muted-foreground text-[18px]" />
+            Дашбоард
+          </Link>
+        </DropdownMenuItem>
 
-      {/* Post Job (for clients only) */}
-      {user.role === 'CLIENT' && <AddJobDialog />}
-    </div>
+        {/* Post Job */}
+        {user.role === 'CLIENT' && (
+          <DropdownMenuItem asChild>
+            <div className="w-full flex items-center gap-2">
+              <FilePlus2 className="w-4 h-4 text-muted-foreground" />
+              <AddJobDialog />
+            </div>
+          </DropdownMenuItem>
+        )}
+
+        <DropdownMenuSeparator />
+
+        {/* Logout */}
+        <DropdownMenuItem onClick={onLogout} className="text-red-500 flex items-center gap-2">
+          <LogOut className="w-4 h-4" />
+          Гарах
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

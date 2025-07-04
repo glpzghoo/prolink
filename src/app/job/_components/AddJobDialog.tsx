@@ -32,8 +32,6 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PlusCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const formSchema = z.object({
   title: z.string().min(1, 'Гарчиг оруулна уу'),
@@ -96,15 +94,7 @@ export default function AddJobDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <motion.button
-          className="p-2.5 bg-muted rounded-full hover:bg-accent transition-all duration-300 cursor-pointer"
-          whileHover={{ scale: 1.05 }}
-          title="Шинэ зар нэмэт"
-        >
-          <PlusCircle className="text-primary text-xl" />
-        </motion.button>
-      </DialogTrigger>
+      <DialogTrigger>Шинэ зар нэмэх</DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Шинэ ажлын санал</DialogTitle>

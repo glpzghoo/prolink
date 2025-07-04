@@ -1,31 +1,35 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { CustomUser } from '../../client/ClientListClient';
 import { avgRating } from '@/lib/helper';
+import { CustomUser } from '@/app/freelancer/FreelancerListClient';
 
 export default function HomeClientCard({ user }: { user: CustomUser }) {
   const rating = avgRating(user.reviewee).toFixed(1);
+
   return (
-    <Link href={`/client/${user.id}`} className="block w-[240px] shrink-0">
-      <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col items-center h-full">
-        <div className="relative w-14 h-14 rounded-full overflow-hidden mb-2">
+    <Link
+      href={`/client/${user.id}`}
+      className="block w-[280px] shrink-0 hover:scale-[1.02] transition-transform"
+    >
+      <div className="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col items-center h-full hover:shadow-md transition-shadow">
+        <div className="relative w-16 h-16 rounded-full overflow-hidden border border-muted mb-3">
           <Image
             src={user.pfp || '/default-profile.png'}
             alt={user.companyName}
             fill
-            sizes="56px"
+            sizes="64px"
             className="object-cover"
           />
         </div>
-        <h3 className="font-semibold text-sm truncate text-center max-w-full">
+        <h3 className="font-semibold text-base text-center truncate max-w-full">
           {user.companyName}
         </h3>
-        <p className="text-xs text-muted-foreground mb-2">{rating}/5.0</p>
-        <div className="flex flex-wrap justify-center gap-1 mt-auto">
+        <p className="text-sm text-muted-foreground mb-3">{rating}/5.0 үнэлгээтэй</p>
+        <div className="flex flex-wrap justify-center gap-1 mt-auto min-h-[24px]">
           {user.skill.slice(0, 2).map((sk) => (
             <span
               key={sk.id}
-              className="bg-muted text-foreground text-xs px-2 py-0.5 rounded-full"
+              className="bg-muted text-muted-foreground text-xs px-2 py-0.5 rounded-full"
             >
               {sk.name}
             </span>

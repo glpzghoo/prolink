@@ -109,7 +109,7 @@ export default function JobDetailClient() {
   return loading ? (
     <CustomSkeleton />
   ) : post ? (
-    <div className="bg-background min-h-screen py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto bg-background rounded-lg shadow-md p-6 md:p-8 border border-gray-200">
         <JobHeader post={post} copyURL={copyURL} />
 

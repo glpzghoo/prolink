@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`min-h-screen ${montserrat.variable} dark`}>
+      <body className={`min-h-screen ${montserrat.variable} bg-secondary`}>
         <div>
           <Navigation />
         </div>

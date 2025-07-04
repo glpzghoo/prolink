@@ -177,7 +177,7 @@ export default function Client() {
   return loading ? (
     <CustomSkeleton />
   ) : user ? (
-    <div className="bg-background min-h-screen py-8">
+    <div className="min-h-screen py-8">
       {user.companyName ? (
         <div className="flex justify-center items-center min-h-screen text-foreground">
           Холбоос буруу байна!
@@ -413,7 +413,7 @@ export default function Client() {
               {user.skill.map((skill) => (
                 <span
                   key={skill.id}
-                  className="bg-gray-100 text-foreground px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition"
+                  className=" text-foreground px-3 py-1 rounded-full text-sm hover:bg-background transition"
                 >
                   {skill.name}
                 </span>

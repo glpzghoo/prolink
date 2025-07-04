@@ -258,7 +258,7 @@ export default function Client() {
       {loading ? (
         <CustomSkeleton />
       ) : user ? (
-        <div className="bg-background min-h-screen mb-20">
+        <div className="min-h-screen mb-20">
           <div
             className="max-w-screen-lg mx-auto py-6 px-4 sm:px-6 lg:px-8 border border-gray-200 rounded-xl bg-background shadow-lg relative"
             ref={contentRef}

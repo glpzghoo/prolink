@@ -1,4 +1,5 @@
 'use client';
+
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { skill } from '@prisma/client';
 import { Button } from '@/components/ui/button';
@@ -40,40 +41,52 @@ export default function SkillFilter({ skills }: { skills: skill[] }) {
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <Button onClick={scrollLeft} variant="outline" size="icon">
+        <Button onClick={scrollLeft} variant="ghost" size="icon" className="shrink-0">
           <ChevronLeft className="w-4 h-4" />
         </Button>
-        <div ref={containerRef} className="flex overflow-x-auto gap-2 scrollbar-hide py-2">
+
+        <div
+          ref={containerRef}
+          className="flex overflow-x-auto gap-2 scrollbar-hide py-2 px-1 scrollbar-none relative"
+        >
           {skills.map((sk) => (
             <button
               key={sk.id}
               onClick={() => toggleSkill(sk.id)}
-              className={`px-3 py-1 text-sm rounded-full border whitespace-nowrap ${
-                selected.includes(sk.id)
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-background text-foreground'
-              }`}
+              className={`px-3 cursor-pointer py-1 text-sm rounded-full border transition-all duration-200 whitespace-nowrap
+                ${
+                  selected.includes(sk.id)
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                }
+              `}
             >
               {sk.name}
             </button>
           ))}
         </div>
-        <Button onClick={scrollRight} variant="outline" size="icon">
+
+        <Button onClick={scrollRight} variant="ghost" size="icon" className="shrink-0">
           <ChevronRight className="w-4 h-4" />
         </Button>
       </div>
+
       {selected.length > 0 && (
-        <div className="flex items-center gap-2 text-sm">
-          <span className="text-muted-foreground">Шүүлтүүр:</span>
+        <div className="flex items-center flex-wrap gap-2 text-sm">
+          <span className="text-muted-foreground">Идэвхтэй шүүлтүүрүүд:</span>
           {selected.map((id) => (
-            <span key={id} className="px-2 py-0.5 bg-muted rounded-full">
+            <span key={id} className="px-2 py-0.5 bg-muted text-foreground rounded-full">
               {skills.find((s) => s.id === id)?.name}
             </span>
           ))}
-          <button onClick={clear} className="flex items-center gap-1 text-red-500">
-            <X className="w-3 h-3" /> Цэвэрлэх
+          <button
+            onClick={clear}
+            className="flex items-center gap-1 text-red-500 hover:underline transition"
+          >
+            <X className="w-3 h-3" />
+            Цэвэрлэх
           </button>
         </div>
       )}

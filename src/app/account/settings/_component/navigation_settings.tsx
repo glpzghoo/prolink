@@ -1,12 +1,14 @@
 'use client';
-import { Button } from '@mui/material';
-import { user } from '@prisma/client';
+
 import axios from 'axios';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { user } from '@prisma/client';
+import { usePathname } from 'next/navigation';
 
 export default function NavigationSettings() {
   const [user, setUser] = useState<user>();
+  const pathname = usePathname();
 
   const getInfo = async () => {
     try {
@@ -23,79 +25,35 @@ export default function NavigationSettings() {
     getInfo();
   }, []);
 
+  const navItems = [
+    user?.role === 'CLIENT'
+      ? { href: '/account/settings/jobs', label: 'Ажлын саналууд' }
+      : { href: '/account/settings/skills', label: 'Профайл' },
+    { href: '/account/settings/application', label: 'Анкет' },
+    { href: '/account/settings/about', label: 'Тухай' },
+    { href: '/account/settings', label: 'Аккаунтны тохиргоо' },
+  ];
+
   return (
-    <div className="bg-background flex justify-center items-center py-2 px-8 shadow-md border border-gray-200">
-      <nav className="flex gap-6">
-        {user &&
-          (user.role === 'CLIENT' ? (
-            <Link href={`/account/settings/jobs`} passHref>
-              <Button
-                variant="text"
-                sx={{
-                  color: '#16a34a',
-                  textTransform: 'capitalize',
-                  fontWeight: 600,
-                  padding: '8px 18px',
-                  borderRadius: '8px',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    backgroundColor: 'rgba(22, 163, 74, 0.1)',
-                    color: '#15803d',
-                    transform: 'scale(1.05)',
-                  },
-                }}
+    <div className="bg-background border border-border shadow-sm py-3 px-6 flex justify-center items-center">
+      <nav className="flex flex-wrap gap-4">
+        {navItems.map(({ href, label }) => {
+          const isActive = pathname === href;
+          return (
+            <Link key={href} href={href}>
+              <span
+                className={`inline-block text-sm font-medium px-4 py-2 rounded-lg transition-all
+                  ${
+                    isActive
+                      ? 'bg-muted text-foreground font-semibold'
+                      : 'hover:bg-muted text-muted-foreground hover:text-foreground'
+                  }`}
               >
-                Ажлын саналууд
-              </Button>
+                {label}
+              </span>
             </Link>
-          ) : (
-            <Link href={`/account/settings/skills`} passHref>
-              <Button
-                variant="text"
-                sx={{
-                  color: '#16a34a',
-                  textTransform: 'capitalize',
-                  fontWeight: 600,
-                  padding: '8px 18px',
-                  borderRadius: '8px',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    backgroundColor: 'rgba(22, 163, 74, 0.1)',
-                    color: '#15803d',
-                    transform: 'scale(1.05)',
-                  },
-                }}
-              >
-                Профайл
-              </Button>
-            </Link>
-          ))}
-        {[
-          { href: '/account/settings/application', label: 'Анкет' },
-          { href: '/account/settings/about', label: 'Тухай' },
-          { href: '/account/settings', label: 'Аккаунтны тохиргоо' },
-        ].map((item) => (
-          <Link key={item.href} href={item.href} passHref>
-            <Button
-              variant="text"
-              sx={{
-                color: '#16a34a',
-                textTransform: 'capitalize',
-                fontWeight: 600,
-                padding: '8px 18px',
-                borderRadius: '8px',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  backgroundColor: 'rgba(22, 163, 74, 0.1)',
-                  color: '#15803d',
-                  transform: 'scale(1.05)',
-                },
-              }}
-            >
-              {item.label}
-            </Button>
-          </Link>
-        ))}
+          );
+        })}
       </nav>
     </div>
   );

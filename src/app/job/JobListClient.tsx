@@ -8,7 +8,7 @@ export default function JobListClient({ posts }: { posts: CustomJob[] }) {
   const [loading] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
+    <div className="min-h-screen py-12 px-4">
       <div className="w-[90%] mx-auto">
         {loading ? (
           <CustomSkeleton />
